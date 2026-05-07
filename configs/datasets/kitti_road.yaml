@@ -1,0 +1,9 @@
+name: kitti_road
+root: datasets/data/kitti_road
+input_size: [384, 1248]
+modalities: [rgb, adi]
+splits:
+  train: training
+  val: training
+  test: testing
+notes: "datasets/data is a symlink to /home/admin1/Mycode/VLLiNet/datasets/data."

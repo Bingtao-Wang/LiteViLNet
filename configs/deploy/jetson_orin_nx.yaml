@@ -1,0 +1,14 @@
+device: Jetson Orin NX 16GB
+l4t: R36.4.3
+power_mode: MAXN/Super
+batch_size: 1
+input_size: [384, 1248]
+precisions: [fp16]
+metrics:
+  - mean_latency_ms
+  - p95_latency_ms
+  - fps
+  - gpu_memory_mb
+  - engine_size_mb
+  - power_w
+  - energy_per_frame_j

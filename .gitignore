@@ -1,0 +1,47 @@
+# Python/cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.env
+venv/
+env/
+ENV/
+
+# Local datasets and generated artifacts
+datasets/data/
+deployment/artifacts/*
+deployment/results/*
+deployment/jetson_package/*
+experiments/runs/*
+third_party/**/outputs/
+
+# Large model files
+checkpoints/**/*.pth
+checkpoints/**/*.pt
+checkpoints/**/*.ckpt
+*.onnx
+*.engine
+
+# Keep directory skeletons and summaries
+!.gitkeep
+!deployment/artifacts/.gitkeep
+!deployment/results/.gitkeep
+!deployment/jetson_package/.gitkeep
+!experiments/runs/.gitkeep
+!experiments/summaries/*.csv
+!experiments/notes/*.md
+!third_party/**/README.md
+!third_party/**/SOURCE.md
+
+# IDE/system
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
