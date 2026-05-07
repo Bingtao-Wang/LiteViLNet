@@ -44,7 +44,7 @@ def main() -> None:
     if args.fp16:
         model.half()
 
-    output = Path(args.output or f"deployment/artifacts/onnx/{args.preset}_{args.img_h}x{args.img_w}.onnx")
+    output = Path(args.output or f"runs/onnx/{args.preset}_{args.img_h}x{args.img_w}.onnx")
     output.parent.mkdir(parents=True, exist_ok=True)
 
     dtype = torch.float16 if args.fp16 else torch.float32

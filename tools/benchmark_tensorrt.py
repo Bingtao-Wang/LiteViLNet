@@ -21,8 +21,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--warmup", type=int, default=500)
     parser.add_argument("--duration", type=int, default=30)
     parser.add_argument("--trtexec", default="trtexec")
-    parser.add_argument("--output", default="deployment/results/tensorrt_benchmark.json")
-    parser.add_argument("--csv", default="deployment/results/benchmark_summary.csv")
+    parser.add_argument("--output", default="runs/tensorrt/tensorrt_benchmark.json")
+    parser.add_argument("--csv", default="runs/benchmark/benchmark_summary.csv")
     parser.add_argument("--extra", nargs="*", default=[])
     return parser.parse_args()
 

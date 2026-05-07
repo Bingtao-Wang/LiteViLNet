@@ -29,7 +29,7 @@ def main() -> None:
         raise SystemExit("trtexec not found. Install TensorRT or pass --trtexec /path/to/trtexec")
 
     onnx_path = Path(args.onnx)
-    engine_path = Path(args.engine or f"deployment/artifacts/engines/{onnx_path.stem}_{args.precision}.engine")
+    engine_path = Path(args.engine or f"runs/tensorrt/{onnx_path.stem}_{args.precision}.engine")
     engine_path.parent.mkdir(parents=True, exist_ok=True)
 
     command = [

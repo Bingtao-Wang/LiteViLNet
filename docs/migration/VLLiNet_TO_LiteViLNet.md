@@ -17,7 +17,7 @@
 
 ## Linked
 
-- `datasets/data` links to `/home/admin1/Mycode/VLLiNet/datasets/data`.
+- `data` links to `/home/admin1/Mycode/VLLiNet/datasets/data`.
 
 ## Not Copied
 

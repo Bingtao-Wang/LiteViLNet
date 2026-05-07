@@ -12,28 +12,33 @@ env/
 ENV/
 
 # Local datasets and generated artifacts
-datasets/data/
-deployment/artifacts/*
-deployment/results/*
-deployment/jetson_package/*
-experiments/runs/*
+data/
+runs/benchmark/*
+runs/eval/*
+runs/onnx/*
+runs/tensorrt/*
+runs/jetson_package/*
+runs/summary/*
+runs/train/*
 third_party/**/outputs/
 
 # Large model files
-checkpoints/**/*.pth
-checkpoints/**/*.pt
-checkpoints/**/*.ckpt
+weights/**/*.pth
+weights/**/*.pt
+weights/**/*.ckpt
 *.onnx
 *.engine
 
 # Keep directory skeletons and summaries
 !.gitkeep
-!deployment/artifacts/.gitkeep
-!deployment/results/.gitkeep
-!deployment/jetson_package/.gitkeep
-!experiments/runs/.gitkeep
-!experiments/summaries/*.csv
-!experiments/notes/*.md
+!runs/benchmark/.gitkeep
+!runs/eval/.gitkeep
+!runs/onnx/.gitkeep
+!runs/tensorrt/.gitkeep
+!runs/jetson_package/.gitkeep
+!runs/summary/.gitkeep
+!runs/summary/*.csv
+!runs/train/.gitkeep
 !third_party/**/README.md
 !third_party/**/SOURCE.md
 

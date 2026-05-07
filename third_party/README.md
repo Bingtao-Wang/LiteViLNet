@@ -11,4 +11,4 @@ Rules:
 - Keep upstream code isolated; do not merge it into `litevilnet/`.
 - Add `SOURCE.md` for each model with source URL, commit/tag, paper, license, dependencies, and reproduction status.
 - Put generated files under the model's `outputs/` directory so Git ignores them.
-- Add a thin adapter in `adapters/` when a third-party model needs to enter LiteViLNet evaluation.
+- Add a thin adapter in `third_party/adapters/` when a third-party model needs to enter LiteViLNet evaluation.

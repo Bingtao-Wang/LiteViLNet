@@ -15,14 +15,14 @@ MODEL_PRESETS = {
     "vllinet_paper": {
         "label": "VLLiNet-Paper",
         "builder": "vllinet_lite",
-        "checkpoint_hint": "checkpoints/seed_from_vllinet/vllinet_paper_v3_final.pth",
+        "checkpoint_hint": "weights/seed/vllinet_paper_v3_final.pth",
         "expected_maxf": 96.35,
         "role": "accuracy reference",
     },
     "vllinet_edge": {
         "label": "VLLiNet-Edge",
         "builder": "ablation:add_lidar",
-        "checkpoint_hint": "checkpoints/seed_from_vllinet/vllinet_edge_add_lidar.pth",
+        "checkpoint_hint": "weights/seed/vllinet_edge_add_lidar.pth",
         "expected_maxf": 96.04,
         "role": "lightweight reference",
     },

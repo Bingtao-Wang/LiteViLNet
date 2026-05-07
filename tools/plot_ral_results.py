@@ -12,8 +12,8 @@ import pandas as pd
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plot RA-L deployment results")
-    parser.add_argument("--benchmark_csv", default="deployment/results/benchmark_summary.csv")
-    parser.add_argument("--eval_csv", default="deployment/results/eval_summary.csv")
+    parser.add_argument("--benchmark_csv", default="runs/benchmark/benchmark_summary.csv")
+    parser.add_argument("--eval_csv", default="runs/eval/eval_summary.csv")
     parser.add_argument("--output_dir", default="docs/ral/figures")
     return parser.parse_args()
 

@@ -16,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Collect Jetson tegrastats power samples")
     parser.add_argument("--duration", type=float, default=30.0)
     parser.add_argument("--interval_ms", type=int, default=200)
-    parser.add_argument("--output", default="deployment/results/jetson_power.json")
+    parser.add_argument("--output", default="runs/benchmark/jetson_power.json")
     return parser.parse_args()
 
 

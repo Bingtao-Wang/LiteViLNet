@@ -20,12 +20,12 @@ from litevilnet.data import AverageMeter, EarlyStopping, RoadMetrics, get_datalo
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="LiteViLNet edge distillation")
-    parser.add_argument("--data_root", default="datasets/data/kitti_road")
+    parser.add_argument("--data_root", default="data/kitti_road")
     parser.add_argument("--teacher_preset", default="vllinet_paper", choices=["vllinet_paper"])
     parser.add_argument("--teacher_checkpoint", default=MODEL_PRESETS["vllinet_paper"]["checkpoint_hint"])
     parser.add_argument("--student_checkpoint", default="", help="Optional student init checkpoint")
-    parser.add_argument("--save_dir", default="checkpoints/litevillinet/edge_distill")
-    parser.add_argument("--log_dir", default="experiments/runs/edge_distill")
+    parser.add_argument("--save_dir", default="weights/litevillinet/edge_distill")
+    parser.add_argument("--log_dir", default="runs/train/edge_distill")
     parser.add_argument("--student_preset", default="vllinet_edge", choices=["vllinet_edge", "litevillinet_baseline"])
     parser.add_argument("--img_h", type=int, default=384)
     parser.add_argument("--img_w", type=int, default=1248)

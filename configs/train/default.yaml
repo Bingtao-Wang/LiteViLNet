@@ -1,6 +1,6 @@
-data_root: datasets/data/kitti_road
-save_dir: checkpoints/litevillinet/baseline
-log_dir: experiments/runs/litevillinet_baseline
+data_root: data/kitti_road
+save_dir: weights/litevillinet/baseline
+log_dir: runs/train/litevillinet_baseline
 img_h: 384
 img_w: 1248
 batch_size: 2

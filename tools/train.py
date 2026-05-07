@@ -33,7 +33,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='VLLiNet Training - Final Pure')
     
     # --- 数据配置 ---
-    parser.add_argument('--data_root', type=str, default='datasets/data/kitti_road')
+    parser.add_argument('--data_root', type=str, default='data/kitti_road')
     parser.add_argument('--category', type=str, default='all')
     parser.add_argument('--img_h', type=int, default=384)
     parser.add_argument('--img_w', type=int, default=1248)
@@ -56,8 +56,8 @@ def parse_args():
     parser.add_argument('--accumulate_grad_batches', type=int, default=8)
     
     # --- 路径配置 ---
-    parser.add_argument('--save_dir', type=str, default='checkpoints/litevillinet/baseline')
-    parser.add_argument('--log_dir', type=str, default='experiments/runs/litevillinet_baseline')
+    parser.add_argument('--save_dir', type=str, default='weights/litevillinet/baseline')
+    parser.add_argument('--log_dir', type=str, default='runs/train/litevillinet_baseline')
     parser.add_argument('--resume', type=str, default='')
     
     return parser.parse_args()

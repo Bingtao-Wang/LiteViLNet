@@ -6,31 +6,31 @@ The repository is intentionally small:
 
 - Core code lives under `litevilnet/`.
 - Entry points live under `tools/`.
-- KITTI/CARLA data is linked from the original VLLiNet data store via `datasets/data`.
+- KITTI/CARLA data is linked from the original VLLiNet data store via `data`.
 - Seed checkpoints are stored locally but ignored by Git.
-- External KITTI leaderboard models must stay in `third_party/` and connect through `adapters/`.
+- External KITTI leaderboard models must stay in `third_party/` and connect through `third_party/adapters/`.
 
 ## Quick Checks
 
 ```bash
 python -m tools.evaluate \
   --preset vllinet_paper \
-  --checkpoint checkpoints/seed_from_vllinet/vllinet_paper_v3_final.pth \
-  --data_root datasets/data/kitti_road \
+  --checkpoint weights/seed/vllinet_paper_v3_final.pth \
+  --data_root data/kitti_road \
   --split val
 ```
 
 ```bash
 python -m tools.benchmark_pytorch \
   --preset vllinet_edge \
-  --checkpoint checkpoints/seed_from_vllinet/vllinet_edge_add_lidar.pth \
+  --checkpoint weights/seed/vllinet_edge_add_lidar.pth \
   --precision fp16
 ```
 
 ```bash
 python -m tools.export_onnx \
   --preset litevillinet_baseline \
-  --output deployment/artifacts/onnx/litevillinet_baseline_384x1248.onnx
+  --output runs/onnx/litevillinet_baseline_384x1248.onnx
 ```
 
 ## Presets

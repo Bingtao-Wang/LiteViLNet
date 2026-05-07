@@ -29,8 +29,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--measure_preprocess", action="store_true")
     parser.add_argument("--rgb_image", default="")
     parser.add_argument("--adi_image", default="")
-    parser.add_argument("--output", default="deployment/results/pytorch_benchmark.json")
-    parser.add_argument("--csv", default="deployment/results/benchmark_summary.csv")
+    parser.add_argument("--output", default="runs/benchmark/pytorch_benchmark.json")
+    parser.add_argument("--csv", default="runs/benchmark/benchmark_summary.csv")
     parser.add_argument("--allow_partial", action="store_true", help="Allow non-aux partial checkpoint loading")
     return parser.parse_args()
 
