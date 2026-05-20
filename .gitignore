@@ -18,7 +18,6 @@ LiteViLNet_ Lightweight Vision-LiDAR Fusion Network for Efficient Road Segmentat
 output/
 # Local datasets and generated artifacts
 data/
-FPS/
 figures/
 other_models/
 runs/benchmark/*
