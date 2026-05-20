@@ -29,10 +29,11 @@ from litevilnet.models.losses import VLLiNetLoss
 
 # 导入工具库
 from litevilnet.data import (
-    get_dataloader, RoadMetrics, AverageMeter,
+    get_dataloader, AverageMeter,
     print_metrics, set_seed, get_lr, EarlyStopping,
     save_checkpoint
 )
+from litevilnet.metrics.deployment_metrics import BinarySegmentationMeter
 
 
 def parse_args():
@@ -95,7 +96,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
     """训练一个epoch"""
     model.train()
     loss_meter = AverageMeter()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
 
     accumulate_grad_batches = args.accumulate_grad_batches if args else 1
 
@@ -111,7 +112,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
 
         # 前向传播 (AMP)
         if scaler is not None:
-            with torch.amp.autocast('cuda'):
+            with torch.cuda.amp.autocast():
                 output = model(rgb, adi, return_aux=True)
                 if isinstance(output, tuple):
                     out, aux_outputs = output
@@ -159,7 +160,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
                 out_resized = F.interpolate(out_prob, size=label.shape[-2:], mode='nearest')
             else:
                 out_resized = out_prob
-            metrics.update(out_resized, label)
+            metrics.update(out_resized, label, input_type="prob")
 
     return loss_meter.avg, metrics.compute()
 
@@ -168,7 +169,7 @@ def validate(model, dataloader, device, desc="Validating"):
     """验证"""
     model.eval()
     loss_meter = AverageMeter()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
 
     pbar = tqdm(dataloader, desc=desc, mininterval=1.0, leave=False)
 
@@ -189,7 +190,7 @@ def validate(model, dataloader, device, desc="Validating"):
 
             loss = F.binary_cross_entropy_with_logits(output_resized.squeeze(1), label.float())
             loss_meter.update(loss.item(), rgb.size(0))
-            metrics.update(torch.sigmoid(output_resized), label)
+            metrics.update(output_resized, label, input_type="logits")
 
     return loss_meter.avg, metrics.compute()
 
@@ -237,7 +238,7 @@ def train_single_config(config_name, args):
     criterion = VLLiNetLoss(use_deep_supervision=model.use_deep_supervision).to(device)
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
-    scaler = torch.amp.GradScaler('cuda') if args.amp else None
+    scaler = torch.cuda.amp.GradScaler() if args.amp and torch.cuda.is_available() else None
     early_stopping = EarlyStopping(patience=args.patience, mode='max')
 
     best_metric = 0.0
@@ -261,8 +262,28 @@ def train_single_config(config_name, args):
         scheduler.step()
 
         # 日志输出
-        logger.info(f"Train Loss: {train_loss:.4f} | MaxF: {train_metrics['MaxF']:.4f}")
-        logger.info(f"Val   Loss: {val_loss:.4f} | MaxF: {val_metrics['MaxF']:.4f}")
+        logger.info(
+            "Train Loss: %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
+            train_loss,
+            train_metrics["MaxF"],
+            train_metrics["AP"],
+            train_metrics["PRE"],
+            train_metrics["REC"],
+            train_metrics["FPR"],
+            train_metrics["FNR"],
+            train_metrics["BestThreshold"],
+        )
+        logger.info(
+            "Val   Loss: %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
+            val_loss,
+            val_metrics["MaxF"],
+            val_metrics["AP"],
+            val_metrics["PRE"],
+            val_metrics["REC"],
+            val_metrics["FPR"],
+            val_metrics["FNR"],
+            val_metrics["BestThreshold"],
+        )
 
         # 保存最佳模型
         current_metric = val_metrics['MaxF']
@@ -279,7 +300,7 @@ def train_single_config(config_name, args):
                 os.path.join(config_save_dir, 'best_model.pth'),
                 args
             )
-            logger.info(f"🔥 New Best Model! MaxF: {best_metric:.4f}")
+            logger.info(f"New best model. MaxF: {best_metric:.4f}")
 
         # 早停
         if early_stopping(current_metric):

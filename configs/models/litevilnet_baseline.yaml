@@ -1,0 +1,5 @@
+name: litevilnet_baseline
+base_preset: litevilnet_edge
+architecture: add_lidar_ablation_seed
+input_modalities: [rgb, adi]
+target: "Improve efficiency while keeping KITTI Road MaxF close to LiteViLNet-Paper."

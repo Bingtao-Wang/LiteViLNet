@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Export VLLiNet presets to ONNX for TensorRT."""
+"""Export LiteViLNet presets to ONNX for TensorRT."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from litevilnet.model_factory import MODEL_PRESETS, available_presets, build_mod
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export LiteViLNet presets to ONNX")
-    parser.add_argument("--preset", default="vllinet_paper", choices=available_presets())
+    parser.add_argument("--preset", default="litevilnet_paper", choices=available_presets())
     parser.add_argument("--checkpoint", default="", help="Optional checkpoint path")
     parser.add_argument("--output", default="", help="Output ONNX path")
     parser.add_argument("--img_h", type=int, default=384)

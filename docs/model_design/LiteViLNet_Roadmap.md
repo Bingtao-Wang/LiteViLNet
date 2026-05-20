@@ -2,13 +2,13 @@
 
 ## Baselines
 
-- `vllinet_paper`: accuracy reference.
-- `vllinet_edge`: lightweight reference.
-- `litevillinet_baseline`: first new-model iteration, initially sharing the lightweight seed architecture.
+- `litevilnet_paper`: accuracy reference.
+- `litevilnet_edge`: lightweight reference.
+- `litevilnet_baseline`: first new-model iteration, initially sharing the lightweight seed architecture.
 
 ## Iteration Priorities
 
-1. Preserve KITTI Road MaxF near the VLLiNet-Paper reference.
+1. Preserve KITTI Road MaxF near the LiteViLNet-Paper reference.
 2. Reduce latency, parameters, and TensorRT engine size.
 3. Keep architecture export-friendly for ONNX and TensorRT.
 4. Compare against external KITTI Road leaderboard models through isolated adapters.

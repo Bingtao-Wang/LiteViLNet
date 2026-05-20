@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Distill the VLLiNet-Paper seed model into a lightweight LiteViLNet student."""
+"""Distill the LiteViLNet-Paper seed model into a lightweight LiteViLNet student."""
 
 from __future__ import annotations
 
@@ -15,18 +15,19 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 
 from litevilnet.model_factory import MODEL_PRESETS, build_model
 from litevilnet.models.losses import VLLiNetLoss
-from litevilnet.data import AverageMeter, EarlyStopping, RoadMetrics, get_dataloader, save_checkpoint, set_seed
+from litevilnet.data import AverageMeter, EarlyStopping, get_dataloader, save_checkpoint, set_seed
+from litevilnet.metrics.deployment_metrics import BinarySegmentationMeter
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="LiteViLNet edge distillation")
     parser.add_argument("--data_root", default="data/kitti_road")
-    parser.add_argument("--teacher_preset", default="vllinet_paper", choices=["vllinet_paper"])
-    parser.add_argument("--teacher_checkpoint", default=MODEL_PRESETS["vllinet_paper"]["checkpoint_hint"])
+    parser.add_argument("--teacher_preset", default="litevilnet_paper", choices=["litevilnet_paper"])
+    parser.add_argument("--teacher_checkpoint", default=MODEL_PRESETS["litevilnet_paper"]["checkpoint_hint"])
     parser.add_argument("--student_checkpoint", default="", help="Optional student init checkpoint")
-    parser.add_argument("--save_dir", default="weights/litevillinet/edge_distill")
+    parser.add_argument("--save_dir", default="weights/litevilnet/edge_distill")
     parser.add_argument("--log_dir", default="runs/train/edge_distill")
-    parser.add_argument("--student_preset", default="vllinet_edge", choices=["vllinet_edge", "litevillinet_baseline"])
+    parser.add_argument("--student_preset", default="litevilnet_edge", choices=["litevilnet_edge", "litevilnet_baseline"])
     parser.add_argument("--img_h", type=int, default=384)
     parser.add_argument("--img_w", type=int, default=1248)
     parser.add_argument("--batch_size", type=int, default=2)
@@ -71,7 +72,7 @@ def train_epoch(teacher, student, dataloader, criterion, optimizer, device, scal
     teacher.eval()
     student.train()
     loss_meter = AverageMeter()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
 
     for batch in dataloader:
         rgb = batch["rgb"].to(device, non_blocking=True)
@@ -80,7 +81,7 @@ def train_epoch(teacher, student, dataloader, criterion, optimizer, device, scal
         optimizer.zero_grad(set_to_none=True)
 
         if scaler is not None:
-            with torch.amp.autocast("cuda"):
+            with torch.cuda.amp.autocast():
                 with torch.no_grad():
                     teacher_logits = teacher(rgb, adi)
                     if isinstance(teacher_logits, tuple):
@@ -116,14 +117,14 @@ def train_epoch(teacher, student, dataloader, criterion, optimizer, device, scal
 
         loss_meter.update(loss.item(), rgb.size(0))
         with torch.no_grad():
-            metrics.update(torch.sigmoid(student_logits), label)
+            metrics.update(student_logits, label, input_type="logits")
 
     return loss_meter.avg, metrics.compute()
 
 
 def validate(student, dataloader, device):
     student.eval()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
     with torch.no_grad():
         for batch in dataloader:
             rgb = batch["rgb"].to(device, non_blocking=True)
@@ -132,7 +133,7 @@ def validate(student, dataloader, device):
             logits = student(rgb, adi)
             if isinstance(logits, tuple):
                 logits = logits[0]
-            metrics.update(torch.sigmoid(logits), label)
+            metrics.update(logits, label, input_type="logits")
     return metrics.compute()
 
 
@@ -186,7 +187,7 @@ def main() -> None:
     criterion = VLLiNetLoss(use_deep_supervision=True).to(device)
     optimizer = AdamW(student.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
-    scaler = torch.amp.GradScaler("cuda") if args.amp and torch.cuda.is_available() else None
+    scaler = torch.cuda.amp.GradScaler() if args.amp and torch.cuda.is_available() else None
     early_stopping = EarlyStopping(patience=args.patience, mode="max")
     best = 0.0
 
@@ -196,15 +197,18 @@ def main() -> None:
         scheduler.step()
         current = val_metrics["MaxF"]
         logger.info(
-            "Epoch %03d/%03d | loss %.4f | train MaxF %.4f | val MaxF %.4f | P %.4f | R %.4f | IoU %.4f",
+            "Epoch %03d/%03d | loss %.4f | train MaxF %.4f | val MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
             epoch + 1,
             args.epochs,
             train_loss,
             train_metrics["MaxF"],
             current,
-            val_metrics["Precision"],
-            val_metrics["Recall"],
-            val_metrics["IoU"],
+            val_metrics["AP"],
+            val_metrics["PRE"],
+            val_metrics["REC"],
+            val_metrics["FPR"],
+            val_metrics["FNR"],
+            val_metrics["BestThreshold"],
         )
         if current > best:
             best = current

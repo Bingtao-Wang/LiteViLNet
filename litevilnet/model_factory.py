@@ -12,21 +12,21 @@ from litevilnet.models.vllinet_ablation import get_ablation_model
 
 
 MODEL_PRESETS = {
-    "vllinet_paper": {
-        "label": "VLLiNet-Paper",
+    "litevilnet_paper": {
+        "label": "LiteViLNet-Paper",
         "builder": "vllinet_lite",
         "checkpoint_hint": "weights/seed/vllinet_paper_v3_final.pth",
         "expected_maxf": 96.35,
         "role": "accuracy reference",
     },
-    "vllinet_edge": {
-        "label": "VLLiNet-Edge",
+    "litevilnet_edge": {
+        "label": "LiteViLNet-Edge",
         "builder": "ablation:add_lidar",
         "checkpoint_hint": "weights/seed/vllinet_edge_add_lidar.pth",
         "expected_maxf": 96.04,
         "role": "lightweight reference",
     },
-    "litevillinet_baseline": {
+    "litevilnet_baseline": {
         "label": "LiteViLNet-Baseline",
         "builder": "ablation:add_lidar",
         "checkpoint_hint": "",
@@ -40,7 +40,7 @@ def available_presets() -> list[str]:
     return sorted(MODEL_PRESETS)
 
 
-def create_model(preset: str = "litevillinet_baseline", pretrained: bool = False, deep_supervision: bool = False) -> torch.nn.Module:
+def create_model(preset: str = "litevilnet_baseline", pretrained: bool = False, deep_supervision: bool = False) -> torch.nn.Module:
     if preset not in MODEL_PRESETS:
         raise ValueError(f"Unknown preset '{preset}'. Available presets: {available_presets()}")
 

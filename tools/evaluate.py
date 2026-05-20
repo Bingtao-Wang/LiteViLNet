@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Evaluate VLLiNet presets with true threshold-swept MaxF."""
+"""Evaluate LiteViLNet presets with true threshold-swept MaxF."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from litevilnet.data import get_dataloader
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate LiteViLNet presets")
-    parser.add_argument("--preset", default="vllinet_paper", choices=available_presets())
+    parser.add_argument("--preset", default="litevilnet_paper", choices=available_presets())
     parser.add_argument("--checkpoint", default="")
     parser.add_argument("--data_root", default="data/kitti_road")
     parser.add_argument("--split", default="val", choices=["train", "val"])
@@ -101,9 +101,12 @@ def main() -> None:
             "precision": args.precision,
             "split": args.split,
             "MaxF": metrics["MaxF"],
+            "AP": metrics["AP"],
+            "PRE": metrics["PRE"],
+            "REC": metrics["REC"],
+            "FPR": metrics["FPR"],
+            "FNR": metrics["FNR"],
             "BestThreshold": metrics["BestThreshold"],
-            "Precision": metrics["Precision"],
-            "Recall": metrics["Recall"],
             "IoU": metrics["IoU"],
             "parameters_M": metadata["parameters"] / 1e6,
         },

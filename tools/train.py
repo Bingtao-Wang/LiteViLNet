@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 VLLiNet Training Script (Pure Version)
-Target: MaxF > 97% via TTA (Test Time Augmentation) later
+Target: threshold-swept MaxF > 97% via TTA (Test Time Augmentation) later
 Features:
 - LargeKernelBridge Architecture
 - No EMA (removed due to Batch Size=2 instability)
@@ -24,10 +24,11 @@ from litevilnet.models.losses import VLLiNetLoss
 
 # 2. 导入工具库
 from litevilnet.data import (
-    get_dataloader, RoadMetrics, AverageMeter,
+    get_dataloader, AverageMeter,
     print_metrics, set_seed, get_lr, EarlyStopping,
     save_checkpoint
 )
+from litevilnet.metrics.deployment_metrics import BinarySegmentationMeter
 
 def parse_args():
     parser = argparse.ArgumentParser(description='VLLiNet Training - Final Pure')
@@ -56,8 +57,8 @@ def parse_args():
     parser.add_argument('--accumulate_grad_batches', type=int, default=8)
     
     # --- 路径配置 ---
-    parser.add_argument('--save_dir', type=str, default='weights/litevillinet/baseline')
-    parser.add_argument('--log_dir', type=str, default='runs/train/litevillinet_baseline')
+    parser.add_argument('--save_dir', type=str, default='weights/litevilnet/baseline')
+    parser.add_argument('--log_dir', type=str, default='runs/train/litevilnet_baseline')
     parser.add_argument('--resume', type=str, default='')
     
     return parser.parse_args()
@@ -92,7 +93,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
     """Train for one epoch - silent batch processing"""
     model.train()
     loss_meter = AverageMeter()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
 
     accumulate_grad_batches = args.accumulate_grad_batches if args else 1
 
@@ -107,7 +108,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
 
         # --- 前向传播 (AMP) ---
         if scaler is not None:
-            with torch.amp.autocast('cuda'):
+            with torch.cuda.amp.autocast():
                 output = model(rgb, adi, return_aux=True)
                 if isinstance(output, tuple):
                     out, aux_outputs = output
@@ -153,7 +154,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
                 out_resized = F.interpolate(out_prob, size=label.shape[-2:], mode='nearest')
             else:
                 out_resized = out_prob
-            metrics.update(out_resized, label)
+            metrics.update(out_resized, label, input_type="prob")
 
     return loss_meter.avg, metrics.compute()
 
@@ -161,7 +162,7 @@ def validate(model, dataloader, device):
     """Validate for one epoch - silent batch processing"""
     model.eval()
     loss_meter = AverageMeter()
-    metrics = RoadMetrics()
+    metrics = BinarySegmentationMeter()
 
     # Silent batch loop - no progress bar
     with torch.no_grad():
@@ -181,7 +182,7 @@ def validate(model, dataloader, device):
 
             loss = F.binary_cross_entropy_with_logits(output_resized.squeeze(1), label.float())
             loss_meter.update(loss.item(), rgb.size(0))
-            metrics.update(torch.sigmoid(output_resized), label)
+            metrics.update(output_resized, label, input_type="logits")
 
     return loss_meter.avg, metrics.compute()
 
@@ -216,7 +217,7 @@ def main():
     criterion = VLLiNetLoss(use_deep_supervision=use_ds).to(device)
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
-    scaler = torch.amp.GradScaler('cuda') if args.amp else None
+    scaler = torch.cuda.amp.GradScaler() if args.amp and torch.cuda.is_available() else None
     early_stopping = EarlyStopping(patience=args.patience, mode='max')
 
     best_metric = 0.0
@@ -250,8 +251,28 @@ def main():
         scheduler.step()
 
         # Metrics: Two lines
-        logger.info(f"Train Loss : {train_loss:.4f} | MaxF: {train_metrics['MaxF']:.4f} | Precision: {train_metrics['Precision']:.4f} | Recall: {train_metrics['Recall']:.4f} | IoU: {train_metrics['IoU']:.4f}")
-        logger.info(f"Val        : {val_loss:.4f} | MaxF: {val_metrics['MaxF']:.4f} | Precision: {val_metrics['Precision']:.4f} | Recall: {val_metrics['Recall']:.4f} | IoU: {val_metrics['IoU']:.4f}")
+        logger.info(
+            "Train Loss : %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
+            train_loss,
+            train_metrics["MaxF"],
+            train_metrics["AP"],
+            train_metrics["PRE"],
+            train_metrics["REC"],
+            train_metrics["FPR"],
+            train_metrics["FNR"],
+            train_metrics["BestThreshold"],
+        )
+        logger.info(
+            "Val        : %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
+            val_loss,
+            val_metrics["MaxF"],
+            val_metrics["AP"],
+            val_metrics["PRE"],
+            val_metrics["REC"],
+            val_metrics["FPR"],
+            val_metrics["FNR"],
+            val_metrics["BestThreshold"],
+        )
 
         # --- 保存逻辑 ---
         current_metric = val_metrics['MaxF']
@@ -268,7 +289,7 @@ def main():
                 args
             )
             # Best Model Alert (The Highlight)
-            logger.info(f"🔥 New Best Model Saved! MaxF: {best_metric:.4f}")
+            logger.info(f"New best model saved. MaxF: {best_metric:.4f}")
 
         save_checkpoint(
             model,
@@ -284,7 +305,7 @@ def main():
             logger.info(f"Early stopping triggered at epoch {epoch + 1}")
             break
 
-    logger.info(f"\nTraining completed! Best MaxF: {best_metric:.4f}")
+    logger.info(f"\nTraining completed. Best MaxF: {best_metric:.4f}")
 
 if __name__ == '__main__':
     main()

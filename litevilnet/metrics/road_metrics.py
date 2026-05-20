@@ -1,5 +1,8 @@
 """
-评估指标 (修复版 - 移除双重sigmoid bug)
+Training-time fixed-threshold road segmentation metrics.
+
+RoadMetrics is only for debugging fixed-threshold behavior. Paper-grade
+KITTI-style MaxF/AP metrics should use BinarySegmentationMeter.
 """
 
 import torch
@@ -31,7 +34,7 @@ class RoadMetrics:
         self.fn = 0
         self.total_samples = 0
         
-        # 存储用于计算 MaxF 的数据
+        # Kept for backward compatibility with older checkpoints/log helpers.
         self.all_preds = []
         self.all_targets = []
     
@@ -85,10 +88,9 @@ class RoadMetrics:
         dice = 2 * self.tp / (2 * self.tp + self.fp + self.fn + eps)
         
         return {
-            'MaxF': f1,  # 注意：这里实际是 F1@threshold，不是真正的 MaxF
-            'AP': precision,
-            'PRE': precision,
-            'REC': recall,
+            'F1@0.5': f1,
+            'Precision': precision,
+            'Recall': recall,
             'F1': f1,
             'IoU': iou,
             'Dice': dice,

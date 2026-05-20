@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Fair PyTorch latency benchmark for VLLiNet presets."""
+"""Fair PyTorch latency benchmark for LiteViLNet presets."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from litevilnet.model_factory import MODEL_PRESETS, available_presets, build_mod
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Benchmark LiteViLNet presets in PyTorch")
-    parser.add_argument("--preset", default="vllinet_paper", choices=available_presets())
+    parser.add_argument("--preset", default="litevilnet_paper", choices=available_presets())
     parser.add_argument("--checkpoint", default="")
     parser.add_argument("--precision", default="fp16", choices=["fp32", "fp16"])
     parser.add_argument("--img_h", type=int, default=384)
@@ -59,6 +59,7 @@ def main() -> None:
     if not torch.cuda.is_available():
         raise SystemExit("CUDA is required for deployment latency benchmark")
 
+    torch.backends.cudnn.benchmark = True
     device = torch.device("cuda")
     checkpoint = args.checkpoint or MODEL_PRESETS[args.preset].get("checkpoint_hint", "")
     checkpoint = checkpoint if checkpoint and Path(checkpoint).exists() else None
@@ -142,6 +143,7 @@ def main() -> None:
         "fps": result["model_only"]["fps"] * args.batch_size,
         "parameters_M": metadata["parameters"] / 1e6,
         "memory_mb": result["cuda_max_memory_mb"],
+        "note": "model-only random tensors; preprocessing excluded",
     }
     append_csv(args.csv, row)
     print(json.dumps(result, indent=2, ensure_ascii=False))

@@ -15,7 +15,7 @@ from litevilnet.utils.common import append_csv, run_command, system_metadata, wr
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Benchmark TensorRT engine with trtexec")
     parser.add_argument("--engine", required=True)
-    parser.add_argument("--model", default="VLLiNet")
+    parser.add_argument("--model", default="LiteViLNet")
     parser.add_argument("--preset", default="")
     parser.add_argument("--precision", default="fp16", choices=["fp32", "fp16", "int8"])
     parser.add_argument("--warmup", type=int, default=500)
