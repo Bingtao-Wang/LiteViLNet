@@ -1,6 +1,22 @@
-# LiteViLNet
+# LiteViLNet: Lightweight Vision-LiDAR Fusion Network for Efficient Road Segmentation
+
+[![arXiv](https://img.shields.io/badge/arXiv-2605.21007-b31b1b)](https://arxiv.org/abs/2605.21007)
+[![Python](https://img.shields.io/badge/Python-3.10+-orange.svg)](https://www.python.org/)
 
 LiteViLNet is a clean research workspace derived from VLLiNet for efficient RGB-LiDAR road segmentation on KITTI Road and embedded platforms.
+
+![alt text](assets/litevilnet_arch.png "LiteViLNet Architecture")
+
+This repository implements the model from the paper "LiteViLNet: Lightweight Vision-LiDAR Fusion Network for Efficient Road Segmentation".
+
+LiteViLNet uses a dual-stream encoder with lightweight MobileNetV3 backbones for RGB and depth, multi-scale feature fusion modules (MSFM), a large-kernel bridge, and a compact decoder with deep supervision.
+
+Key highlights:
+
+- Dual-stream RGB + LiDAR/depth fusion at multiple scales.
+- Only 14.04M parameters for the paper model.
+- 96.36% MaxF on KITTI Road validation.
+- Measured speed: 163.79 FPS on RTX 4060 Ti FP16 and 22.18 FPS on Jetson Orin NX FP16 for 384x1248 inputs.
 
 The repository is intentionally small:
 
@@ -9,6 +25,10 @@ The repository is intentionally small:
 - KITTI/CARLA data is linked from the original VLLiNet data store via `data`.
 - Seed checkpoints are stored locally but ignored by Git.
 - External KITTI leaderboard models must stay in `other_models/` and connect through `other_models/adapters/`.
+
+
+![alt text](assets/litevilnet_results.png "LiteViLNet Results")
+
 
 ## Setup
 
@@ -96,3 +116,16 @@ MaxF / AP / PRE / REC / FPR / FNR / BestThreshold
 ```
 
 Training scripts select the best checkpoint by validation `MaxF`. These metrics are local image-space validation metrics unless they are produced by the KITTI Road official server or a compatible devkit protocol.
+
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@article{peng2026litevilnet,
+  title={LiteViLNet: Lightweight Vision-LiDAR Fusion Network for Efficient Road Segmentation},
+  author={Peng, Daojie and Wang, Bingtao and Ma, Fulong and Zhang, Liang and Ma, Jun},
+  journal={arXiv preprint arXiv:2605.21007},
+  year={2026}
+}
+```
