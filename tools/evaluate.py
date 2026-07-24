@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--checkpoint", default="")
     parser.add_argument("--data_root", default="data/kitti_road")
     parser.add_argument("--split", default="val", choices=["train", "val"])
+    parser.add_argument("--split_file", default="", help="Exact sample-id manifest for this split")
     parser.add_argument("--category", default="all")
     parser.add_argument("--img_h", type=int, default=384)
     parser.add_argument("--img_w", type=int, default=1248)
@@ -61,6 +62,8 @@ def main() -> None:
         img_w=args.img_w,
         use_augmentation=False,
         shuffle=False,
+        split_file=args.split_file or None,
+        seed=42,
     )
 
     meter = BinarySegmentationMeter(thresholds=args.thresholds)
@@ -86,6 +89,7 @@ def main() -> None:
         "precision": args.precision,
         "data_root": args.data_root,
         "split": args.split,
+        "split_file": args.split_file or None,
         "input_shape": [args.batch_size, 3, args.img_h, args.img_w],
         "parameters": metadata["parameters"],
         "metrics": metrics,

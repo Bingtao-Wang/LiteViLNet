@@ -3,6 +3,7 @@ KITTI Road Dataset
 """
 
 import os
+import random
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -21,7 +22,8 @@ class KITTIRoadDataset(Dataset):
     """KITTI Road 数据集"""
     
     def __init__(self, data_root, split='train', category='all',
-                 img_h=384, img_w=1248, use_augmentation=True):
+                 img_h=384, img_w=1248, use_augmentation=True,
+                 split_file=None):
         super().__init__()
         
         self.data_root = data_root
@@ -30,14 +32,30 @@ class KITTIRoadDataset(Dataset):
         self.img_h = img_h
         self.img_w = img_w
         self.use_augmentation = use_augmentation and split == 'train'
+        self.split_file = split_file
         
         self.image_dir = os.path.join(data_root, 'training', 'image_2')
         self.adi_dir = os.path.join(data_root, 'training', 'ADI')
         self.label_dir = os.path.join(data_root, 'training', 'gt_image_2')
         
         self.samples = self._collect_samples()
-        
-        if split == 'train':
+
+        if split_file:
+            with open(split_file, 'r', encoding='utf-8') as f:
+                selected = {
+                    line.strip().removesuffix('.png')
+                    for line in f
+                    if line.strip() and not line.lstrip().startswith('#')
+                }
+            sample_by_name = {sample['name']: sample for sample in self.samples}
+            missing = sorted(selected - set(sample_by_name))
+            if missing:
+                raise FileNotFoundError(
+                    f"{len(missing)} entries from split file are unavailable; "
+                    f"first missing entries: {missing[:5]}"
+                )
+            self.samples = [sample_by_name[name] for name in sorted(selected)]
+        elif split == 'train':
             self.samples = self.samples[:int(len(self.samples) * 0.8)]
         else:
             self.samples = self.samples[int(len(self.samples) * 0.8):]
@@ -152,9 +170,17 @@ class SyntheticDataset(Dataset):
         }
 
 
+def _seed_worker(worker_id):
+    """Seed Python and NumPy from PyTorch's deterministic worker seed."""
+    worker_seed = torch.initial_seed() % (2 ** 32)
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
+
+
 def get_dataloader(data_root, split='train', category='all', batch_size=4,
                    num_workers=4, img_h=384, img_w=1248, use_augmentation=True,
-                   use_synthetic=False, shuffle=None):
+                   use_synthetic=False, shuffle=None, split_file=None,
+                   seed=42, drop_last=None):
     """获取数据加载器"""
     
     if use_synthetic:
@@ -165,13 +191,22 @@ def get_dataloader(data_root, split='train', category='all', batch_size=4,
     else:
         dataset = KITTIRoadDataset(
             data_root=data_root, split=split, category=category,
-            img_h=img_h, img_w=img_w, use_augmentation=use_augmentation
+            img_h=img_h, img_w=img_w, use_augmentation=use_augmentation,
+            split_file=split_file,
         )
     
     if shuffle is None:
         shuffle = (split == 'train')
+    if drop_last is None:
+        # Preserve the historical public-loader behavior for callers that do
+        # not opt into an explicit revision protocol.
+        drop_last = (split == 'train')
     
+    generator = torch.Generator()
+    generator.manual_seed(seed)
+
     return DataLoader(
         dataset, batch_size=batch_size, shuffle=shuffle,
-        num_workers=num_workers, pin_memory=True, drop_last=(split == 'train')
+        num_workers=num_workers, pin_memory=True, drop_last=drop_last,
+        worker_init_fn=_seed_worker, generator=generator,
     )

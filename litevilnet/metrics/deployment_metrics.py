@@ -12,8 +12,13 @@ class BinarySegmentationMeter:
     def __init__(self, thresholds: int = 101, max_pixels: int = 8_000_000):
         self.threshold_values = torch.linspace(0.0, 1.0, thresholds)
         self.max_pixels = max_pixels
-        self._preds: list[torch.Tensor] = []
-        self._targets: list[torch.Tensor] = []
+        # Bin predictions once during update instead of materializing one
+        # full-resolution Boolean mask per threshold during compute().  Bin k
+        # contains scores for which exactly k thresholds are strictly lower;
+        # therefore reverse cumulative sums reproduce `prediction > threshold`
+        # exactly, including scores equal to a threshold.
+        self._positive_hist = torch.zeros(thresholds + 1, dtype=torch.int64)
+        self._negative_hist = torch.zeros(thresholds + 1, dtype=torch.int64)
         self._count = 0
 
     def update(self, logits_or_probs: torch.Tensor, target: torch.Tensor, input_type: str = "logits") -> None:
@@ -29,19 +34,24 @@ class BinarySegmentationMeter:
 
         probs = torch.sigmoid(logits_or_probs) if input_type == "logits" else logits_or_probs
         probs = probs.detach().float().cpu().reshape(-1)
-        target = target.detach().float().cpu().reshape(-1)
+        target = target.detach().bool().cpu().reshape(-1)
 
         if probs.numel() > self.max_pixels:
             stride = max(1, probs.numel() // self.max_pixels)
             probs = probs[::stride]
             target = target[::stride]
 
-        self._preds.append(probs)
-        self._targets.append(target)
+        bucket = torch.bucketize(probs, self.threshold_values, right=False)
+        self._positive_hist += torch.bincount(
+            bucket[target], minlength=len(self.threshold_values) + 1
+        )
+        self._negative_hist += torch.bincount(
+            bucket[~target], minlength=len(self.threshold_values) + 1
+        )
         self._count += int(target.numel())
 
     def compute(self) -> dict[str, float]:
-        if not self._preds:
+        if self._count == 0:
             return {
                 "MaxF": 0.0,
                 "AP": 0.0,
@@ -55,9 +65,17 @@ class BinarySegmentationMeter:
                 "IoU": 0.0,
             }
 
-        preds = torch.cat(self._preds)
-        targets = torch.cat(self._targets).bool()
-        thresholds = self.threshold_values.to(preds.device)
+        thresholds = self.threshold_values
+        tp_by_threshold = torch.flip(
+            torch.cumsum(torch.flip(self._positive_hist[1:], dims=[0]), dim=0),
+            dims=[0],
+        )
+        fp_by_threshold = torch.flip(
+            torch.cumsum(torch.flip(self._negative_hist[1:], dims=[0]), dim=0),
+            dims=[0],
+        )
+        total_positive = int(self._positive_hist.sum().item())
+        total_negative = int(self._negative_hist.sum().item())
 
         best = {
             "MaxF": -1.0,
@@ -70,12 +88,11 @@ class BinarySegmentationMeter:
         }
         curve: list[tuple[float, float]] = []
         eps = 1e-7
-        for threshold in thresholds:
-            binary = preds > threshold
-            tp = (binary & targets).sum().item()
-            fp = (binary & ~targets).sum().item()
-            tn = (~binary & ~targets).sum().item()
-            fn = (~binary & targets).sum().item()
+        for index, threshold in enumerate(thresholds):
+            tp = int(tp_by_threshold[index].item())
+            fp = int(fp_by_threshold[index].item())
+            tn = total_negative - fp
+            fn = total_positive - tp
             precision = tp / (tp + fp + eps)
             recall = tp / (tp + fn + eps)
             fpr = fp / (fp + tn + eps)

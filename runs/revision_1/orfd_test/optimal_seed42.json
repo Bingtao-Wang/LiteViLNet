@@ -1,0 +1,58 @@
+{
+  "dataset": "ORFD",
+  "partition": "test",
+  "config": "optimal",
+  "checkpoint": "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/optimal/seed_42/best_model.pth",
+  "checkpoint_sha256": "2fca0a100ba9be520d0bbe3e08d97e9e6e4de3758b30dba08cbf5e7f2ec2510e",
+  "checkpoint_epoch": 9,
+  "checkpoint_best_metric": 0.9046324693877849,
+  "strict_checkpoint_load": true,
+  "samples": 2193,
+  "input_shape_per_modality": [
+    8,
+    3,
+    704,
+    1280
+  ],
+  "precision": "fp16",
+  "thresholds": 101,
+  "parameters": 3680260,
+  "metrics": {
+    "MaxF": 0.9678123880839165,
+    "BestThreshold": 0.429999977350235,
+    "PRE": 0.9723169587704414,
+    "REC": 0.9633494617450558,
+    "FPR": 0.010491454720698103,
+    "FNR": 0.03665053825494399,
+    "IoU": 0.9376323391121383,
+    "AP": 0.9735595003353636,
+    "Precision": 0.9723169587704414,
+    "Recall": 0.9633494617450558
+  },
+  "official_metrics": {
+    "GlobalAcc": 0.9822136950508562,
+    "PRE": 0.9741597632446958,
+    "REC": 0.9612120931867248,
+    "F_score": 0.9676426181506941,
+    "IoU": 0.9373136039559121,
+    "threshold": 0.5,
+    "tp": 537499977,
+    "fp": 14257545,
+    "tn": 1447621477,
+    "fn": 21689801
+  },
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_model": "AMD Ryzen 9 9950X 16-Core Processor",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-24 12:10:12",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_total_memory_mb": 48508.0625,
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  }
+}

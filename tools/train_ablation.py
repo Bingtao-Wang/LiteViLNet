@@ -29,11 +29,12 @@ from litevilnet.models.losses import VLLiNetLoss
 
 # 导入工具库
 from litevilnet.data import (
-    get_dataloader, AverageMeter,
+    get_dataloader, get_orfd_dataloader, AverageMeter,
     print_metrics, set_seed, get_lr, EarlyStopping,
     save_checkpoint
 )
 from litevilnet.metrics.deployment_metrics import BinarySegmentationMeter
+from litevilnet.utils.common import system_metadata
 
 
 def parse_args():
@@ -48,10 +49,13 @@ def parse_args():
 
     # --- 数据配置 ---
     parser.add_argument('--data_root', type=str, default='data/kitti_road')
+    parser.add_argument('--dataset', type=str, choices=['kitti', 'orfd'], default='kitti')
     parser.add_argument('--category', type=str, default='all')
     parser.add_argument('--img_h', type=int, default=384)
     parser.add_argument('--img_w', type=int, default=1248)
     parser.add_argument('--use_synthetic', action='store_true')
+    parser.add_argument('--train_split_file', type=str, default='')
+    parser.add_argument('--val_split_file', type=str, default='')
 
     # --- 训练超参数 ---
     parser.add_argument('--epochs', type=int, default=100,
@@ -64,6 +68,14 @@ def parse_args():
     parser.add_argument('--amp', action='store_true')
     parser.add_argument('--num_workers', type=int, default=4)
     parser.add_argument('--accumulate_grad_batches', type=int, default=8)
+    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--no_pretrained', action='store_true')
+    parser.add_argument(
+        '--skip_train_metrics', action='store_true',
+        help='Skip the expensive full-resolution threshold sweep on the training set; validation metrics are unchanged.',
+    )
+    parser.add_argument('--drop_last', action='store_true', help='Drop the final incomplete training batch')
+    parser.add_argument('--deterministic', action='store_true')
 
     # --- 路径配置 ---
     parser.add_argument('--save_dir', type=str, default='runs/train/ablation_results')
@@ -112,7 +124,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
 
         # 前向传播 (AMP)
         if scaler is not None:
-            with torch.cuda.amp.autocast():
+            with torch.amp.autocast(device_type='cuda'):
                 output = model(rgb, adi, return_aux=True)
                 if isinstance(output, tuple):
                     out, aux_outputs = output
@@ -152,17 +164,18 @@ def train_epoch(model, dataloader, criterion, optimizer, device, scaler=None, ar
         pbar.set_postfix({'loss': f"{loss_val:.4f}"})
 
         # 计算指标
-        with torch.no_grad():
-            if isinstance(out, tuple):
-                out = out[0]
-            out_prob = torch.sigmoid(out)
-            if out_prob.shape[-2:] != label.shape[-2:]:
-                out_resized = F.interpolate(out_prob, size=label.shape[-2:], mode='nearest')
-            else:
-                out_resized = out_prob
-            metrics.update(out_resized, label, input_type="prob")
+        if not args.skip_train_metrics:
+            with torch.no_grad():
+                if isinstance(out, tuple):
+                    out = out[0]
+                out_prob = torch.sigmoid(out)
+                if out_prob.shape[-2:] != label.shape[-2:]:
+                    out_resized = F.interpolate(out_prob, size=label.shape[-2:], mode='nearest')
+                else:
+                    out_resized = out_prob
+                metrics.update(out_resized, label, input_type="prob")
 
-    return loss_meter.avg, metrics.compute()
+    return loss_meter.avg, None if args.skip_train_metrics else metrics.compute()
 
 
 def validate(model, dataloader, device, desc="Validating"):
@@ -199,19 +212,22 @@ def train_single_config(config_name, args):
     """训练单个消融配置"""
 
     # 设置日志
-    logger = setup_logging(args.log_dir, config_name)
+    logger = setup_logging(args.log_dir, os.path.join(config_name, f'seed_{args.seed}'))
     logger.info("=" * 80)
     logger.info(f"Ablation Study: {config_name}")
     logger.info("=" * 80)
 
-    set_seed(42)
+    set_seed(args.seed)
+    torch.backends.cudnn.deterministic = args.deterministic
+    torch.backends.cudnn.benchmark = not args.deterministic
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # 1. 初始化模型
-    model = get_ablation_model(config_name, pretrained=True).to(device)
+    model = get_ablation_model(config_name, pretrained=not args.no_pretrained).to(device)
     params = count_parameters(model)
     logger.info(f"Model: {config_name}")
     logger.info(f"Parameters: {params/1e6:.2f}M")
+    logger.info(f"Seed: {args.seed}")
 
     # 打印模型配置
     logger.info(f"Config:")
@@ -221,35 +237,56 @@ def train_single_config(config_name, args):
     logger.info(f"  - use_deep_supervision: {model.use_deep_supervision}")
 
     # 2. 数据加载
-    train_loader = get_dataloader(
-        data_root=args.data_root, split='train', category=args.category,
-        batch_size=args.batch_size, num_workers=args.num_workers,
-        img_h=args.img_h, img_w=args.img_w, use_augmentation=True,
-        use_synthetic=args.use_synthetic
-    )
-    val_loader = get_dataloader(
-        data_root=args.data_root, split='val', category=args.category,
-        batch_size=args.batch_size, num_workers=args.num_workers,
-        img_h=args.img_h, img_w=args.img_w, use_augmentation=False,
-        use_synthetic=args.use_synthetic
-    )
+    if args.dataset == 'orfd':
+        if args.use_synthetic:
+            raise ValueError('--use_synthetic is only supported for the KITTI loader')
+        train_loader = get_orfd_dataloader(
+            data_root=args.data_root, split='train', batch_size=args.batch_size,
+            num_workers=args.num_workers, img_h=args.img_h, img_w=args.img_w,
+            use_augmentation=True, seed=args.seed, drop_last=args.drop_last,
+        )
+        val_loader = get_orfd_dataloader(
+            data_root=args.data_root, split='val', batch_size=args.batch_size,
+            num_workers=args.num_workers, img_h=args.img_h, img_w=args.img_w,
+            use_augmentation=False, seed=args.seed, drop_last=False, shuffle=False,
+        )
+    else:
+        train_loader = get_dataloader(
+            data_root=args.data_root, split='train', category=args.category,
+            batch_size=args.batch_size, num_workers=args.num_workers,
+            img_h=args.img_h, img_w=args.img_w, use_augmentation=True,
+            use_synthetic=args.use_synthetic,
+            split_file=args.train_split_file or None,
+            seed=args.seed,
+            drop_last=args.drop_last,
+        )
+        val_loader = get_dataloader(
+            data_root=args.data_root, split='val', category=args.category,
+            batch_size=args.batch_size, num_workers=args.num_workers,
+            img_h=args.img_h, img_w=args.img_w, use_augmentation=False,
+            use_synthetic=args.use_synthetic,
+            split_file=args.val_split_file or None,
+            seed=args.seed,
+            drop_last=False,
+        )
 
     # 3. 损失与优化
     criterion = VLLiNetLoss(use_deep_supervision=model.use_deep_supervision).to(device)
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
-    scaler = torch.cuda.amp.GradScaler() if args.amp and torch.cuda.is_available() else None
+    scaler = torch.amp.GradScaler('cuda') if args.amp and torch.cuda.is_available() else None
     early_stopping = EarlyStopping(patience=args.patience, mode='max')
 
     best_metric = 0.0
     best_epoch = 0
 
     # 保存目录
-    config_save_dir = os.path.join(args.save_dir, config_name)
+    config_save_dir = os.path.join(args.save_dir, config_name, f'seed_{args.seed}')
     os.makedirs(config_save_dir, exist_ok=True)
 
     # 4. 训练主循环
     logger.info("Starting training...")
+    best_val_metrics = None
     for epoch in range(args.epochs):
         logger.info(f"\n{'='*40} Epoch {epoch + 1}/{args.epochs} {'='*40}")
 
@@ -262,17 +299,20 @@ def train_single_config(config_name, args):
         scheduler.step()
 
         # 日志输出
-        logger.info(
-            "Train Loss: %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
-            train_loss,
-            train_metrics["MaxF"],
-            train_metrics["AP"],
-            train_metrics["PRE"],
-            train_metrics["REC"],
-            train_metrics["FPR"],
-            train_metrics["FNR"],
-            train_metrics["BestThreshold"],
-        )
+        if train_metrics is None:
+            logger.info("Train Loss: %.4f | threshold sweep skipped", train_loss)
+        else:
+            logger.info(
+                "Train Loss: %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
+                train_loss,
+                train_metrics["MaxF"],
+                train_metrics["AP"],
+                train_metrics["PRE"],
+                train_metrics["REC"],
+                train_metrics["FPR"],
+                train_metrics["FNR"],
+                train_metrics["BestThreshold"],
+            )
         logger.info(
             "Val   Loss: %.4f | MaxF %.4f | AP %.4f | PRE %.4f | REC %.4f | FPR %.4f | FNR %.4f | BestThreshold %.2f",
             val_loss,
@@ -292,6 +332,7 @@ def train_single_config(config_name, args):
         if is_best:
             best_metric = current_metric
             best_epoch = epoch + 1
+            best_val_metrics = dict(val_metrics)
             save_checkpoint(
                 model,
                 optimizer,
@@ -313,6 +354,7 @@ def train_single_config(config_name, args):
     # 返回结果
     return {
         'config': config_name,
+        'seed': args.seed,
         'best_maxf': float(best_metric),
         'best_epoch': best_epoch,
         'params': params,
@@ -320,6 +362,29 @@ def train_single_config(config_name, args):
         'use_multiscale_fusion': model.use_multiscale_fusion,
         'use_bridge': model.use_bridge,
         'use_deep_supervision': model.use_deep_supervision,
+        'best_val_metrics': best_val_metrics,
+        'data_root': args.data_root,
+        'dataset': args.dataset,
+        'train_split_file': args.train_split_file or None,
+        'val_split_file': args.val_split_file or None,
+        'epochs_requested': args.epochs,
+        'epochs_completed': epoch + 1,
+        'train_samples': len(train_loader.dataset),
+        'val_samples': len(val_loader.dataset),
+        'image_height': args.img_h,
+        'image_width': args.img_w,
+        'batch_size': args.batch_size,
+        'accumulate_grad_batches': args.accumulate_grad_batches,
+        'learning_rate': args.lr,
+        'weight_decay': args.weight_decay,
+        'patience': args.patience,
+        'amp': bool(args.amp and torch.cuda.is_available()),
+        'num_workers': args.num_workers,
+        'drop_last': args.drop_last,
+        'deterministic': args.deterministic,
+        'pretrained_rgb_encoder': not args.no_pretrained,
+        'geometry_input': 'ORFD dense-depth depth3' if args.dataset == 'orfd' else 'KITTI LiDAR-derived ADI',
+        'system': system_metadata(),
     }
 
 
@@ -378,7 +443,7 @@ def main():
         result = train_single_config(args.config, args)
 
         # 保存单个结果
-        result_path = os.path.join(args.save_dir, args.config, 'result.json')
+        result_path = os.path.join(args.save_dir, args.config, f'seed_{args.seed}', 'result.json')
         with open(result_path, 'w') as f:
             json.dump(result, f, indent=2)
 

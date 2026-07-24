@@ -1,0 +1,102 @@
+{
+  "protocol": {
+    "pipeline": "PNG decode + RGB normalization + aligned-depth depth3 encoding + pinned H2D + model + sigmoid/resize/threshold/D2H",
+    "geometry_representation": "depth3=[clipped normalized depth, valid mask, inverse depth], mapped to [-1,1]; not ADI",
+    "input_shape_per_modality": [
+      1,
+      3,
+      384,
+      608
+    ],
+    "precision": "fp16",
+    "batch_size": 1,
+    "warmup": 30,
+    "iterations": 200,
+    "disk_note": "real PNG files; warm-up makes later reads eligible for the operating-system page cache"
+  },
+  "data_root": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/robot_road_raw",
+  "session": "wheeled_dorm_path_20260509_172746",
+  "paired_frames": 369,
+  "checkpoint": "/data/Database/Research04-LiteViLNet/LiteViLNet/output/3.0_litevilnet_rgbdepth_robot_path_wheeled_dorm_path_20260509_172746_seed18_full_smoke/best_model.pth",
+  "checkpoint_sha256": "ec0b114e004e8a25926b379d510c06cbfd035e898c2695dc85b795378511ebda",
+  "parameters": 14035153,
+  "timing": {
+    "decode_and_depth3": {
+      "n": 200,
+      "mean_ms": 105.96282719990995,
+      "sample_std_ms": 18.161245565494312,
+      "p50_ms": 105.42153900314588,
+      "p95_ms": 137.60739099961938,
+      "min_ms": 60.84892099897843,
+      "max_ms": 157.4310180003522,
+      "fps": 9.437271790732758,
+      "trimmed_mean_ms": 105.84464007770293,
+      "trimmed_fps": 9.447809537316934
+    },
+    "host_to_device": {
+      "n": 200,
+      "mean_ms": 1.2516735982894898,
+      "sample_std_ms": 1.4444252442680277,
+      "p50_ms": 0.8449599742889404,
+      "p95_ms": 3.9389760494232178,
+      "min_ms": 0.4596799910068512,
+      "max_ms": 14.330944061279297,
+      "fps": 798.9303292540312,
+      "trimmed_mean_ms": 1.0184922675291697,
+      "trimmed_fps": 981.8434875563353
+    },
+    "model": {
+      "n": 200,
+      "mean_ms": 8.902336964607239,
+      "sample_std_ms": 1.9153012408861552,
+      "p50_ms": 9.071840286254883,
+      "p95_ms": 11.717568397521973,
+      "min_ms": 4.078752040863037,
+      "max_ms": 13.300736427307129,
+      "fps": 112.33005490307443,
+      "trimmed_mean_ms": 8.917517688539293,
+      "trimmed_fps": 112.13882998911123
+    },
+    "postprocess": {
+      "n": 200,
+      "mean_ms": 0.6013127700862242,
+      "sample_std_ms": 0.6191257458573034,
+      "p50_ms": 0.4322970053181052,
+      "p95_ms": 2.547463998780586,
+      "min_ms": 0.1940629954333417,
+      "max_ms": 2.6876159972744063,
+      "fps": 1663.0280442183305,
+      "trimmed_mean_ms": 0.5116052611507863,
+      "trimmed_fps": 1954.6319710447
+    },
+    "end_to_end": {
+      "n": 200,
+      "mean_ms": 117.12497295538924,
+      "sample_std_ms": 18.793172542153854,
+      "p50_ms": 117.0799329993315,
+      "p95_ms": 149.747021998337,
+      "min_ms": 67.77108099777251,
+      "max_ms": 172.0590010008891,
+      "fps": 8.537888844430142,
+      "trimmed_mean_ms": 116.96114860032039,
+      "trimmed_fps": 8.549847637160266
+    }
+  },
+  "cuda_peak_allocated_mb": 61.55712890625,
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-23 23:43:33",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  },
+  "nvidia_compute_processes_before": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 106842, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 670284, python, 510\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 106843, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 658283, python, 1282",
+  "nvidia_compute_processes_after": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 106842, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 670284, python, 510\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 106843, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 658283, python, 1282",
+  "power_measurement": null,
+  "navigation_metrics": null
+}

@@ -1,0 +1,168 @@
+{
+  "protocol": {
+    "pipeline": "real PNG/BIN/calibration load + PLARD ADI + tensor normalization + pinned H2D + PyTorch model + sigmoid/resize/threshold/D2H",
+    "adi": "nearest duplicate projection; 21x21 inverse-distance interpolation; 7x7 altitude-gradient average; per-image sqrt/Gaussian/clip normalization",
+    "input_shape_per_modality": [
+      1,
+      3,
+      384,
+      1248
+    ],
+    "precision": "fp16",
+    "batch_size": 1,
+    "warmup": 5,
+    "iterations": 58,
+    "split_file": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "disk_note": "real files; timed samples follow warm-up and may use the operating-system page cache"
+  },
+  "data_root": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road",
+  "velodyne_root": "/data/Database/Research04-LiteViLNet/datasets/KITTI_Road/velodyne_extracted",
+  "checkpoint": "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/full/seed_42/best_model.pth",
+  "checkpoint_sha256": "1a9a3001601caa5f00d8a87bb21254aef3213eea0f68be448c557fed7b2bcf70",
+  "parameters": 14035153,
+  "timing": {
+    "disk_and_calibration": {
+      "n": 58,
+      "mean_ms": 88.44250677567946,
+      "sample_std_ms": 20.036697870238697,
+      "p50_ms": 87.45017299952451,
+      "p95_ms": 121.52687699563103,
+      "min_ms": 49.333183000271674,
+      "max_ms": 134.10457500140183,
+      "fps": 11.306780375824749,
+      "trimmed_mean_ms": 88.25426598128549,
+      "trimmed_fps": 11.330897026689364
+    },
+    "projection": {
+      "n": 58,
+      "mean_ms": 4.779477689790555,
+      "sample_std_ms": 1.2616528042304618,
+      "p50_ms": 4.36965699918801,
+      "p95_ms": 7.093774001987185,
+      "min_ms": 2.7111269955639727,
+      "max_ms": 7.769085998006631,
+      "fps": 209.2278832342079,
+      "trimmed_mean_ms": 4.752297889084461,
+      "trimmed_fps": 210.42451953546453
+    },
+    "interpolation": {
+      "n": 58,
+      "mean_ms": 10.462588155295917,
+      "sample_std_ms": 2.1044133318970015,
+      "p50_ms": 9.977995003282558,
+      "p95_ms": 14.523925005050842,
+      "min_ms": 6.665287000942044,
+      "max_ms": 16.71988299494842,
+      "fps": 95.57864508829238,
+      "trimmed_mean_ms": 10.390831685476265,
+      "trimmed_fps": 96.23868716858779
+    },
+    "gradient_and_normalization": {
+      "n": 58,
+      "mean_ms": 167.7943154313182,
+      "sample_std_ms": 47.95523052341734,
+      "p50_ms": 166.47878300136654,
+      "p95_ms": 249.72930700459983,
+      "min_ms": 88.48386899626348,
+      "max_ms": 260.9180339932209,
+      "fps": 5.959677462430611,
+      "trimmed_mean_ms": 167.42721690779607,
+      "trimmed_fps": 5.9727445660803795
+    },
+    "tensor_preparation": {
+      "n": 58,
+      "mean_ms": 13.945066999816657,
+      "sample_std_ms": 3.7153302330373124,
+      "p50_ms": 13.251912001578603,
+      "p95_ms": 20.39508800226031,
+      "min_ms": 7.819947997631971,
+      "max_ms": 23.64761300123064,
+      "fps": 71.70994589076894,
+      "trimmed_mean_ms": 13.850956296125704,
+      "trimmed_fps": 72.1971810913672
+    },
+    "cpu_preprocess_total": {
+      "n": 58,
+      "mean_ms": 285.4239550519008,
+      "sample_std_ms": 53.478428045433304,
+      "p50_ms": 284.62384500016924,
+      "p95_ms": 362.0017880020896,
+      "min_ms": 162.84986999380635,
+      "max_ms": 409.28885299217654,
+      "fps": 3.503560168305293,
+      "trimmed_mean_ms": 286.06226246335643,
+      "trimmed_fps": 3.4957424701487723
+    },
+    "host_to_device": {
+      "n": 58,
+      "mean_ms": 0.9621787636444487,
+      "sample_std_ms": 0.9596773412212761,
+      "p50_ms": 0.6620479822158813,
+      "p95_ms": 3.603584051132202,
+      "min_ms": 0.49779200553894043,
+      "max_ms": 4.718944072723389,
+      "fps": 1039.30791011464,
+      "trimmed_mean_ms": 0.8459087411562601,
+      "trimmed_fps": 1182.1606177436054
+    },
+    "model": {
+      "n": 58,
+      "mean_ms": 9.36540467163612,
+      "sample_std_ms": 2.0183458582878364,
+      "p50_ms": 9.42796802520752,
+      "p95_ms": 12.266495704650879,
+      "min_ms": 5.601151943206787,
+      "max_ms": 15.848416328430176,
+      "fps": 106.77595203425435,
+      "trimmed_mean_ms": 9.321300126888135,
+      "trimmed_fps": 107.28117176652314
+    },
+    "postprocess": {
+      "n": 58,
+      "mean_ms": 0.48654231030578277,
+      "sample_std_ms": 0.6079187984838423,
+      "p50_ms": 0.3037749993382022,
+      "p95_ms": 2.3837820044718683,
+      "min_ms": 0.1482619991293177,
+      "max_ms": 2.473872998962179,
+      "fps": 2055.319709752516,
+      "trimmed_mean_ms": 0.4261217222342061,
+      "trimmed_fps": 2346.7472973611457
+    },
+    "end_to_end": {
+      "n": 58,
+      "mean_ms": 296.6871976552346,
+      "sample_std_ms": 53.818184579593236,
+      "p50_ms": 296.76313899835804,
+      "p95_ms": 373.2793550007045,
+      "min_ms": 169.68901899963384,
+      "max_ms": 422.33189200487686,
+      "fps": 3.3705532557628257,
+      "trimmed_mean_ms": 297.2307079072817,
+      "trimmed_fps": 3.364389928082197
+    }
+  },
+  "generated_vs_stored_adi_mae": {
+    "count": 58,
+    "mean": 0.37507500371028635,
+    "sample_std": 0.029822124102879075,
+    "p95": 0.42689833641052244,
+    "note": "diagnostic only; stored ADIs may reflect release-code indexing/encoding details"
+  },
+  "cuda_peak_allocated_mb": 90.61376953125,
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-23 23:42:52",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  },
+  "nvidia_compute_processes_before": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 106842, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 668192, python, 544\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 106843, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 658283, python, 1282",
+  "nvidia_compute_processes_after": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 106842, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 668192, python, 544\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 106843, /home/aihub/miniconda3/envs/driveoccworld/bin/python, 15030\nGPU-6aeaa7e5-cf36-d53d-e5a3-6670db24b143, 658283, python, 1282",
+  "power_measurement": null
+}

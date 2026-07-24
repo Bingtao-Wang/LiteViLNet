@@ -1,0 +1,550 @@
+{
+  "groups": [
+    {
+      "dataset": "orfd",
+      "config": "add_fusion",
+      "seeds": [
+        42
+      ],
+      "parameters": 13780574,
+      "protocol": {
+        "data_root": "/dev/shm/litevilnet_orfd/Final_Dataset",
+        "train_split_file": null,
+        "val_split_file": null,
+        "train_samples": 8392,
+        "val_samples": 1245,
+        "image_height": 704,
+        "image_width": 1280,
+        "batch_size": 8,
+        "accumulate_grad_batches": 1,
+        "learning_rate": 0.0002,
+        "weight_decay": 0.0005,
+        "drop_last": true,
+        "deterministic": true
+      },
+      "metrics": {
+        "MaxF": {
+          "n": 1,
+          "mean": 0.8979979760385813,
+          "sample_std": 0.0,
+          "min": 0.8979979760385813,
+          "max": 0.8979979760385813
+        },
+        "AP": {
+          "n": 1,
+          "mean": 0.8958135474428203,
+          "sample_std": 0.0,
+          "min": 0.8958135474428203,
+          "max": 0.8958135474428203
+        },
+        "PRE": {
+          "n": 1,
+          "mean": 0.9118295782517749,
+          "sample_std": 0.0,
+          "min": 0.9118295782517749,
+          "max": 0.9118295782517749
+        },
+        "REC": {
+          "n": 1,
+          "mean": 0.8845798255801363,
+          "sample_std": 0.0,
+          "min": 0.8845798255801363,
+          "max": 0.8845798255801363
+        },
+        "FPR": {
+          "n": 1,
+          "mean": 0.03797004056522762,
+          "sample_std": 0.0,
+          "min": 0.03797004056522762,
+          "max": 0.03797004056522762
+        },
+        "FNR": {
+          "n": 1,
+          "mean": 0.11542017441986345,
+          "sample_std": 0.0,
+          "min": 0.11542017441986345,
+          "max": 0.11542017441986345
+        },
+        "IoU": {
+          "n": 1,
+          "mean": 0.8148787817408535,
+          "sample_std": 0.0,
+          "min": 0.8148787817408535,
+          "max": 0.8148787817408535
+        },
+        "BestThreshold": {
+          "n": 1,
+          "mean": 0.009999999776482582,
+          "sample_std": 0.0,
+          "min": 0.009999999776482582,
+          "max": 0.009999999776482582
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/add_fusion/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "orfd",
+      "config": "add_lidar",
+      "seeds": [
+        42
+      ],
+      "parameters": 3425681,
+      "protocol": {
+        "data_root": "/dev/shm/litevilnet_orfd/Final_Dataset",
+        "train_split_file": null,
+        "val_split_file": null,
+        "train_samples": 8392,
+        "val_samples": 1245,
+        "image_height": 704,
+        "image_width": 1280,
+        "batch_size": 8,
+        "accumulate_grad_batches": 1,
+        "learning_rate": 0.0002,
+        "weight_decay": 0.0005,
+        "drop_last": true,
+        "deterministic": true
+      },
+      "metrics": {
+        "MaxF": {
+          "n": 1,
+          "mean": 0.9025401920231064,
+          "sample_std": 0.0,
+          "min": 0.9025401920231064,
+          "max": 0.9025401920231064
+        },
+        "AP": {
+          "n": 1,
+          "mean": 0.9473388069771392,
+          "sample_std": 0.0,
+          "min": 0.9473388069771392,
+          "max": 0.9473388069771392
+        },
+        "PRE": {
+          "n": 1,
+          "mean": 0.9003349335864861,
+          "sample_std": 0.0,
+          "min": 0.9003349335864861,
+          "max": 0.9003349335864861
+        },
+        "REC": {
+          "n": 1,
+          "mean": 0.9047563804889144,
+          "sample_std": 0.0,
+          "min": 0.9047563804889144,
+          "max": 0.9047563804889144
+        },
+        "FPR": {
+          "n": 1,
+          "mean": 0.04445957452048632,
+          "sample_std": 0.0,
+          "min": 0.04445957452048632,
+          "max": 0.04445957452048632
+        },
+        "FNR": {
+          "n": 1,
+          "mean": 0.09524361951108526,
+          "sample_std": 0.0,
+          "min": 0.09524361951108526,
+          "max": 0.09524361951108526
+        },
+        "IoU": {
+          "n": 1,
+          "mean": 0.8223902839830208,
+          "sample_std": 0.0,
+          "min": 0.8223902839830208,
+          "max": 0.8223902839830208
+        },
+        "BestThreshold": {
+          "n": 1,
+          "mean": 0.26999998092651367,
+          "sample_std": 0.0,
+          "min": 0.26999998092651367,
+          "max": 0.26999998092651367
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/add_lidar/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "orfd",
+      "config": "full",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 14035153,
+      "protocol": {
+        "data_root": "/dev/shm/litevilnet_orfd/Final_Dataset",
+        "train_split_file": null,
+        "val_split_file": null,
+        "train_samples": 8392,
+        "val_samples": 1245,
+        "image_height": 704,
+        "image_width": 1280,
+        "batch_size": 8,
+        "accumulate_grad_batches": 1,
+        "learning_rate": 0.0002,
+        "weight_decay": 0.0005,
+        "drop_last": true,
+        "deterministic": true
+      },
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.8904892814828855,
+          "sample_std": 0.015362862627914347,
+          "min": 0.873014875626622,
+          "max": 0.901872500870169
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9069472596068272,
+          "sample_std": 0.017300500085085647,
+          "min": 0.8873197980890698,
+          "max": 0.919982693171795
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.8769510486468732,
+          "sample_std": 0.028035472930933072,
+          "min": 0.8446606850447453,
+          "max": 0.8950929918991022
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9047413089556388,
+          "sample_std": 0.003528680114346689,
+          "min": 0.9021294107893125,
+          "max": 0.9087555922733346
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.056655839635366134,
+          "sample_std": 0.01482467904322324,
+          "min": 0.04728008291098169,
+          "max": 0.07374704408850881
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.09525869104436095,
+          "sample_std": 0.003528680114346691,
+          "min": 0.09124440772666509,
+          "max": 0.09787058921068717
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.8028253047240038,
+          "sample_std": 0.02479138808491872,
+          "min": 0.7746463953944008,
+          "max": 0.8212822214576228
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.016666666294137638,
+          "sample_std": 0.005773502562848416,
+          "min": 0.009999999776482582,
+          "max": 0.019999999552965164
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/full/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/full/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/full/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "orfd",
+      "config": "optimal",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 3680260,
+      "protocol": {
+        "data_root": "/dev/shm/litevilnet_orfd/Final_Dataset",
+        "train_split_file": null,
+        "val_split_file": null,
+        "train_samples": 8392,
+        "val_samples": 1245,
+        "image_height": 704,
+        "image_width": 1280,
+        "batch_size": 8,
+        "accumulate_grad_batches": 1,
+        "learning_rate": 0.0002,
+        "weight_decay": 0.0005,
+        "drop_last": true,
+        "deterministic": true
+      },
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9039914303883881,
+          "sample_std": 0.0013500210205301556,
+          "min": 0.902440318142566,
+          "max": 0.9049015036348137
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9003179509079352,
+          "sample_std": 0.004383922761053701,
+          "min": 0.8962394015813641,
+          "max": 0.9049539264238277
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9086792394918736,
+          "sample_std": 0.006751486077599432,
+          "min": 0.9016218911442283,
+          "max": 0.9150763522620428
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.8994426024154029,
+          "sample_std": 0.009040003280163028,
+          "min": 0.8901486029793284,
+          "max": 0.9082051628688739
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.040163994829351735,
+          "sample_std": 0.003670565369059336,
+          "min": 0.036671494635915666,
+          "max": 0.04398987997282063
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.1005573975845969,
+          "sample_std": 0.009040003280163016,
+          "min": 0.09179483713112581,
+          "max": 0.10985139702067125
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.824805177893842,
+          "sample_std": 0.002246198460635744,
+          "min": 0.8222244531697659,
+          "max": 0.8263198223293252
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.009999999776482582,
+          "sample_std": 0.0,
+          "min": 0.009999999776482582,
+          "max": 0.009999999776482582
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/optimal/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/optimal/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation/optimal/seed_42/result.json"
+      ]
+    }
+  ],
+  "paired_comparisons": [
+    {
+      "dataset": "orfd",
+      "left": "full",
+      "right": "optimal",
+      "definition": "full minus optimal",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": -0.013502148905502573,
+          "sample_std": 0.01401681449068048,
+          "min": -0.029425442515944034,
+          "max": -0.0030290027646446838,
+          "per_seed": {
+            "40": -0.0030290027646446838,
+            "41": -0.029425442515944034,
+            "42": -0.008052001435918998
+          }
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.006629308698891963,
+          "sample_std": 0.018171141942315915,
+          "min": -0.012440726629544208,
+          "max": 0.02374329159043098,
+          "per_seed": {
+            "40": 0.008585361135789116,
+            "41": -0.012440726629544208,
+            "42": 0.02374329159043098
+          }
+        },
+        "PRE": {
+          "n": 3,
+          "mean": -0.03172819084500019,
+          "sample_std": 0.03401217615536801,
+          "min": -0.07041566721729742,
+          "max": -0.0065288992451261185,
+          "per_seed": {
+            "40": -0.0065288992451261185,
+            "41": -0.07041566721729742,
+            "42": -0.01824000607257703
+          }
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.005298706540235972,
+          "sample_std": 0.006881289130988494,
+          "min": 0.0005504294044607061,
+          "max": 0.013190320824940649,
+          "per_seed": {
+            "40": 0.0005504294044607061,
+            "41": 0.013190320824940649,
+            "42": 0.002155369391306561
+          }
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.016491844806014403,
+          "sample_std": 0.018061936439010197,
+          "min": 0.003290202938161055,
+          "max": 0.03707554945259314,
+          "per_seed": {
+            "40": 0.003290202938161055,
+            "41": 0.03707554945259314,
+            "42": 0.009109782027289008
+          }
+        },
+        "FNR": {
+          "n": 3,
+          "mean": -0.005298706540235958,
+          "sample_std": 0.0068812891309885235,
+          "min": -0.013190320824940677,
+          "max": -0.00055042940446072,
+          "per_seed": {
+            "40": -0.00055042940446072,
+            "41": -0.013190320824940677,
+            "42": -0.0021553693913064775
+          }
+        },
+        "IoU": {
+          "n": 3,
+          "mean": -0.02197987316983822,
+          "sample_std": 0.022552521628368453,
+          "min": -0.04757805777536506,
+          "max": -0.005037600871702463,
+          "per_seed": {
+            "40": -0.005037600871702463,
+            "41": -0.04757805777536506,
+            "42": -0.013323960862447137
+          }
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.006666666517655055,
+          "sample_std": 0.005773502562848416,
+          "min": 0.0,
+          "max": 0.009999999776482582,
+          "per_seed": {
+            "40": 0.009999999776482582,
+            "41": 0.0,
+            "42": 0.009999999776482582
+          }
+        }
+      }
+    },
+    {
+      "dataset": "orfd",
+      "left": "add_fusion",
+      "right": "add_lidar",
+      "definition": "add_fusion minus add_lidar",
+      "seeds": [
+        42
+      ],
+      "metrics": {
+        "MaxF": {
+          "n": 1,
+          "mean": -0.004542215984525089,
+          "sample_std": 0.0,
+          "min": -0.004542215984525089,
+          "max": -0.004542215984525089,
+          "per_seed": {
+            "42": -0.004542215984525089
+          }
+        },
+        "AP": {
+          "n": 1,
+          "mean": -0.05152525953431897,
+          "sample_std": 0.0,
+          "min": -0.05152525953431897,
+          "max": -0.05152525953431897,
+          "per_seed": {
+            "42": -0.05152525953431897
+          }
+        },
+        "PRE": {
+          "n": 1,
+          "mean": 0.011494644665288822,
+          "sample_std": 0.0,
+          "min": 0.011494644665288822,
+          "max": 0.011494644665288822,
+          "per_seed": {
+            "42": 0.011494644665288822
+          }
+        },
+        "REC": {
+          "n": 1,
+          "mean": -0.02017655490877812,
+          "sample_std": 0.0,
+          "min": -0.02017655490877812,
+          "max": -0.02017655490877812,
+          "per_seed": {
+            "42": -0.02017655490877812
+          }
+        },
+        "FPR": {
+          "n": 1,
+          "mean": -0.006489533955258704,
+          "sample_std": 0.0,
+          "min": -0.006489533955258704,
+          "max": -0.006489533955258704,
+          "per_seed": {
+            "42": -0.006489533955258704
+          }
+        },
+        "FNR": {
+          "n": 1,
+          "mean": 0.02017655490877819,
+          "sample_std": 0.0,
+          "min": 0.02017655490877819,
+          "max": 0.02017655490877819,
+          "per_seed": {
+            "42": 0.02017655490877819
+          }
+        },
+        "IoU": {
+          "n": 1,
+          "mean": -0.007511502242167345,
+          "sample_std": 0.0,
+          "min": -0.007511502242167345,
+          "max": -0.007511502242167345,
+          "per_seed": {
+            "42": -0.007511502242167345
+          }
+        },
+        "BestThreshold": {
+          "n": 1,
+          "mean": -0.2599999811500311,
+          "sample_std": 0.0,
+          "min": -0.2599999811500311,
+          "max": -0.2599999811500311,
+          "per_seed": {
+            "42": -0.2599999811500311
+          }
+        }
+      }
+    }
+  ]
+}

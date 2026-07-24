@@ -1,0 +1,169 @@
+{
+  "generator": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/tools/generate_revision_figures.py",
+  "generator_sha256": "919f8883df70fd6f99294e38d246522ccbf7e443ca2bc0d5b6c64b239569e724",
+  "requested_group": "all",
+  "details": {
+    "architecture": {
+      "contract": "MobileNetV3 RGB stages; Conv stem + four DSConv geometry stages; five MSFMs; LKB; U-Net decoder",
+      "outputs": [
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture2.png",
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture.pdf"
+      ]
+    },
+    "msfm": {
+      "contract": "one pooled RGB query, spatial ADI K/V, B×1×N_l attention, gate blend + cross residual + output convolution",
+      "outputs": [
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm1.png",
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm.pdf"
+      ]
+    },
+    "robot": {
+      "operation": "already corrected",
+      "g1_inset_x": [
+        6832,
+        7704
+      ],
+      "depth_content_y": [
+        619,
+        1040
+      ],
+      "segmentation_content_y": [
+        1139,
+        1559
+      ],
+      "before": {
+        "depth_labeled_black_fraction": 0.025629780557432064,
+        "segmentation_labeled_black_fraction": 0.0
+      },
+      "after": {
+        "depth_labeled_black_fraction": 0.025629780557432064,
+        "segmentation_labeled_black_fraction": 0.0
+      }
+    },
+    "qualitative": {
+      "dataset": "KITTI Road training images with fixed local validation manifest",
+      "split_file": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/configs/splits/kitti_road/stratified_seed20260723/val.txt",
+      "split_file_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+      "checkpoint": "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth",
+      "checkpoint_sha256": "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79",
+      "checkpoint_epoch": 45,
+      "checkpoint_best_metric": 0.9732029731309277,
+      "config": "full",
+      "seed": 42,
+      "network_input_resolution": [
+        384,
+        1248
+      ],
+      "rendered_prediction_resolution": "original sample resolution via bilinear logit resize",
+      "threshold": 0.66,
+      "threshold_source": "seed-42 validation-global BestThreshold",
+      "samples": [
+        {
+          "sample_id": "um_000054",
+          "category": "UM",
+          "rgb": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/image_2/um_000054.png",
+          "rgb_sha256": "5ca9b0e1d8b826617c5a8865fe14443e8e76ae2925580bac9294a050f8deedad",
+          "adi": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/ADI/um_000054.png",
+          "adi_sha256": "b1be303283ed690ff0d970754afcd7ff53d2c93a94b0df84c393f5eb57f6cd4f",
+          "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/um_road_000054.png",
+          "label_sha256": "9fa3d3b789f1739cdabd62f7f2dfaefa01ccc44e0c783d33637b5c5718f6edef",
+          "metrics_original_resolution": {
+            "F1": 0.9937505235821396,
+            "IoU": 0.9875786739485164,
+            "TP": 59312,
+            "FP": 138,
+            "FN": 608
+          }
+        },
+        {
+          "sample_id": "umm_000017",
+          "category": "UMM",
+          "rgb": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/image_2/umm_000017.png",
+          "rgb_sha256": "c9e8731bf91f420b546daa15e33fb7990ddaa1f3227017cfaac81683b6b0db4e",
+          "adi": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/ADI/umm_000017.png",
+          "adi_sha256": "c4fc10e9ce4dce814506de7b4a9004d772f0e421bb9c398a5d409eabf02b06c0",
+          "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/umm_road_000017.png",
+          "label_sha256": "09b3b2819f7d3d9c7e3932fcf4e2fd3638a35e192b42ff872ff50e8cd2dc194e",
+          "metrics_original_resolution": {
+            "F1": 0.9909411945340089,
+            "IoU": 0.9820450395617772,
+            "TP": 64540,
+            "FP": 543,
+            "FN": 637
+          }
+        },
+        {
+          "sample_id": "umm_000050",
+          "category": "UMM",
+          "rgb": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/image_2/umm_000050.png",
+          "rgb_sha256": "a9269b16f2c05359be8091fbc8183d888a8397c33ebc00a93072ff9d9d733d9d",
+          "adi": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/ADI/umm_000050.png",
+          "adi_sha256": "b08abf8994a7c5379cfe5b78497f1645fca229b7fc70979b04c9744856e6c056",
+          "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/umm_road_000050.png",
+          "label_sha256": "e7779fb385365e870b1f93cdb8eb45ba3014a5a573e5c2033cce17199f8bf0c7",
+          "metrics_original_resolution": {
+            "F1": 0.9796955835647084,
+            "IoU": 0.9601992971740131,
+            "TP": 98093,
+            "FP": 542,
+            "FN": 3524
+          }
+        },
+        {
+          "sample_id": "uu_000059",
+          "category": "UU",
+          "rgb": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/image_2/uu_000059.png",
+          "rgb_sha256": "57d4994f57ed164ff967bd5d7b4ee987d5c70825f596febf1a3d80c73d27b1b1",
+          "adi": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/ADI/uu_000059.png",
+          "adi_sha256": "c336bb6232ad26547eed18bf6c93f17a65ffe2c5c5e00eca020702ef647ccad5",
+          "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/uu_road_000059.png",
+          "label_sha256": "e11fbb1273cd5ca1a0c3faf81a02a628354fe8203c38a05120a7fab277cd7a21",
+          "metrics_original_resolution": {
+            "F1": 0.9887171397516424,
+            "IoU": 0.9776860447420483,
+            "TP": 51395,
+            "FP": 535,
+            "FN": 638
+          }
+        }
+      ]
+    }
+  },
+  "outputs": [
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture2.png",
+      "bytes": 388695,
+      "sha256": "47a11d8818793896eaeafdc09dc0aa2dc6b05d7e8ec8169e90fa41c47e898542"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture.pdf",
+      "bytes": 52501,
+      "sha256": "bf245fa04e0ddac56a1f8e3f0538de297bb1cbd061e421aad14de168ebe037ec"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm1.png",
+      "bytes": 357662,
+      "sha256": "a372e5b45d0ab4b2e3396caf46568766a1bf6cb1577542ddecbda89bf47ae50b"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm.pdf",
+      "bytes": 35053,
+      "sha256": "467f70c87d9c280e9d7e2ceb5f7acd52314c9a019b7e54c58093798af9989472"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/real_experiment_all1.png",
+      "bytes": 15398225,
+      "sha256": "6f7b141c980f56b04ba597f4cc5bb90667ac2e66f24ab97c1e71af04116439a2"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_qualitative.png",
+      "bytes": 5127409,
+      "sha256": "4f4ef5118e49ba87eb12c8f210b9d028a8aa670963ad27df8ad5025c064abc6b"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_qualitative.pdf",
+      "bytes": 1128524,
+      "sha256": "84ca2324524b39bdd2fd4946af1651a864d4e76df1ca67b35a0288018ed77166"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "protocol": {
+    "pipeline": "real PNG/BIN/calibration load + PLARD ADI + tensor normalization + pinned H2D + PyTorch model + sigmoid/resize/threshold/D2H",
+    "adi": "nearest duplicate projection; 21x21 inverse-distance interpolation; 7x7 altitude-gradient average; per-image sqrt/Gaussian/clip normalization",
+    "input_shape_per_modality": [
+      1,
+      3,
+      384,
+      1248
+    ],
+    "precision": "fp16",
+    "batch_size": 1,
+    "warmup": 5,
+    "iterations": 58,
+    "split_file": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "disk_note": "real files; timed samples follow warm-up and may use the operating-system page cache"
+  },
+  "data_root": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road",
+  "velodyne_root": "/data/Database/Research04-LiteViLNet/datasets/KITTI_Road/velodyne_extracted",
+  "checkpoint": "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth",
+  "checkpoint_sha256": "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79",
+  "parameters": 14035153,
+  "timing": {
+    "disk_and_calibration": {
+      "n": 58,
+      "mean_ms": 60.00671915460081,
+      "sample_std_ms": 11.838359186279181,
+      "p50_ms": 59.11936599295586,
+      "p95_ms": 80.39304200792685,
+      "min_ms": 32.69068400550168,
+      "max_ms": 84.43942200392485,
+      "fps": 16.664800443823772,
+      "trimmed_mean_ms": 60.116981332410234,
+      "trimmed_fps": 16.634235083604914
+    },
+    "projection": {
+      "n": 58,
+      "mean_ms": 3.0855008454668207,
+      "sample_std_ms": 0.36209013798439615,
+      "p50_ms": 3.045225006644614,
+      "p95_ms": 3.5860530042555183,
+      "min_ms": 2.127411004039459,
+      "max_ms": 4.555288003757596,
+      "fps": 324.0964919744512,
+      "trimmed_mean_ms": 3.0737745745918126,
+      "trimmed_fps": 325.3329012043106
+    },
+    "interpolation": {
+      "n": 58,
+      "mean_ms": 7.652126206486518,
+      "sample_std_ms": 0.29822598556473334,
+      "p50_ms": 7.649473991477862,
+      "p95_ms": 8.023698988836259,
+      "min_ms": 5.764816000009887,
+      "max_ms": 8.233792003011331,
+      "fps": 130.6826329069592,
+      "trimmed_mean_ms": 7.669586110784655,
+      "trimmed_fps": 130.38513233378282
+    },
+    "gradient_and_normalization": {
+      "n": 58,
+      "mean_ms": 70.85076346642194,
+      "sample_std_ms": 3.3998157587737086,
+      "p50_ms": 70.11546900321264,
+      "p95_ms": 78.23150799958967,
+      "min_ms": 65.56043100135867,
+      "max_ms": 81.73175100819208,
+      "fps": 14.114173949218298,
+      "trimmed_mean_ms": 70.66401468586668,
+      "trimmed_fps": 14.151474473187658
+    },
+    "tensor_preparation": {
+      "n": 58,
+      "mean_ms": 7.312956826855702,
+      "sample_std_ms": 0.3449920902280598,
+      "p50_ms": 7.323059006012045,
+      "p95_ms": 7.951827996294014,
+      "min_ms": 6.7267200065543875,
+      "max_ms": 8.119539998006076,
+      "fps": 136.74359409967454,
+      "trimmed_mean_ms": 7.305035313981568,
+      "trimmed_fps": 136.89187759106886
+    },
+    "cpu_preprocess_total": {
+      "n": 58,
+      "mean_ms": 148.9080664998318,
+      "sample_std_ms": 12.494600557531902,
+      "p50_ms": 145.41211402683984,
+      "p95_ms": 170.3057139966404,
+      "min_ms": 116.07546902087051,
+      "max_ms": 174.30671499460004,
+      "fps": 6.715552914664496,
+      "trimmed_mean_ms": 149.12549470291535,
+      "trimmed_fps": 6.7057614929773
+    },
+    "host_to_device": {
+      "n": 58,
+      "mean_ms": 0.5180242791258055,
+      "sample_std_ms": 0.018781697363584707,
+      "p50_ms": 0.5144320130348206,
+      "p95_ms": 0.5269119739532471,
+      "min_ms": 0.5044800043106079,
+      "max_ms": 0.6314240097999573,
+      "fps": 1930.411450381351,
+      "trimmed_mean_ms": 0.5151685961970577,
+      "trimmed_fps": 1941.1121085057152
+    },
+    "model": {
+      "n": 58,
+      "mean_ms": 5.427814089018723,
+      "sample_std_ms": 0.29304873701221623,
+      "p50_ms": 5.306367874145508,
+      "p95_ms": 5.980160236358643,
+      "min_ms": 5.10975980758667,
+      "max_ms": 6.5731520652771,
+      "fps": 184.2362290969304,
+      "trimmed_mean_ms": 5.4058797271163375,
+      "trimmed_fps": 184.98376776381423
+    },
+    "postprocess": {
+      "n": 58,
+      "mean_ms": 0.1534835346633215,
+      "sample_std_ms": 0.017894986499092238,
+      "p50_ms": 0.150881998706609,
+      "p95_ms": 0.15650301065761596,
+      "min_ms": 0.14234300761017948,
+      "max_ms": 0.28441500035114586,
+      "fps": 6515.356856965671,
+      "trimmed_mean_ms": 0.15125005544784167,
+      "trimmed_fps": 6611.567824150969
+    },
+    "end_to_end": {
+      "n": 58,
+      "mean_ms": 155.1551721211832,
+      "sample_std_ms": 12.45131929850805,
+      "p50_ms": 151.6932060039835,
+      "p95_ms": 176.44199599453714,
+      "min_ms": 122.37764199380763,
+      "max_ms": 180.23655300203245,
+      "fps": 6.445160585552087,
+      "trimmed_mean_ms": 155.3729072227186,
+      "trimmed_fps": 6.436128523787963
+    }
+  },
+  "generated_vs_stored_adi_mae": {
+    "count": 58,
+    "mean": 0.37507500525178583,
+    "sample_std": 0.029822122700785953,
+    "p95": 0.42689833641052244,
+    "note": "diagnostic only; stored ADIs may reflect release-code indexing/encoding details"
+  },
+  "cuda_peak_allocated_mb": 90.61376953125,
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_model": "AMD Ryzen 9 9950X 16-Core Processor",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-24 10:38:58",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_total_memory_mb": 48499.0625,
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  },
+  "nvidia_compute_processes_before": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 1651270, /home/aihub/miniconda3/envs/litevilnet_ral/bin/python, 544",
+  "nvidia_compute_processes_after": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0, 1651270, /home/aihub/miniconda3/envs/litevilnet_ral/bin/python, 544",
+  "power_measurement": null
+}

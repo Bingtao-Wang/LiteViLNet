@@ -1,0 +1,41 @@
+{
+  "backend": "pytorch",
+  "preset": "litevilnet_paper",
+  "label": "LiteViLNet-Paper",
+  "checkpoint": "/data/Database/Research04-LiteViLNet/LiteViLNet/weights/seed/vllinet_paper_v3_final.pth",
+  "precision": "fp32",
+  "data_root": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road",
+  "split": "val",
+  "split_file": "configs/splits/kitti_road/val.txt",
+  "input_shape": [
+    8,
+    3,
+    384,
+    1248
+  ],
+  "parameters": 14035038,
+  "metrics": {
+    "MaxF": 0.9636412642308565,
+    "BestThreshold": 0.47999998927116394,
+    "PRE": 0.9653138116707305,
+    "REC": 0.961974602286626,
+    "FPR": 0.005161032679566119,
+    "FNR": 0.038025397713346246,
+    "IoU": 0.9298337800058213,
+    "AP": 0.9782939644874454,
+    "Precision": 0.9653138116707305,
+    "Recall": 0.961974602286626
+  },
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-23 22:02:16",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  }
+}

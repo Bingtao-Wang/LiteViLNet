@@ -1,0 +1,24 @@
+name: litevilnet_ral
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10.20
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu128
+      - torch==2.7.1+cu128
+      - torchvision==0.22.1+cu128
+      - numpy==1.26.4
+      - pillow==12.0.0
+      - tqdm==4.66.5
+      - albumentations==1.4.24
+      - opencv-python-headless==4.10.0.84
+      - scipy==1.15.3
+      - pandas==2.2.3
+      - matplotlib==3.10.8
+      - fvcore==0.1.5.post20221221
+      - iopath==0.1.10
+      - yacs==0.1.8
+      - thop==0.1.1.post2209072238
+      - gdown==5.2.0

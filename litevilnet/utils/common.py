@@ -6,6 +6,7 @@ import csv
 import json
 import os
 import platform
+import statistics
 import subprocess
 import time
 from pathlib import Path
@@ -67,10 +68,12 @@ def percentile(values: list[float], q: float) -> float:
     return values[idx]
 
 
-def summarize_ms(values: list[float]) -> dict[str, float]:
+def summarize_ms(values: list[float]) -> dict[str, float | int]:
     if not values:
         return {
+            "n": 0,
             "mean_ms": 0.0,
+            "sample_std_ms": 0.0,
             "p50_ms": 0.0,
             "p95_ms": 0.0,
             "min_ms": 0.0,
@@ -86,7 +89,9 @@ def summarize_ms(values: list[float]) -> dict[str, float]:
     trimmed = sorted_vals[trim_n : n - trim_n] if n - 2 * trim_n > 0 else sorted_vals
     trimmed_mean_ms = sum(trimmed) / len(trimmed)
     return {
+        "n": len(values),
         "mean_ms": mean_ms,
+        "sample_std_ms": statistics.stdev(values) if len(values) > 1 else 0.0,
         "p50_ms": percentile(values, 50),
         "p95_ms": percentile(values, 95),
         "min_ms": min(values),
@@ -98,10 +103,24 @@ def summarize_ms(values: list[float]) -> dict[str, float]:
 
 
 def system_metadata() -> dict[str, Any]:
+    cpu_model = platform.processor().strip()
+    # On many Linux distributions ``platform.processor()`` only returns the
+    # machine architecture (for example ``x86_64``).  Prefer the concrete
+    # processor model from /proc so result JSONs identify the benchmark host.
+    generic_processor_names = {"x86_64", "amd64", "aarch64", "arm64"}
+    if (not cpu_model or cpu_model.lower() in generic_processor_names) and Path("/proc/cpuinfo").is_file():
+        try:
+            for line in Path("/proc/cpuinfo").read_text(errors="ignore").splitlines():
+                if line.lower().startswith("model name") and ":" in line:
+                    cpu_model = line.split(":", 1)[1].strip()
+                    break
+        except OSError:
+            pass
     metadata: dict[str, Any] = {
         "hostname": platform.node(),
         "platform": platform.platform(),
         "machine": platform.machine(),
+        "cpu_model": cpu_model or None,
         "python": platform.python_version(),
         "torch": torch.__version__ if torch is not None else None,
         "cuda_available": torch.cuda.is_available() if torch is not None else False,
@@ -111,6 +130,7 @@ def system_metadata() -> dict[str, Any]:
         metadata.update(
             {
                 "cuda_device": torch.cuda.get_device_name(0),
+                "cuda_total_memory_mb": torch.cuda.get_device_properties(0).total_memory / (1024**2),
                 "cuda_version": torch.version.cuda,
                 "cudnn_version": torch.backends.cudnn.version(),
             }

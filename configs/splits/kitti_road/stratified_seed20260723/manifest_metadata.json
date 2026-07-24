@@ -1,0 +1,27 @@
+{
+  "strategy": "stratified-random",
+  "seed": 20260723,
+  "total": 289,
+  "train": 231,
+  "val": 58,
+  "train_categories": {
+    "um": 76,
+    "umm": 77,
+    "uu": 78
+  },
+  "val_categories": {
+    "um": 19,
+    "umm": 19,
+    "uu": 20
+  },
+  "files": {
+    "train.txt": {
+      "sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+      "entries": 231
+    },
+    "val.txt": {
+      "sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+      "entries": 58
+    }
+  }
+}

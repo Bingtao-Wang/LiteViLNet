@@ -1,0 +1,25 @@
+{
+  "strategy": "historical-sorted",
+  "seed": null,
+  "total": 289,
+  "train": 231,
+  "val": 58,
+  "train_categories": {
+    "um": 95,
+    "umm": 96,
+    "uu": 40
+  },
+  "val_categories": {
+    "uu": 58
+  },
+  "files": {
+    "train.txt": {
+      "sha256": "e6760575c86fbaf462576a0045ea1cdd66b9d4d2b50eba79d013e2d22e7cb351",
+      "entries": 231
+    },
+    "val.txt": {
+      "sha256": "e8f5512d4a153a044d88e2fc26fb2e9ec9b759a55e76db85a3243488c19a78b3",
+      "entries": 58
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "status": "ok",
+  "config": "full",
+  "dataset_samples": 8392,
+  "batch_size": 8,
+  "input_shape_per_modality": [
+    8,
+    3,
+    704,
+    1280
+  ],
+  "label_shape": [
+    8,
+    704,
+    1280
+  ],
+  "logit_shape": [
+    8,
+    1,
+    352,
+    640
+  ],
+  "auxiliary_outputs": 3,
+  "precision": "fp16",
+  "loss": 2.4932610988616943,
+  "cuda_peak_allocated_mb": 6446.77978515625,
+  "cuda_peak_reserved_mb": 6966.0,
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_model": "AMD Ryzen 9 9950X 16-Core Processor",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-24 10:38:42",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_total_memory_mb": 48499.0625,
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "protocol": {
+    "input_shape_per_modality": [
+      1,
+      3,
+      384,
+      1248
+    ],
+    "precision": "fp16",
+    "warmup": 50,
+    "iterations": 200,
+    "pretrained_weights_loaded": false,
+    "deep_supervision_auxiliary_heads_used_during_inference": false,
+    "fvcore_convention": "one fused multiply-add is counted as one MAC-equivalent operation"
+  },
+  "system": {
+    "hostname": "aihub",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_model": "AMD Ryzen 9 9950X 16-Core Processor",
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda_available": true,
+    "timestamp": "2026-07-24 10:38:36",
+    "cuda_device": "NVIDIA GeForce RTX 4090 D",
+    "cuda_total_memory_mb": 48499.0625,
+    "cuda_version": "12.8",
+    "cudnn_version": 90701
+  },
+  "cuda_visible_devices": "0",
+  "nvidia_compute_processes_before": [],
+  "nvidia_compute_processes_after": [
+    {
+      "gpu_uuid": "GPU-0f1031ab-c890-230c-d3f8-7ea1897d96c0",
+      "pid": "1650724",
+      "process_name": "/home/aihub/miniconda3/envs/litevilnet_ral/bin/python",
+      "used_memory_mb": "446"
+    }
+  ],
+  "results": [
+    {
+      "config": "baseline",
+      "parameters": 3305153,
+      "trainable_parameters": 3305153,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 1.652470556497574,
+          "sample_std_ms": 0.03639172129860159,
+          "p50_ms": 1.6418240070343018,
+          "p95_ms": 1.7080320119857788,
+          "min_ms": 1.624959945678711,
+          "max_ms": 1.8291840553283691,
+          "fps": 605.1545040049058,
+          "trimmed_mean_ms": 1.645831819375356,
+          "trimmed_fps": 607.5954956196745
+        },
+        "throughput_fps": 605.1545040049058,
+        "cuda_allocated_before_forward_mb": 11.93505859375,
+        "cuda_peak_allocated_mb": 45.9931640625,
+        "cuda_incremental_peak_mb": 34.05810546875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "add_lidar",
+      "parameters": 3425681,
+      "trainable_parameters": 3425681,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 1.8891420817375184,
+          "sample_std_ms": 0.034938682911262016,
+          "p50_ms": 1.8800640106201172,
+          "p95_ms": 1.9640320539474487,
+          "min_ms": 1.745919942855835,
+          "max_ms": 2.0295679569244385,
+          "fps": 529.3408101312638,
+          "trimmed_mean_ms": 1.884827377398809,
+          "trimmed_fps": 530.5525651797718
+        },
+        "throughput_fps": 529.3408101312638,
+        "cuda_allocated_before_forward_mb": 12.19140625,
+        "cuda_peak_allocated_mb": 60.76513671875,
+        "cuda_incremental_peak_mb": 48.57373046875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "add_fusion",
+      "parameters": 13780574,
+      "trainable_parameters": 13780574,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 4.304462916851044,
+          "sample_std_ms": 0.05322178487927579,
+          "p50_ms": 4.289535999298096,
+          "p95_ms": 4.40115213394165,
+          "min_ms": 4.074495792388916,
+          "max_ms": 4.557472229003906,
+          "fps": 232.3170205707234,
+          "trimmed_mean_ms": 4.298041815227933,
+          "trimmed_fps": 232.66409285666018
+        },
+        "throughput_fps": 232.3170205707234,
+        "cuda_allocated_before_forward_mb": 40.150390625,
+        "cuda_peak_allocated_mb": 87.91943359375,
+        "cuda_incremental_peak_mb": 47.76904296875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "add_bridge",
+      "parameters": 14035038,
+      "trainable_parameters": 14035038,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 4.328822410106659,
+          "sample_std_ms": 0.03812343548903782,
+          "p50_ms": 4.322303771972656,
+          "p95_ms": 4.419583797454834,
+          "min_ms": 4.1113600730896,
+          "max_ms": 4.443136215209961,
+          "fps": 231.0097077822513,
+          "trimmed_mean_ms": 4.327603737513225,
+          "trimmed_fps": 231.07476115052785
+        },
+        "throughput_fps": 231.0097077822513,
+        "cuda_allocated_before_forward_mb": 40.64453125,
+        "cuda_peak_allocated_mb": 89.85498046875,
+        "cuda_incremental_peak_mb": 49.21044921875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "add_deep_sup",
+      "parameters": 14035153,
+      "trainable_parameters": 14035153,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 4.339655842781067,
+          "sample_std_ms": 0.050857425326400536,
+          "p50_ms": 4.3284478187561035,
+          "p95_ms": 4.4317121505737305,
+          "min_ms": 4.113408088684082,
+          "max_ms": 4.654079914093018,
+          "fps": 230.4330196283838,
+          "trimmed_mean_ms": 4.3342599153518675,
+          "trimmed_fps": 230.7198967136278
+        },
+        "throughput_fps": 230.4330196283838,
+        "cuda_allocated_before_forward_mb": 40.6474609375,
+        "cuda_peak_allocated_mb": 88.57470703125,
+        "cuda_incremental_peak_mb": 47.92724609375,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "optimal",
+      "parameters": 3680260,
+      "trainable_parameters": 3680260,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 1.9624102407693862,
+          "sample_std_ms": 0.03675009461805268,
+          "p50_ms": 1.9578880071640015,
+          "p95_ms": 2.0174078941345215,
+          "min_ms": 1.7420159578323364,
+          "max_ms": 2.200576066970825,
+          "fps": 509.57744676665476,
+          "trimmed_mean_ms": 1.9597516463862525,
+          "trimmed_fps": 510.2687383087456
+        },
+        "throughput_fps": 509.57744676665476,
+        "cuda_allocated_before_forward_mb": 20.8134765625,
+        "cuda_peak_allocated_mb": 68.58251953125,
+        "cuda_incremental_peak_mb": 47.76904296875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "full",
+      "parameters": 14035153,
+      "trainable_parameters": 14035153,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 4.342320172786713,
+          "sample_std_ms": 0.06016722992674032,
+          "p50_ms": 4.321280002593994,
+          "p95_ms": 4.459167957305908,
+          "min_ms": 4.1154561042785645,
+          "max_ms": 4.610047817230225,
+          "fps": 230.29163217097448,
+          "trimmed_mean_ms": 4.335505615340339,
+          "trimmed_fps": 230.6536050747335
+        },
+        "throughput_fps": 230.29163217097448,
+        "cuda_allocated_before_forward_mb": 40.6474609375,
+        "cuda_peak_allocated_mb": 88.57470703125,
+        "cuda_incremental_peak_mb": 47.92724609375,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    },
+    {
+      "config": "transformer_bridge",
+      "parameters": 24852369,
+      "trainable_parameters": 24852369,
+      "cuda": {
+        "latency_ms": {
+          "n": 200,
+          "mean_ms": 4.490220799446106,
+          "sample_std_ms": 0.06370700226215155,
+          "p50_ms": 4.474880218505859,
+          "p95_ms": 4.588543891906738,
+          "min_ms": 4.280320167541504,
+          "max_ms": 4.8455681800842285,
+          "fps": 222.70619745990123,
+          "trimmed_mean_ms": 4.482662929428948,
+          "trimmed_fps": 223.08168509279173
+        },
+        "throughput_fps": 222.70619745990123,
+        "cuda_allocated_before_forward_mb": 62.37548828125,
+        "cuda_peak_allocated_mb": 110.4296875,
+        "cuda_incremental_peak_mb": 48.05419921875,
+        "scope": "model-only; random resident tensors; preprocessing, transfer, and post-processing excluded"
+      }
+    }
+  ]
+}

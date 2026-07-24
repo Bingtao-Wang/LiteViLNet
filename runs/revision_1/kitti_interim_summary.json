@@ -1,0 +1,296 @@
+{
+  "groups": [
+    {
+      "dataset": "kitti",
+      "config": "add_lidar",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 3425681,
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9582311118233607,
+          "sample_std": 0.001209882508977901,
+          "min": 0.9573568370137496,
+          "max": 0.9596119379233885
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9840443217342658,
+          "sample_std": 0.0018510125109614634,
+          "min": 0.9826555204663822,
+          "max": 0.9861457300421311
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9607021611621412,
+          "sample_std": 0.0032378956688692583,
+          "min": 0.9569668629609559,
+          "max": 0.9627099133449571
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9557849193172547,
+          "sample_std": 0.0031408613380957445,
+          "min": 0.9523372625800943,
+          "max": 0.9584835590584496
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.005839387245023832,
+          "sample_std": 0.0005162493752254587,
+          "min": 0.005532014077941879,
+          "max": 0.006435402574566222
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.04421508068271752,
+          "sample_std": 0.0031408613380957324,
+          "min": 0.041516440941522625,
+          "max": 0.04766273741987791
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9198134232613246,
+          "sample_std": 0.002230962285696577,
+          "min": 0.9182018996597263,
+          "max": 0.9223597127066383
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.6699999968210856,
+          "sample_std": 0.05196150908545293,
+          "min": 0.6100000143051147,
+          "max": 0.699999988079071
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/add_lidar/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/add_lidar/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/add_lidar/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "kitti",
+      "config": "baseline",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 3305153,
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9556357084720718,
+          "sample_std": 0.0017480364818244932,
+          "min": 0.9540931103184277,
+          "max": 0.9575343605300269
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9837398986770998,
+          "sample_std": 0.0038777518287331494,
+          "min": 0.9805711803385115,
+          "max": 0.9880640347192914
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9586736024410835,
+          "sample_std": 0.005226189716629983,
+          "min": 0.9526559092313176,
+          "max": 0.9620743486237437
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9526408757055234,
+          "sample_std": 0.0036210044650012117,
+          "min": 0.9485803617048413,
+          "max": 0.9555347546562902
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.006136037290990597,
+          "sample_std": 0.0008298295838443658,
+          "min": 0.005583203887481468,
+          "max": 0.007090243457989863
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.04735912429444896,
+          "sample_std": 0.0036210044650012065,
+          "min": 0.04446524534368208,
+          "max": 0.05141963829513103
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9150442515165188,
+          "sample_std": 0.003206938985789803,
+          "min": 0.9122161975809483,
+          "max": 0.9185285540364243
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.6866666873296102,
+          "sample_std": 0.08621678984551115,
+          "min": 0.6100000143051147,
+          "max": 0.7800000309944153
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/baseline/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/baseline/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/baseline/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "kitti",
+      "config": "full",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 14035153,
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.961576075587362,
+          "sample_std": 0.0007588721236498204,
+          "min": 0.9607003598410713,
+          "max": 0.9620409213990486
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9830647519602956,
+          "sample_std": 0.003348183675764398,
+          "min": 0.9793707608701439,
+          "max": 0.9858997537280566
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9632612339970646,
+          "sample_std": 0.00043785515307643674,
+          "min": 0.9628632604765156,
+          "max": 0.9637302762012427
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.959897220172107,
+          "sample_std": 0.0011886420835982303,
+          "min": 0.9585472541197284,
+          "max": 0.9607868278613009
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.005466241926320199,
+          "sample_std": 6.332352236446486e-05,
+          "min": 0.005396431375615294,
+          "max": 0.00551998157828435
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.04010277982786529,
+          "sample_std": 0.0011886420835982238,
+          "min": 0.03921317213867137,
+          "max": 0.04145274588024383
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9259964654694013,
+          "sample_std": 0.0014069130698675374,
+          "min": 0.924372932441643,
+          "max": 0.9268583295580494
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.6700000166893005,
+          "sample_std": 0.10440306828619612,
+          "min": 0.6000000238418579,
+          "max": 0.7900000214576721
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/full/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/full/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/full/seed_42/result.json"
+      ]
+    },
+    {
+      "dataset": "kitti",
+      "config": "optimal",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 3680260,
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9597789196695296,
+          "sample_std": 0.0009521139572565431,
+          "min": 0.9589882464952451,
+          "max": 0.960835805904244
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9797961024253459,
+          "sample_std": 0.002689156536408021,
+          "min": 0.9778852240561204,
+          "max": 0.9828712045008037
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9649715753057242,
+          "sample_std": 0.0016520562660601319,
+          "min": 0.9630694767181784,
+          "max": 0.9660483450380545
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9546435776684851,
+          "sample_std": 0.001212508049394347,
+          "min": 0.9533098584723168,
+          "max": 0.9556793147518882
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.005174388340698014,
+          "sample_std": 0.00025418152266492666,
+          "min": 0.005014864685444595,
+          "max": 0.005467509956066468
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.04535642233148723,
+          "sample_std": 0.0012125080493943464,
+          "min": 0.044320685248084114,
+          "max": 0.046690141527655514
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9226693742091369,
+          "sample_std": 0.0017604419998548874,
+          "min": 0.9212079876383068,
+          "max": 0.9246237578159981
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.6533333460489908,
+          "sample_std": 0.02886752034203283,
+          "min": 0.6200000047683716,
+          "max": 0.6700000166893005
+        }
+      },
+      "source_files": [
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/optimal/seed_40/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/optimal/seed_41/result.json",
+        "/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation/optimal/seed_42/result.json"
+      ]
+    }
+  ]
+}
