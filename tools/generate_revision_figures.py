@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate the deterministic raster figures used by the RA-L revision.
+"""Generate deterministic reference material for manual RA-L figure revision.
 
 This tool closes four figure-provenance gaps in one reproducible workflow:
 
@@ -9,9 +9,10 @@ This tool closes four figure-provenance gaps in one reproducible workflow:
 * render KITTI qualitative results from the fixed validation manifest and
   the seed-42 full-model checkpoint at its validation-global threshold.
 
-The generated PNG files are the assets included by both ``root.tex`` and
-``ral_response_1.tex``. Vector PDF companions are also written for the three
-newly drawn figures, and a JSON manifest records inputs, metrics, and hashes.
+Outputs are written to a reference-material directory and never replace the
+author's manuscript figures. The architecture/MSFM composites are layout
+references only; qualitative panels and the robot correction copy are source
+material for manual drawing. A JSON manifest records inputs and hashes.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
 from typing import Iterable
 
 import matplotlib
@@ -38,7 +40,8 @@ from litevilnet.models.vllinet_ablation import get_ablation_model
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE_ROOT = REPO_ROOT.parent
-DEFAULT_FIGURE_DIR = WORKSPACE_ROOT / "LiteViLNetPaperRAL" / "figures"
+DEFAULT_FIGURE_DIR = REPO_ROOT / "runs/revision_1/figure_materials"
+DEFAULT_SOURCE_FIGURE_DIR = WORKSPACE_ROOT / "LiteViLNetPaperRAL" / "figures"
 DEFAULT_DATA_ROOT = Path(
     "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road"
 )
@@ -626,8 +629,8 @@ def generate_msfm(figure_dir: Path) -> list[Path]:
     return [png, pdf]
 
 
-def fix_robot_figure(figure_dir: Path) -> tuple[Path, dict]:
-    """Swap only the two mislabeled G1 contents while retaining the labels.
+def fix_robot_figure(figure_dir: Path, source_figure_dir: Path) -> tuple[Path, dict]:
+    """Create a corrected reference copy without touching the manuscript image.
 
     The source composite has fixed dimensions (10206×2099). The G1 inset is
     x=[6832,7704), with the content beneath ``Depth`` at y=[619,1040) and
@@ -635,7 +638,13 @@ def fix_robot_figure(figure_dir: Path) -> tuple[Path, dict]:
     ratio makes this operation idempotent: a depth visualization contains
     more invalid/black pixels than the green RGB overlay.
     """
+    source_path = source_figure_dir / "real_experiment_all1.png"
     path = figure_dir / "real_experiment_all1.png"
+    if source_path.resolve() == path.resolve():
+        raise ValueError("Refusing to overwrite the manuscript robot figure")
+    if not source_path.is_file():
+        raise FileNotFoundError(source_path)
+    shutil.copy2(source_path, path)
     image = Image.open(path).convert("RGBA")
     if image.size != (10206, 2099):
         raise ValueError(f"Unexpected robot composite size {image.size}; expected (10206, 2099)")
@@ -773,6 +782,7 @@ def generate_qualitative(
         axes[0, col].set_title(title, fontsize=11.2, fontweight="bold", pad=7)
 
     records = []
+    panel_paths: list[Path] = []
     with torch.inference_mode():
         for row, sample_id in enumerate(sample_ids):
             dataset_item = dataset[index_by_name[sample_id]]
@@ -797,6 +807,24 @@ def generate_qualitative(
             overlay = blend_mask(rgb, prediction, (32, 210, 92), alpha=0.52)
             errors = error_map(rgb, prediction, target)
             panels = [rgb, adi, overlay, errors]
+
+            sample_asset_dir = figure_dir / "qualitative_panels" / sample_id
+            sample_asset_dir.mkdir(parents=True, exist_ok=True)
+            assets = {
+                "rgb": rgb,
+                "stored_adi": adi,
+                "prediction_overlay": overlay,
+                "binary_prediction": prediction.astype(np.uint8) * 255,
+                "probability": np.clip(probability * 255.0, 0, 255).astype(np.uint8),
+                "error_map": errors,
+            }
+            sample_paths: dict[str, str] = {}
+            for asset_name, asset in assets.items():
+                asset_path = sample_asset_dir / f"{asset_name}.png"
+                Image.fromarray(asset).save(asset_path)
+                panel_paths.append(asset_path)
+                sample_paths[asset_name] = str(asset_path.resolve())
+
             for col, panel in enumerate(panels):
                 axes[row, col].imshow(panel, interpolation="nearest")
                 axes[row, col].axis("off")
@@ -836,6 +864,7 @@ def generate_qualitative(
                     "adi_sha256": sha256(Path(sample["adi"])),
                     "label": str(Path(sample["label"]).resolve()),
                     "label_sha256": sha256(Path(sample["label"])),
+                    "manual_drawing_assets": sample_paths,
                     "metrics_original_resolution": metrics,
                 }
             )
@@ -845,7 +874,7 @@ def generate_qualitative(
     pdf = figure_dir / "fig_qualitative.pdf"
     save_figure(fig, png, pdf, dpi=260)
 
-    return [png, pdf], {
+    return [png, pdf, *panel_paths], {
         "dataset": "KITTI Road training images with fixed local validation manifest",
         "split_file": str(split_file.resolve()),
         "split_file_sha256": sha256(split_file),
@@ -871,7 +900,18 @@ def parse_args() -> argparse.Namespace:
         default="all",
         help="Generate one asset group or all revision figures.",
     )
-    parser.add_argument("--figure-dir", type=Path, default=DEFAULT_FIGURE_DIR)
+    parser.add_argument(
+        "--figure-dir",
+        type=Path,
+        default=DEFAULT_FIGURE_DIR,
+        help="Reference-material output directory; must differ from the manuscript figure directory.",
+    )
+    parser.add_argument(
+        "--source-figure-dir",
+        type=Path,
+        default=DEFAULT_SOURCE_FIGURE_DIR,
+        help="Read-only source directory for the author's existing manuscript figures.",
+    )
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     parser.add_argument("--split-file", type=Path, default=DEFAULT_SPLIT)
     parser.add_argument("--checkpoint", type=Path, default=DEFAULT_CHECKPOINT)
@@ -884,6 +924,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.figure_dir.resolve() == args.source_figure_dir.resolve():
+        raise ValueError("Refusing to write generated material into the manuscript figure directory")
     args.figure_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
     details: dict[str, object] = {}
@@ -903,7 +945,7 @@ def main() -> None:
             "outputs": [str(path.resolve()) for path in paths],
         }
     if args.only in ("all", "robot"):
-        path, robot_details = fix_robot_figure(args.figure_dir)
+        path, robot_details = fix_robot_figure(args.figure_dir, args.source_figure_dir)
         generated.append(path)
         details["robot"] = robot_details
     if args.only in ("all", "qualitative"):

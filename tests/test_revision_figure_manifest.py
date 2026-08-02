@@ -6,6 +6,7 @@ import unittest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = REPO_ROOT / "runs/revision_1/revision_figure_manifest.json"
+MANUSCRIPT_FIGURE_DIR = REPO_ROOT.parent / "LiteViLNetPaperRAL" / "figures"
 VAL_SPLIT = REPO_ROOT / "configs/splits/kitti_road/stratified_seed20260723/val.txt"
 
 
@@ -27,6 +28,7 @@ class RevisionFigureManifestTest(unittest.TestCase):
         for record in self.payload["outputs"]:
             path = Path(record["path"])
             self.assertTrue(path.is_file(), path)
+            self.assertFalse(path.is_relative_to(MANUSCRIPT_FIGURE_DIR), path)
             self.assertEqual(path.stat().st_size, record["bytes"])
             self.assertEqual(sha256(path), record["sha256"])
 
@@ -49,6 +51,20 @@ class RevisionFigureManifestTest(unittest.TestCase):
             qualitative["checkpoint_sha256"],
             "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79",
         )
+        for record in selected:
+            assets = record["manual_drawing_assets"]
+            self.assertEqual(
+                set(assets),
+                {
+                    "rgb",
+                    "stored_adi",
+                    "prediction_overlay",
+                    "binary_prediction",
+                    "probability",
+                    "error_map",
+                },
+            )
+            self.assertTrue(all(Path(path).is_file() for path in assets.values()))
 
     def test_g1_depth_and_segmentation_contents_are_in_correct_order(self):
         robot = self.payload["details"]["robot"]

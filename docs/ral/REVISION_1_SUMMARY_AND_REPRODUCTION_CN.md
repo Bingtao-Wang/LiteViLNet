@@ -1,6 +1,10 @@
 # LiteViLNet RA-L 第一轮修改、证据审计与复现说明
 
-> 状态：全部数值实验、checkpoint 审计、论文/Response 数值回填、四组修订图片和代码测试均已完成；本文不再含实验或图片占位符。
+> 状态：全部数值实验、checkpoint 审计、论文/Response 数值回填和代码测试均已完成。作者原图已恢复；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
+
+> 正文表述原则：论文正文面向正式读者，重点呈现 LiteViLNet 的创新设计、精度—效率优势、跨城市/越野场景验证和边缘部署价值。为回应评审而补充的精确 split seed、逐类别数量、manifest 路径、SHA-256、训练 seed、梯度累积和单步训练显存等审计信息，不再堆放于 Abstract 或 Section IV-A；它们集中保留在 Response 与本复现文档中。正文中仅保留理解实验所必需的数据集划分类型、评价协议、主要训练设置和三次独立运行统计。
+
+> 颜色约定：`cyan` 表示可直接对应 Editor/Reviewer 意见的修改；`blue` 表示作者在完成逐条回复之外主动加入的表述优化、实现一致性补充或信息层级整理。具体而言，评审明确询问的 ADI 窗口/零分母/归一化公式与 CMA 线性复杂度公式保持 `cyan`；源码审计额外发现的 ECA/CA 前处理、门控输入和残差顺序、Large-Kernel Bridge 前向公式、深监督推理行为及 loss 配置统一为 `blue`。颜色只表示修改来源，不表示内容重要性或证据等级。
 
 ## 1. 这轮修改的核心结论
 
@@ -21,7 +25,7 @@
 |---|---|---|
 | 只有 KITTI，数据太小 | 论文 Section IV-A、IV-D、Table III | ORFD 官方 train/val/test，8,392/1,245/2,193 帧；held-out test F-score `96.74±0.09%` |
 | KITTI 比较不公平、数字错误 | Section IV-A、IV-B、Table I | 官方 BEV 与本地 PV 分组；修正 USNet、PLARD、SNE-RoadSegV2、RoadFormer |
-| 缺少多种子 | Section IV-A、IV-C、Tables I–II | seeds 40/41/42，mean ± sample std |
+| 缺少多种子 | Section IV-A、IV-C、Tables I–II；精确 seed 见 Response/本文档 | 三次独立运行，mean ± sample std；复现 seed 为 40/41/42 |
 | MSFM 单独下降、缺简单融合控制 | Section III-C、IV-C、Table II | `optimal`：simple addition + Bridge + DeepSup |
 | 缺 FLOPs/显存/延迟 | Section IV-A、IV-C、Table II | fvcore GMAC-equivalent、CUDA allocation、FP16 latency distribution |
 | CMA 的二次复杂度与速度冲突 | Section III-C、Eq. (3)、Fig. 3 | 真实 tensor shape；`1×N_l` score memory |
@@ -711,9 +715,9 @@ evidence: runs/revision_1/robot_depth3_end_to_end_4090d_clean_800x1280.json
 checkpoint SHA-256 = 4439c0fbd4646cbd931bd15d7a39271ef22b16602461d36d7759dc89c636de62
 ```
 
-### 10.2 四组图片的一键生成
+### 10.2 手工绘图参考素材的一键生成
 
-四组图片已由确定性脚本生成/修正，正文和 Response 引用的是同一组 PNG：
+脚本只向 `runs/revision_1/figure_materials/` 输出参考材料，不会覆盖 `LiteViLNetPaperRAL/figures/` 下的作者原图。架构图和 MSFM 图仅用于核对模块/箭头；最终投稿图由作者按 `LiteViLNetPaperRAL/FIGURE_MANUAL_REVISION_GUIDE_CN.md` 手工绘制：
 
 ```bash
 NO_ALBUMENTATIONS_UPDATE=1 CUDA_VISIBLE_DEVICES=0 \
@@ -726,19 +730,22 @@ conda run -n litevilnet_ral python -m tools.generate_revision_figures \
 脚本输出：
 
 ```text
-LiteViLNetPaperRAL/figures/fig_architecture2.png
-LiteViLNetPaperRAL/figures/fig_architecture.pdf
-LiteViLNetPaperRAL/figures/fig_msfm1.png
-LiteViLNetPaperRAL/figures/fig_msfm.pdf
-LiteViLNetPaperRAL/figures/real_experiment_all1.png
-LiteViLNetPaperRAL/figures/fig_qualitative.png
-LiteViLNetPaperRAL/figures/fig_qualitative.pdf
+LiteViLNet/runs/revision_1/figure_materials/fig_architecture2.png
+LiteViLNet/runs/revision_1/figure_materials/fig_architecture.pdf
+LiteViLNet/runs/revision_1/figure_materials/fig_msfm1.png
+LiteViLNet/runs/revision_1/figure_materials/fig_msfm.pdf
+LiteViLNet/runs/revision_1/figure_materials/real_experiment_all1.png
+LiteViLNet/runs/revision_1/figure_materials/fig_qualitative.png
+LiteViLNet/runs/revision_1/figure_materials/fig_qualitative.pdf
+LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/<sample_id>/*.png
 LiteViLNet/runs/revision_1/revision_figure_manifest.json
 ```
 
-### 10.3 Fig. 1 与 MSFM 图的实现对齐
+脚本在输出目录与论文 `figures/` 目录相同时会直接报错，防止误覆盖原图。
 
-新版 Fig. 1 明确展示：
+### 10.3 Fig. 1 与 MSFM 图的手工修改要求
+
+Fig. 1 手工修改后需要明确展示：
 
 - KITTI 的 `LiDAR → calibrated projection → 21×21 height interpolation → 7×7 gradient → per-image normalization → 3-channel ADI` 位于网络外；
 - RGB 五个 stage 使用 MobileNetV3；
@@ -746,21 +753,21 @@ LiteViLNet/runs/revision_1/revision_figure_manifest.json
 - 两路在五个尺度进入 MSFM，最深特征经过 Large-Kernel Bridge，再由 U-Net decoder 恢复分辨率；
 - RGB-D 部署是独立的 `aligned depth → depth3` 路径，不再被画成 ADI。
 
-新版 Fig. 3 严格按 `attention_modules.py` 绘制：pooled RGB query、spatial ADI K/V、`B×1×N_l` attention、enhanced RGB residual、gate blend，以及最终 `3×3 Conv–BN–ReLU`。图中不再存在双向 `N_l×N_l` attention 的暗示。
+Fig. 3 需要严格按 `attention_modules.py` 绘制：pooled RGB query、spatial ADI K/V、`B×1×N_l` attention、enhanced RGB residual、gate blend，以及最终 `3×3 Conv–BN–ReLU`。图中不能再存在双向 `N_l×N_l` attention 的暗示。
 
 ### 10.4 机器人组合图修正
 
-Unitree-G1 的两个内容块已经确定性交换，同时保留正确标签：
+参考素材中的 Unitree-G1 两个内容块已经交换；作者原图保持恢复状态，需按以下顺序手工交换，同时保留正确标签：
 
 ```text
 RGB → aligned depth → segmentation overlay → confidence heatmap
 ```
 
-脚本通过 panel 黑色无效像素比例做幂等检查。最终 G1 Depth panel 的黑色像素比例为 `0.02563`，Segmentation panel 为 `0`；第二次运行会识别为 `already corrected`，不会再次交换。单独的 Kuafu 四联图保持原有正确顺序。
+脚本只在参考副本中通过 panel 黑色无效像素比例做检查。参考副本的 G1 Depth panel 黑色像素比例为 `0.02563`，Segmentation panel 为 `0`。单独的 Kuafu 四联图不需要修改。
 
 ### 10.5 KITTI 定性图证据
 
-旧图的四个 UU 样本和重复 ADI 已全部替换。新版 Fig. 4 只使用固定分层 validation manifest 中的样本，并覆盖 UM、UMM、UU：
+Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样本，并覆盖 UM、UMM、UU：
 
 | Sample | Category | F1 | IoU |
 |---|---|---:|---:|
@@ -777,7 +784,7 @@ RGB → aligned depth → segmentation overlay → confidence heatmap
 - 所有样本使用 validation-global threshold `0.66`；
 - logit 统一双线性恢复到原始样本尺寸后计算图中 F1/IoU；
 - 每行依次显示对应的 RGB、stored ADI、prediction overlay 和 TP/FP/FN error map；
-- 四个 ADI 的 SHA-256 均不相同，具体输入和输出哈希记录于 `revision_figure_manifest.json`。
+- 四个 ADI 的 SHA-256 均不相同，具体输入、逐面板素材和输出哈希记录于 `revision_figure_manifest.json`。
 
 图中逐样本 F1/IoU 只用于解释定性样例，不参与 Table I/II 的全 validation 累计指标。
 
@@ -793,10 +800,11 @@ RGB → aligned depth → segmentation overlay → confidence heatmap
 - [x] PyTorch 22.18/22.19 FPS 与 TensorRT 68.73 FPS 的 checkpoint/backend 已分开。
 - [x] TensorRT 没有被用来声称 KITTI accuracy 等价。
 - [x] 没有虚构机器人 success/intervention/collision/lateral-error/power。
-- [x] 相对原稿新增或重写的可见正文、公式、标题、图注与表格关键信息均以 cyan 标出；纯 LaTeX 结构命令不着色。
-- [x] Fig. 1、MSFM 图、KITTI 定性图、Unitree-G1 两格已按第 10 节修改，并由 manifest 哈希验证。
-- [x] `latexmk -pdf root.tex` 和 `latexmk -pdf ral_response_1.tex` 无 fatal/undefined reference/overfull；最终 PDF 分别为 8/22 页，论文末页参考文献已平衡。
-- [x] Response 每条都引用对应 Section/Table/Figure，并在相关回复中直接复现 Tables I--III 与 Figs. 1、3、4、5--6。
+- [x] cyan 已收缩到评审要求的协议、公式、关键数字和结论短语，不再整段着色。
+- [x] Fig. 1、3、4、5 的手工绘制说明、参考副本和 Fig. 4 逐面板素材已准备，生成脚本不会覆盖作者原图。
+- [x] 恢复原图后的当前版本可编译：论文 8 页、Response 23 页，无 fatal/undefined reference/overfull；这两份 PDF 是手工重画前的核验版。
+- [ ] 作者按 `FIGURE_MANUAL_REVISION_GUIDE_CN.md` 手工覆盖 Fig. 1、3、4、5，并重新编译最终 PDF。
+- [x] Response 每条都引用对应 Section/Table/Figure；图片宏继续引用论文原文件名，作者手工覆盖后会自动同步到 Response。
 
 ## 12. 证据限制
 
@@ -830,7 +838,7 @@ tools/summarize_orfd_test.py               held-out test multi-seed/paired summa
 tools/summarize_revision_experiments.py    mean ± sample std + seed-matched paired differences
 tools/summarize_distillation_control.py    KD student 与同 seed 非 KD student 配对汇总
 tools/summarize_profile_repeats.py         repeated profiler invocation mean ± sample std
-tools/generate_revision_figures.py         Fig. 1/Fig. 3/Fig. 4/机器人组合图确定性生成与哈希清单
+tools/generate_revision_figures.py         只生成 Fig. 1/3/4/5 手工绘图参考素材与哈希清单，不覆盖论文原图
 tools/run_revision_ablation_queue.sh       reproducible KITTI queue
 tools/run_kitti_distill_queue.sh           reproducible three-seed KD-control queue
 tools/run_orfd_revision_queue.sh           reproducible ORFD queue
@@ -839,5 +847,5 @@ tests/test_deployment_metrics.py           metric equivalence test
 tests/test_adi.py                          ADI reference-operation tests
 tests/test_orfd_dataset.py                 ORFD discovery/depth3/label/strict-image-retry tests
 tests/test_robot_road_dataset.py           robot depth3 数值和 validity 边界测试
-tests/test_revision_figure_manifest.py     图片输出哈希、validation 样本、G1 顺序和图结构契约测试
+tests/test_revision_figure_manifest.py     素材输出目录保护、哈希、validation 样本、G1 顺序和图结构契约测试
 ```

@@ -1,24 +1,24 @@
 {
   "generator": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/tools/generate_revision_figures.py",
-  "generator_sha256": "919f8883df70fd6f99294e38d246522ccbf7e443ca2bc0d5b6c64b239569e724",
+  "generator_sha256": "2d1571a30f7578d0ed61a2c6f01130feb2fda352582b0845fc95716bffabcda0",
   "requested_group": "all",
   "details": {
     "architecture": {
       "contract": "MobileNetV3 RGB stages; Conv stem + four DSConv geometry stages; five MSFMs; LKB; U-Net decoder",
       "outputs": [
-        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture2.png",
-        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture.pdf"
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_architecture2.png",
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_architecture.pdf"
       ]
     },
     "msfm": {
       "contract": "one pooled RGB query, spatial ADI K/V, B×1×N_l attention, gate blend + cross residual + output convolution",
       "outputs": [
-        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm1.png",
-        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm.pdf"
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_msfm1.png",
+        "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_msfm.pdf"
       ]
     },
     "robot": {
-      "operation": "already corrected",
+      "operation": "swapped G1 Depth/Segmentation contents",
       "g1_inset_x": [
         6832,
         7704
@@ -32,8 +32,8 @@
         1559
       ],
       "before": {
-        "depth_labeled_black_fraction": 0.025629780557432064,
-        "segmentation_labeled_black_fraction": 0.0
+        "depth_labeled_black_fraction": 0.0,
+        "segmentation_labeled_black_fraction": 0.025696264744429882
       },
       "after": {
         "depth_labeled_black_fraction": 0.025629780557432064,
@@ -67,6 +67,14 @@
           "adi_sha256": "b1be303283ed690ff0d970754afcd7ff53d2c93a94b0df84c393f5eb57f6cd4f",
           "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/um_road_000054.png",
           "label_sha256": "9fa3d3b789f1739cdabd62f7f2dfaefa01ccc44e0c783d33637b5c5718f6edef",
+          "manual_drawing_assets": {
+            "rgb": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/rgb.png",
+            "stored_adi": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/stored_adi.png",
+            "prediction_overlay": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/prediction_overlay.png",
+            "binary_prediction": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/binary_prediction.png",
+            "probability": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/probability.png",
+            "error_map": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/error_map.png"
+          },
           "metrics_original_resolution": {
             "F1": 0.9937505235821396,
             "IoU": 0.9875786739485164,
@@ -84,6 +92,14 @@
           "adi_sha256": "c4fc10e9ce4dce814506de7b4a9004d772f0e421bb9c398a5d409eabf02b06c0",
           "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/umm_road_000017.png",
           "label_sha256": "09b3b2819f7d3d9c7e3932fcf4e2fd3638a35e192b42ff872ff50e8cd2dc194e",
+          "manual_drawing_assets": {
+            "rgb": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/rgb.png",
+            "stored_adi": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/stored_adi.png",
+            "prediction_overlay": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/prediction_overlay.png",
+            "binary_prediction": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/binary_prediction.png",
+            "probability": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/probability.png",
+            "error_map": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/error_map.png"
+          },
           "metrics_original_resolution": {
             "F1": 0.9909411945340089,
             "IoU": 0.9820450395617772,
@@ -101,6 +117,14 @@
           "adi_sha256": "b08abf8994a7c5379cfe5b78497f1645fca229b7fc70979b04c9744856e6c056",
           "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/umm_road_000050.png",
           "label_sha256": "e7779fb385365e870b1f93cdb8eb45ba3014a5a573e5c2033cce17199f8bf0c7",
+          "manual_drawing_assets": {
+            "rgb": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/rgb.png",
+            "stored_adi": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/stored_adi.png",
+            "prediction_overlay": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/prediction_overlay.png",
+            "binary_prediction": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/binary_prediction.png",
+            "probability": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/probability.png",
+            "error_map": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/error_map.png"
+          },
           "metrics_original_resolution": {
             "F1": 0.9796955835647084,
             "IoU": 0.9601992971740131,
@@ -118,6 +142,14 @@
           "adi_sha256": "c336bb6232ad26547eed18bf6c93f17a65ffe2c5c5e00eca020702ef647ccad5",
           "label": "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road/training/gt_image_2/uu_road_000059.png",
           "label_sha256": "e11fbb1273cd5ca1a0c3faf81a02a628354fe8203c38a05120a7fab277cd7a21",
+          "manual_drawing_assets": {
+            "rgb": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/rgb.png",
+            "stored_adi": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/stored_adi.png",
+            "prediction_overlay": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/prediction_overlay.png",
+            "binary_prediction": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/binary_prediction.png",
+            "probability": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/probability.png",
+            "error_map": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/error_map.png"
+          },
           "metrics_original_resolution": {
             "F1": 0.9887171397516424,
             "IoU": 0.9776860447420483,
@@ -131,39 +163,159 @@
   },
   "outputs": [
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture2.png",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_architecture2.png",
       "bytes": 388695,
       "sha256": "47a11d8818793896eaeafdc09dc0aa2dc6b05d7e8ec8169e90fa41c47e898542"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_architecture.pdf",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_architecture.pdf",
       "bytes": 52501,
       "sha256": "bf245fa04e0ddac56a1f8e3f0538de297bb1cbd061e421aad14de168ebe037ec"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm1.png",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_msfm1.png",
       "bytes": 357662,
       "sha256": "a372e5b45d0ab4b2e3396caf46568766a1bf6cb1577542ddecbda89bf47ae50b"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_msfm.pdf",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_msfm.pdf",
       "bytes": 35053,
       "sha256": "467f70c87d9c280e9d7e2ceb5f7acd52314c9a019b7e54c58093798af9989472"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/real_experiment_all1.png",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/real_experiment_all1.png",
       "bytes": 15398225,
       "sha256": "6f7b141c980f56b04ba597f4cc5bb90667ac2e66f24ab97c1e71af04116439a2"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_qualitative.png",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_qualitative.png",
       "bytes": 5127409,
       "sha256": "4f4ef5118e49ba87eb12c8f210b9d028a8aa670963ad27df8ad5025c064abc6b"
     },
     {
-      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNetPaperRAL/figures/fig_qualitative.pdf",
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/fig_qualitative.pdf",
       "bytes": 1128524,
       "sha256": "84ca2324524b39bdd2fd4946af1651a864d4e76df1ca67b35a0288018ed77166"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/rgb.png",
+      "bytes": 718669,
+      "sha256": "a0597a95dd6ec26467ec5050bd01e05384cfa2d2110f36a144131fd106aa54db"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/stored_adi.png",
+      "bytes": 104805,
+      "sha256": "d75148af98f8380c595ebd018d1c6edfd798c387fa716e46f34240d1eb060df6"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/prediction_overlay.png",
+      "bytes": 699450,
+      "sha256": "546ce05e589d19ede24da7a5daaa5d78a89a84b5ba8eb85035bd342570582b5a"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/binary_prediction.png",
+      "bytes": 1864,
+      "sha256": "ad88ccb85f1125af622f62a646c043b3fef1fae665768eff7a13e7695aaaab28"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/probability.png",
+      "bytes": 80987,
+      "sha256": "11206e35565dc2dc73b572341e9382da5a7b21dde5ee4f54637336bd64ca6cb6"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/um_000054/error_map.png",
+      "bytes": 440171,
+      "sha256": "b7962625cbd8ff48e6e3b1b1e685753cca8e9b91146ef9af286fe9e54191f91b"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/rgb.png",
+      "bytes": 814278,
+      "sha256": "75ad6fc6f588bf0ecbfef35ff6238e2491c38b03eb88f05538bab13cce843fe0"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/stored_adi.png",
+      "bytes": 135021,
+      "sha256": "cb93dd47bbef724956ee0f15744a17c8749603742dac40934651b2234e2e2717"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/prediction_overlay.png",
+      "bytes": 795099,
+      "sha256": "6a16294d4b4c0d8cdc0eadc916feab427162751692f6b5f17da887126c3e0a03"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/binary_prediction.png",
+      "bytes": 2023,
+      "sha256": "0fd13045652a118bf2e8ad6cc57a85ace079ffed1b3d5770222e63ff3e4e6976"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/probability.png",
+      "bytes": 89538,
+      "sha256": "e9e4588f9a54022eecb214d830f540dacfccd49909fb2861aeab53b884c97ac5"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000017/error_map.png",
+      "bytes": 507459,
+      "sha256": "41dc591f0cd57811cc10325bd0789eb2d3bfed978ae79ebcb86b930b3c08a105"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/rgb.png",
+      "bytes": 792121,
+      "sha256": "a47ed24de341db05d02efe53087612a5c66c49c2b81024e6ef20dff4f514303f"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/stored_adi.png",
+      "bytes": 119248,
+      "sha256": "680f07de4b75a239d4e2b78f861d7c5e55c1e9ad42febb703462d6e749629b44"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/prediction_overlay.png",
+      "bytes": 758417,
+      "sha256": "ff75f0d541f934b6496cc8feee93d86c3989ec534653987c354a620b424779d0"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/binary_prediction.png",
+      "bytes": 1926,
+      "sha256": "0a1321791b24b319299dcad9a9bc42ca5e2d890d18683df8b37e3778cf5a123c"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/probability.png",
+      "bytes": 80076,
+      "sha256": "5239365344b526554ac125f6f29582ced4ff6ecd1cf003c2d4fbe341d0069aae"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/umm_000050/error_map.png",
+      "bytes": 439332,
+      "sha256": "36dc410b0cb311cca2702704029c7ea603bcb9c391c633b9981b592264dbbc68"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/rgb.png",
+      "bytes": 721559,
+      "sha256": "f8620f549cac3e75d05a1a0621758f037649d864ff1814921ab6817fa5fb2850"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/stored_adi.png",
+      "bytes": 121610,
+      "sha256": "af55a525290abafb1443bd36a230bf231c7b090e025c3d7bdb171944930416e0"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/prediction_overlay.png",
+      "bytes": 704628,
+      "sha256": "fec08bfd6a57b53528ea99a1903f542a6296677ba4eb1beaedf54b0813e096fd"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/binary_prediction.png",
+      "bytes": 1999,
+      "sha256": "c946cecd3a0537b700359fc899e5eb2fa4acf69516909e3afc7085e9f9632353"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/probability.png",
+      "bytes": 75651,
+      "sha256": "dcf31f8c0552c96911e713ed4dcd80111e32a09076118fd9621f598f4ea9aca6"
+    },
+    {
+      "path": "/home/aihub/daojie/LiteViLNet_ws/LiteViLNet/runs/revision_1/figure_materials/qualitative_panels/uu_000059/error_map.png",
+      "bytes": 439501,
+      "sha256": "9fc32618b83fbfe0b084d57ce25d45faf1745aeb67f082e15c891c667d11a8a7"
     }
   ]
 }
