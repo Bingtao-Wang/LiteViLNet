@@ -9,11 +9,13 @@ fi
 GPU_ID="$1"
 shift
 
-DATA_ROOT="${LITEVILNET_KITTI_ROOT:-/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road}"
+: "${LITEVILNET_KITTI_ROOT:?Set LITEVILNET_KITTI_ROOT to the KITTI Road data root}"
+: "${LITEVILNET_KITTI_TEACHER:?Set LITEVILNET_KITTI_TEACHER to the full-model checkpoint}"
+DATA_ROOT="${LITEVILNET_KITTI_ROOT}"
 TRAIN_SPLIT="${LITEVILNET_KITTI_TRAIN_SPLIT:-configs/splits/kitti_road/stratified_seed20260723/train.txt}"
 VAL_SPLIT="${LITEVILNET_KITTI_VAL_SPLIT:-configs/splits/kitti_road/stratified_seed20260723/val.txt}"
-TEACHER="${LITEVILNET_KITTI_TEACHER:-/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth}"
-OUTPUT_ROOT="${LITEVILNET_KITTI_DISTILL_OUTPUT:-/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_distill_edge_stratified_seed20260723}"
+TEACHER="${LITEVILNET_KITTI_TEACHER}"
+OUTPUT_ROOT="${LITEVILNET_KITTI_DISTILL_OUTPUT:-runs/revision_1/kitti_distill_edge}"
 
 for SEED in "$@"; do
   echo "[$(date --iso-8601=seconds)] starting KITTI KD student seed=${SEED} on GPU ${GPU_ID}"

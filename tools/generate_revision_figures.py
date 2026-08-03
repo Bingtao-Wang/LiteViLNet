@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 from typing import Iterable
@@ -42,12 +43,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE_ROOT = REPO_ROOT.parent
 DEFAULT_FIGURE_DIR = REPO_ROOT / "runs/revision_1/figure_materials"
 DEFAULT_SOURCE_FIGURE_DIR = WORKSPACE_ROOT / "LiteViLNetPaperRAL" / "figures"
-DEFAULT_DATA_ROOT = Path(
-    "/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road"
-)
+DEFAULT_DATA_ROOT = Path(os.environ.get("LITEVILNET_KITTI_ROOT", "data/kitti_road"))
 DEFAULT_CHECKPOINT = Path(
-    "/data/Database/Research04-LiteViLNet/revision_1_runs/"
-    "kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth"
+    os.environ.get(
+        "LITEVILNET_KITTI_FIGURE_CHECKPOINT",
+        "runs/revision_1/checkpoints/full_seed42_best_model.pth",
+    )
 )
 DEFAULT_SPLIT = REPO_ROOT / (
     "configs/splits/kitti_road/stratified_seed20260723/val.txt"

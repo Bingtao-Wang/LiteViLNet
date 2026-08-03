@@ -1,0 +1,106 @@
+{
+  "protocol": "matched local KITTI perspective-view retraining",
+  "baseline": "usnet",
+  "seed": 42,
+  "input_size": [
+    384,
+    1248
+  ],
+  "train_count": 231,
+  "val_count": 58,
+  "epochs_requested": 150,
+  "best_epoch": 105,
+  "batch_size": 2,
+  "amp": true,
+  "metrics": {
+    "MaxF": 0.9794926335545977,
+    "BestThreshold": 0.3700000047683716,
+    "PRE": 0.9807068347740433,
+    "REC": 0.978281534945601,
+    "FPR": 0.004104917751704577,
+    "FNR": 0.021718465054378605,
+    "IoU": 0.9598095650761225,
+    "AP": 0.9846626577688302,
+    "Precision": 0.9807068347740433,
+    "Recall": 0.978281534945601
+  },
+  "parameters": 30738444,
+  "best_checkpoint": "runs/revision_1/matched_baselines/formal/usnet_seed42/best_model.pth",
+  "best_checkpoint_sha256": "273d490b7228e3f1fdf3233deb91f18aff7d854c207f37d44e975b7109483e2b",
+  "official_source": "${USNET_SOURCE}",
+  "official_remote": "https://github.com/morancyc/USNet.git",
+  "official_commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "model/usnet.py": "62d581badf023ba3cf4ef9ebbdfcb5962385be330851f1930364ba2c5aa5bfa9",
+    "loss.py": "0f412a9d9ff257c720116e80739b876ed7f18b20adb173f1310b4b1eda161201"
+  },
+  "normal_cache_metadata": {
+    "generator": "official SNE-RoadSeg models/sne_model.py",
+    "official_repository": "https://github.com/hlwang1124/SNE-RoadSeg",
+    "official_source": "${SNE_SOURCE}",
+    "official_commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+    "official_sne_sha256": "cb8394d0690357c157ebbfa1e8ae99db8732e9163a06d0c63b521f7d7bbbd277",
+    "storage_dtype": "float32",
+    "units": "depth_u16 / 1000 (metres)",
+    "task_count": 520,
+    "reused_count": 0,
+    "training_flip_semantics": "depth is horizontally flipped before official SNE"
+  },
+  "split_metadata": {
+    "protocol": "matched local KITTI perspective-view retraining",
+    "data_root": "${KITTI_ROOT}",
+    "depth_root": "${DEPTH_ROOT}/depth_u16",
+    "train_manifest": "configs/splits/kitti_road/stratified_seed20260723/train.txt",
+    "val_manifest": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "train_count": 231,
+    "val_count": 58,
+    "train_val_overlap": 0,
+    "subdirectories": [
+      "image_2",
+      "gt_image_2",
+      "calib",
+      "ADI",
+      "depth_u16"
+    ]
+  },
+  "runtime": {
+    "seconds": 3023.5623116493225,
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_kitti_baseline.py",
+      "--baseline",
+      "usnet",
+      "--official-source",
+      "${USNET_SOURCE}",
+      "--data-root",
+      "runs/revision_1/matched_baselines/kitti_road",
+      "--output-dir",
+      "runs/revision_1/matched_baselines/formal/usnet_seed42",
+      "--seed",
+      "42",
+      "--epochs",
+      "150",
+      "--batch-size",
+      "2",
+      "--num-workers",
+      "4",
+      "--val-every",
+      "5",
+      "--early-stop-validations",
+      "20",
+      "--amp",
+      "--device",
+      "cuda"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "metrics_and_hashes_changed": false
+  }
+}

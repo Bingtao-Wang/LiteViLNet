@@ -9,8 +9,9 @@ fi
 GPU_ID="$1"
 shift
 
-DATA_ROOT="${LITEVILNET_ORFD_ROOT:-/data/Database/Research04-LiteViLNet/datasets/ORFD/extracted/Final_Dataset}"
-OUTPUT_ROOT="${LITEVILNET_ORFD_OUTPUT:-/data/Database/Research04-LiteViLNet/revision_1_runs/orfd_ablation}"
+: "${LITEVILNET_ORFD_ROOT:?Set LITEVILNET_ORFD_ROOT to the extracted ORFD Final_Dataset}"
+DATA_ROOT="${LITEVILNET_ORFD_ROOT}"
+OUTPUT_ROOT="${LITEVILNET_ORFD_OUTPUT:-runs/revision_1/orfd_ablation}"
 MAX_ATTEMPTS="${LITEVILNET_ORFD_MAX_ATTEMPTS:-3}"
 
 if ! [[ "${MAX_ATTEMPTS}" =~ ^[1-9][0-9]*$ ]]; then

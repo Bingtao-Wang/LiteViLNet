@@ -16,6 +16,7 @@ env/
 ENV/
 LiteViLNet_ Lightweight Vision-LiDAR Fusion Network for Efficient Road Segmentation/
 output/
+dist/
 # Local datasets and generated artifacts
 data/
 # Keep Python dataset implementations under the package; only the repository-
@@ -33,10 +34,12 @@ runs/summary/*
 runs/train/*
 runs/revision_1/*.log
 runs/revision_1/*.stdout
+runs/revision_1/matched_baselines/
 tools/fps_4060ti/
 tools/fps_jetson/
 tools/fps/results/*
 third_party/**/outputs/
+third_party/matched_baselines/
 
 # Large model files
 weights/**/*.pth

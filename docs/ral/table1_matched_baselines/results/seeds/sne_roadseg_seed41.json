@@ -1,0 +1,106 @@
+{
+  "protocol": "matched local KITTI perspective-view retraining",
+  "baseline": "sne_roadseg",
+  "seed": 41,
+  "input_size": [
+    384,
+    1248
+  ],
+  "train_count": 231,
+  "val_count": 58,
+  "epochs_requested": 150,
+  "best_epoch": 40,
+  "batch_size": 2,
+  "amp": true,
+  "metrics": {
+    "MaxF": 0.9730794977600855,
+    "BestThreshold": 0.5,
+    "PRE": 0.9744052569724313,
+    "REC": 0.9717574409850592,
+    "FPR": 0.005444341414093507,
+    "FNR": 0.02824255901492038,
+    "IoU": 0.9475705208104901,
+    "AP": 0.9946402623572245,
+    "Precision": 0.9744052569724313,
+    "Recall": 0.9717574409850592
+  },
+  "parameters": 201324806,
+  "best_checkpoint": "runs/revision_1/matched_baselines/formal/sne_roadseg_seed41/best_model.pth",
+  "best_checkpoint_sha256": "df44300104f2468b5e55d6272d443c364fb60cb1fa86ac08b0a8ba1cd8758eb7",
+  "official_source": "${SNE_SOURCE}",
+  "official_remote": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+  "official_commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "models/networks.py": "8f0b6c0d369ef80e507decc9e5bcc39c229d2d5583eb355286cb9ba0777938a7",
+    "models/roadseg_model.py": "a53bcb99c231b7b9652ef17eb8260cb87ed0846e1f98c6502fe33ee7b2a7309c"
+  },
+  "normal_cache_metadata": {
+    "generator": "official SNE-RoadSeg models/sne_model.py",
+    "official_repository": "https://github.com/hlwang1124/SNE-RoadSeg",
+    "official_source": "${SNE_SOURCE}",
+    "official_commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+    "official_sne_sha256": "cb8394d0690357c157ebbfa1e8ae99db8732e9163a06d0c63b521f7d7bbbd277",
+    "storage_dtype": "float32",
+    "units": "depth_u16 / 1000 (metres)",
+    "task_count": 520,
+    "reused_count": 0,
+    "training_flip_semantics": "depth is horizontally flipped before official SNE"
+  },
+  "split_metadata": {
+    "protocol": "matched local KITTI perspective-view retraining",
+    "data_root": "${KITTI_ROOT}",
+    "depth_root": "${DEPTH_ROOT}/depth_u16",
+    "train_manifest": "configs/splits/kitti_road/stratified_seed20260723/train.txt",
+    "val_manifest": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "train_count": 231,
+    "val_count": 58,
+    "train_val_overlap": 0,
+    "subdirectories": [
+      "image_2",
+      "gt_image_2",
+      "calib",
+      "ADI",
+      "depth_u16"
+    ]
+  },
+  "runtime": {
+    "seconds": 5344.100319385529,
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_kitti_baseline.py",
+      "--baseline",
+      "sne_roadseg",
+      "--official-source",
+      "${SNE_SOURCE}",
+      "--data-root",
+      "runs/revision_1/matched_baselines/kitti_road",
+      "--output-dir",
+      "runs/revision_1/matched_baselines/formal/sne_roadseg_seed41",
+      "--seed",
+      "41",
+      "--epochs",
+      "150",
+      "--batch-size",
+      "2",
+      "--num-workers",
+      "4",
+      "--val-every",
+      "5",
+      "--early-stop-validations",
+      "20",
+      "--amp",
+      "--device",
+      "cuda"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "metrics_and_hashes_changed": false
+  }
+}

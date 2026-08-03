@@ -1,6 +1,8 @@
 # LiteViLNet RA-L 第一轮修改、证据审计与复现说明
 
-> 状态：全部数值实验、checkpoint 审计、论文/Response 数值回填和代码测试均已完成。作者原图已恢复；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
+> **内部文档，请勿作为双盲附件上传。** 本文为作者核验保留本机数据/结果路径和完整审计说明。投稿请只使用 `tools/package_ral_reproduction.sh` 生成并通过自动身份扫描的匿名压缩包。
+
+> 状态：修订实验、Table I 的 USNet/SNE-RoadSeg 官方源码同协议三种子重训练、论文/Response 回填与证据审计均已完成。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
 
 > 正文表述原则：论文正文面向正式读者，重点呈现 LiteViLNet 的创新设计、精度—效率优势、跨城市/越野场景验证和边缘部署价值。为回应评审而补充的精确 split seed、逐类别数量、manifest 路径、SHA-256、训练 seed、梯度累积和单步训练显存等审计信息，不再堆放于 Abstract 或 Section IV-A；它们集中保留在 Response 与本复现文档中。正文中仅保留理解实验所必需的数据集划分类型、评价协议、主要训练设置和三次独立运行统计。
 
@@ -18,13 +20,14 @@
 6. MSFM 增加约 10.35M 参数，必须与“简单逐尺度相加 + 同一 Bridge + 同一深监督”控制一起看。修正后的分层 split 结果见第 7 节。
 7. ORFD 用作第二数据集。除 8,392/1,245 train/validation 外，本轮进一步发现下载包的 2,193-frame testing partition 也包含完整 GT；训练和 validation 都与 test 无同名帧。论文现以 held-out test 作为主结果。
 8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`，相对 OFF-Net 公布值高 `6.44/11.38 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的 seed-matched 优势是 `+0.71 ± 0.67 pp`，三个 seeds 均为正；其 F-score 标准差也约为 compact 的三分之一。
+9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 USNet 以 `0.65 pp` MaxF 差换取 `54.3%` 更少参数和 `1.53×/3.54×` 的 RTX/Jetson 吞吐。
 
 ## 2. 审稿意见—修改证据矩阵
 
 | 审稿关注 | 修改位置 | 证据/实验 |
 |---|---|---|
 | 只有 KITTI，数据太小 | 论文 Section IV-A、IV-D、Table III | ORFD 官方 train/val/test，8,392/1,245/2,193 帧；held-out test F-score `96.74±0.09%` |
-| KITTI 比较不公平、数字错误 | Section IV-A、IV-B、Table I | 官方 BEV 与本地 PV 分组；修正 USNet、PLARD、SNE-RoadSegV2、RoadFormer |
+| KITTI 比较不公平、数字错误 | Section IV-A、IV-B、Table I | 从作者官方源码同协议重训 USNet/SNE-RoadSeg；三种方法统一 split、尺寸、预算、评测与三种子统计 |
 | 缺少多种子 | Section IV-A、IV-C、Tables I–II；精确 seed 见 Response/本文档 | 三次独立运行，mean ± sample std；复现 seed 为 40/41/42 |
 | MSFM 单独下降、缺简单融合控制 | Section III-C、IV-C、Table II | `optimal`：simple addition + Bridge + DeepSup |
 | 缺 FLOPs/显存/延迟 | Section IV-A、IV-C、Table II | fvcore GMAC-equivalent、CUDA allocation、FP16 latency distribution |
@@ -264,7 +267,68 @@ auxiliary weights = [0.4, 0.3, 0.2]
 
 ## 7. KITTI 修订实验结果
 
-### 7.1 主分层 split
+### 7.1 Table I 官方源码同协议基线
+
+Table I 的核心精度行不再混用 KITTI official BEV test-server 与本地 perspective-view 指标。USNet、SNE-RoadSeg、PLARD、RoadFormer 和 LiteViLNet 现在统一使用：
+
+```text
+split: category-stratified 231 train / 58 validation
+input: 384×1248
+budget: at most 150 epochs
+seeds: 40, 41, 42
+evaluator: all validation pixels accumulated, then 101 thresholds swept
+statistics: mean ± sample SD
+```
+
+官方来源与固定版本：
+
+| 方法 | 作者官方仓库 | 固定 commit | 正式训练所用架构 |
+|---|---|---|---|
+| USNet | `https://github.com/morancyc/USNet.git` | `d761158ad42df7dcb62fa257dd02ce11c85f94a5` | 官方 ResNet-18 双分支 USNet |
+| SNE-RoadSeg | `https://github.com/hlwang1124/SNE-RoadSeg.git` | `5e7900bfd59887634ced687ffe85a73018a38659` | 官方双 ResNet-152 RoadSeg + 官方 SNE normal |
+| PLARD | `https://github.com/zhechen/PLARD.git` | `44485803092e729661c696ab6c03f6f2fabc8701` | 官方 RGB--ADI PLARD + 三路监督 |
+| RoadFormer | `https://github.com/LiJiahang617/Road-Former.git` | `f675a3467cb168ebc727648390c304279bbcb079` | 官方 TwinConvNeXt-B + RoadFormer decoder |
+
+本地适配器没有重写基线网络和 loss。它直接导入官方定义，保留 USNet 的 evidential objective、SNE-RoadSeg 的 dual-ResNet/SNE、PLARD 的 RGB--ADI 图与三路监督，以及 RoadFormer 的 TwinConvNeXt-B、Hungarian matching losses 和 decoder；新增部分仅为统一 manifest、预算、seed、normal 编码/缓存、评测与 provenance 输出。四个仓库的 remote、完整 commit、语义 diff 和关键文件 SHA-256 均由 `source_provenance.json` 与汇总器逐项复核。
+
+逐 seed 正式结果（百分数）：
+
+| Method | Seed | Best epoch | MaxF | PRE | REC | Checkpoint SHA-256 |
+|---|---:|---:|---:|---:|---:|---|
+| USNet | 40 | 135 | 97.8094 | 98.0025 | 97.6171 | `09e0b77829b05d52c1ab945d9ac3fe48ea870718cddf683a7a767855950734c7` |
+| USNet | 41 | 125 | 97.8853 | 98.0283 | 97.7428 | `b4a55ab275be5ac15a520fe6e6a0018ef18451ad3bb80a0c5ad9c749bbdac065` |
+| USNet | 42 | 105 | 97.9493 | 98.0707 | 97.8282 | `273d490b7228e3f1fdf3233deb91f18aff7d854c207f37d44e975b7109483e2b` |
+| SNE-RoadSeg | 40 | 35 | 96.9893 | 97.0651 | 96.9136 | `7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70` |
+| SNE-RoadSeg | 41 | 40 | 97.3079 | 97.4405 | 97.1757 | `df44300104f2468b5e55d6272d443c364fb60cb1fa86ac08b0a8ba1cd8758eb7` |
+| SNE-RoadSeg | 42 | 45 | 97.3805 | 97.6629 | 97.0998 | `8eafe3bbfd8e2fa14377d631da6fd406e1d940a41f86c5060c89b5f1eeb1f9e0` |
+
+Table I 汇总：
+
+| Method | n | MaxF | PRE | REC | Params |
+|---|---:|---:|---:|---:|---:|
+| USNet | 3 | 97.88 ± 0.07 | 98.03 ± 0.03 | 97.73 ± 0.11 | 30.74M |
+| SNE-RoadSeg | 3 | 97.23 ± 0.21 | 97.39 ± 0.30 | 97.06 ± 0.13 | 201.32M |
+| LiteViLNet | 3 | 97.23 ± 0.15 | 97.31 ± 0.59 | 97.16 ± 0.30 | 14.04M |
+
+专业解读：LiteViLNet 的 MaxF 比 SNE-RoadSeg 高 `0.0085 pp`（表中四舍五入后均为 97.23），且 MaxF sample SD 更低，同时参数量少 `93.03%`。USNet 的 MaxF 高 `0.6469 pp`，但 LiteViLNet 参数量少 `54.34%`，RTX 4060 Ti/Jetson Orin NX model-only 吞吐为其 `1.528×/3.545×`。因此正文把 LiteViLNet 定位为精度—参数—目标设备速度的 Pareto operating point，不声称所有精度指标绝对第一。
+
+正式汇总与匿名逐 seed 证据：
+
+```text
+docs/ral/table1_matched_baselines/results/summary.json
+docs/ral/table1_matched_baselines/results/summary.csv
+docs/ral/table1_matched_baselines/results/seeds/*.json
+```
+
+完整复现命令、官方数据链接、源码边界与哈希规则见：
+
+```text
+docs/ral/table1_matched_baselines/README.md
+docs/ral/table1_matched_baselines/README_CN.md
+docs/ral/table1_matched_baselines/source_provenance.json
+```
+
+### 7.2 主分层 split
 
 三种子最终结果（百分数，mean ± sample SD）：
 
@@ -333,7 +397,7 @@ python -m tools.summarize_revision_experiments \
 
 `paired_comparisons` 按相同 seed 计算左侧配置减右侧配置的逐 seed 差值，再报告 mean/sample-SD；论文中的模块增益必须读取这里，不能用两个独立均值的标准差代替成对差值标准差。
 
-### 7.2 历史 UU-only split
+### 7.3 历史 UU-only split
 
 历史三种子可追溯结果：
 
@@ -346,7 +410,7 @@ python -m tools.summarize_revision_experiments \
 
 这些值不能替代分层 split 主结果，也不能与 KITTI official BEV server 排名。
 
-### 7.3 结构成本
+### 7.4 结构成本
 
 fvcore 约定：一个 fused multiply-add 记为一个 MAC-equivalent。分析器不支持的 element-wise/activation op 保留在 JSON 中，因此不能称为 exact FLOPs。
 
@@ -365,7 +429,7 @@ fvcore 约定：一个 fused multiply-add 记为一个 MAC-equivalent。分析�
 runs/revision_1/ablation_cost_384x1248.json
 ```
 
-### 7.4 延迟与显存
+### 7.5 延迟与显存
 
 统一口径：RTX 4090 D、`384×1248`、batch 1、FP16、随机常驻 GPU 的双模态 tensor、model-only、50 次 warm-up + 200 次计时；表中延迟是三次独立 profiler invocation 的 mean ± sample SD。`peak/+fwd` 分别是 CUDA peak allocated 与 warm-up 后一次 forward 的 incremental peak，单位 MiB。
 
@@ -794,15 +858,15 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
 
 - [x] Abstract、Table I、Table II、Conclusion 的 KITTI MaxF/参数/GMAC 数字来自同一个分层 split 汇总 JSON。
 - [x] Abstract、Table III、Conclusion 的 ORFD test 数字来自 `orfd_test_summary.json`，且 F/PRE/REC/IoU 使用官方 fixed-argmax 原始 GT 尺寸口径。
-- [x] Table I 的 official BEV 和 local PV 分组没有直接排名文字。
-- [x] USNet 为 `96.89/96.51/97.27`；single-scale PLARD 为 `96.83/96.79/96.86`。
+- [x] Table I 的三个核心精度行全部来自同一 231/58 split、尺寸、150-epoch budget、三种子和 evaluator，不再混合 official BEV 与 local PV 排名。
+- [x] USNet/SNE-RoadSeg 的官方仓库、固定 commit、源码哈希、逐 seed JSON 与 checkpoint SHA 均进入匿名 Supplement。
 - [x] 论文没有 `best CNN`、`standard split`、`collision-free`、`RGB-D-compatible ADI`。
 - [x] PyTorch 22.18/22.19 FPS 与 TensorRT 68.73 FPS 的 checkpoint/backend 已分开。
 - [x] TensorRT 没有被用来声称 KITTI accuracy 等价。
 - [x] 没有虚构机器人 success/intervention/collision/lateral-error/power。
 - [x] cyan 已收缩到评审要求的协议、公式、关键数字和结论短语，不再整段着色。
 - [x] Fig. 1、3、4、5 的手工绘制说明、参考副本和 Fig. 4 逐面板素材已准备，生成脚本不会覆盖作者原图。
-- [x] 恢复原图后的当前版本可编译：论文 8 页、Response 23 页，无 fatal/undefined reference/overfull；这两份 PDF 是手工重画前的核验版。
+- [x] 恢复原图后的当前版本可编译：论文 8 页、Response 24 页，无 fatal/undefined reference/overfull；这两份 PDF 是手工重画前的核验版。
 - [ ] 作者按 `FIGURE_MANUAL_REVISION_GUIDE_CN.md` 手工覆盖 Fig. 1、3、4、5，并重新编译最终 PDF。
 - [x] Response 每条都引用对应 Section/Table/Figure；图片宏继续引用论文原文件名，作者手工覆盖后会自动同步到 Response。
 
@@ -839,6 +903,17 @@ tools/summarize_revision_experiments.py    mean ± sample std + seed-matched pai
 tools/summarize_distillation_control.py    KD student 与同 seed 非 KD student 配对汇总
 tools/summarize_profile_repeats.py         repeated profiler invocation mean ± sample std
 tools/generate_revision_figures.py         只生成 Fig. 1/3/4/5 手工绘图参考素材与哈希清单，不覆盖论文原图
+tools/fetch_matched_baseline_sources.sh    从作者官方仓库拉取并固定四个 baseline commit
+tools/prepare_matched_kitti_baselines.py   构造同协议无泄漏软链接数据树
+tools/prepare_matched_roadformer.py        为官方 RoadFormer loader 编码同源 normal 与 split tree
+tools/cache_official_sne_normals.py        直接调用官方 SNE 并缓存确定性 float32 normal
+tools/train_matched_kitti_baseline.py      USNet/SNE-RoadSeg/PLARD 官方模型与 loss 的同协议训练适配器
+tools/train_matched_kitti_roadformer.py    RoadFormer 官方图/MMCV 算子的同协议训练适配器
+tools/summarize_matched_kitti_baselines.py 严格来源/协议/checkpoint 核验与 mean/sample-SD 汇总
+tools/benchmark_matched_kitti_fps.py       五方法统一 RTX 4090 D FP32 FPS-1 benchmark
+tools/summarize_matched_kitti_fps.py       FPS 协议/来源/参数量核验与 JSON/CSV 汇总
+tools/package_table1_matched_baselines.sh  Table I 轻量匿名复现包
+tools/package_ral_reproduction.sh          全部修订证据的双盲匿名复现包
 tools/run_revision_ablation_queue.sh       reproducible KITTI queue
 tools/run_kitti_distill_queue.sh           reproducible three-seed KD-control queue
 tools/run_orfd_revision_queue.sh           reproducible ORFD queue
@@ -849,3 +924,30 @@ tests/test_orfd_dataset.py                 ORFD discovery/depth3/label/strict-im
 tests/test_robot_road_dataset.py           robot depth3 数值和 validity 边界测试
 tests/test_revision_figure_manifest.py     素材输出目录保护、哈希、validation 样本、G1 顺序和图结构契约测试
 ```
+
+## 14. 双盲附件交付
+
+Table I 轻量复现包：
+
+```text
+dist/LiteViLNet_RAL_TableI_Reproduction.tar.gz
+SHA-256 = 3c91673ee79eba885c1bdf6b15bc036009f0c815ce3e097c69a8f9ef37624990
+```
+
+完整修订复现包（推荐作为投稿 Supplement）：
+
+```text
+dist/LiteViLNet_RAL_Anonymous_Reproduction.tar.gz
+SHA-256 = 98026b56c084e33da9b756d8ca5b49769413edc101bbfc9d77b80fb30b00b1fa
+```
+
+两个包均已完成以下检查：
+
+- companion `.sha256` 校验通过；
+- 包内 `ARTIFACT_MANIFEST.sha256` 的逐文件校验通过；
+- tar owner/group 固定为数值 `0/0`，gzip 不记录原文件名/时间；
+- 作者姓名、单位域名、本机账户、邮箱、SSH remote、Linux/Windows 绝对路径 deny-scan 通过；
+- 不含数据、checkpoint、normal cache、第三方源码、Git 历史、论文源码或图片；
+- 官方第三方代码由包内 fetch 脚本从作者仓库的固定 commit 重建。
+
+注意：此处是内部作者文档，包含本机路径与审计细节，不能随双盲附件上传。若投稿系统要求上传 `root.tex` 而不只是 PDF，还必须真正删除作者栏注释中的实名/单位/邮箱；仅用 `%` 注释不会匿名化 TeX 源文件。

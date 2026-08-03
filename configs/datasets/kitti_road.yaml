@@ -6,4 +6,4 @@ splits:
   train: training
   val: training
   test: testing
-notes: "data is a symlink to /home/admin1/Mycode/VLLiNet/datasets/data."
+notes: "Set root to the local KITTI Road directory; datasets are not distributed with this repository."

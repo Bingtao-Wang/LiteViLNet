@@ -9,8 +9,9 @@ fi
 GPU_ID="$1"
 shift
 
-DATA_ROOT="${LITEVILNET_DATA_ROOT:-/data/Database/Research04-LiteViLNet/LiteViLNet/data/kitti_road}"
-OUTPUT_ROOT="${LITEVILNET_REVISION_OUTPUT:-/data/Database/Research04-LiteViLNet/revision_1_runs/kitti_ablation}"
+: "${LITEVILNET_DATA_ROOT:?Set LITEVILNET_DATA_ROOT to the KITTI Road data root}"
+DATA_ROOT="${LITEVILNET_DATA_ROOT}"
+OUTPUT_ROOT="${LITEVILNET_REVISION_OUTPUT:-runs/revision_1/kitti_ablation}"
 TRAIN_SPLIT="${LITEVILNET_KITTI_TRAIN_SPLIT:-configs/splits/kitti_road/train.txt}"
 VAL_SPLIT="${LITEVILNET_KITTI_VAL_SPLIT:-configs/splits/kitti_road/val.txt}"
 

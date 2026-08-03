@@ -1,0 +1,160 @@
+{
+  "USNet": {
+    "official_repository": "https://github.com/morancyc/USNet.git",
+    "commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
+    "semantic_diff_ignoring_eol": "clean",
+    "files": {
+      "model/usnet.py": {
+        "git_blob": "2e09572f898fc4c74d5a3d54fbba71a62c7f6f85",
+        "canonical_lf_sha256": "3abbb6fa899d3279dc8d0a7a7d92d337048db2e54d0ba8ae43291b2f9c1a743f",
+        "working_file_sha256": "62d581badf023ba3cf4ef9ebbdfcb5962385be330851f1930364ba2c5aa5bfa9"
+      },
+      "loss.py": {
+        "git_blob": "5aea71eb1cb56aadf81a45a1084bff5b5df13821",
+        "canonical_lf_sha256": "7aaa95805162f32f958c0d0ec9e02c203de4719e782b267a8c5b24ad532ce758",
+        "working_file_sha256": "0f412a9d9ff257c720116e80739b876ed7f18b20adb173f1310b4b1eda161201"
+      },
+      "model/sne_model.py": {
+        "git_blob": "e04b92547ec5b74ca192d2d3d88c2c9da8cdddcd",
+        "canonical_lf_sha256": "a15db458b7ec51f4741ff4c08fdc027d91fdd057009613683cdd66313b3fff5f",
+        "working_file_sha256": "28a01811941c5dc4353f2955991919efcb1df8ba37225d1272b0b4830da0677c"
+      },
+      "train.py": {
+        "git_blob": "e0066b9fa7a3c2fb468f0dc583cba70ebdc9de85",
+        "canonical_lf_sha256": "a202af5fd732e711a1752a5e3963dd33ecd7da12cfc8321e2a264e468c2f5822",
+        "working_file_sha256": "34acbf16ab27b8489fa2cf258e810a84584a63163f0f407a99c53b9f24c61463"
+      },
+      "utils.py": {
+        "git_blob": "b8aa43a4cdd06eb2b07efae73fe2dd04559a4272",
+        "canonical_lf_sha256": "9f0b9e4273961b19a818da2d3303740420d524d869eb5d1993b402545a9fcecc",
+        "working_file_sha256": "20bd3177667f869263f027ce029de4658f00c750145484376e4d827864e69413"
+      },
+      "dataset/kitti.py": {
+        "git_blob": "3e1f0091c355935bde345eb6b26c97fdfd3475c7",
+        "canonical_lf_sha256": "888098f95c7e08c6bd74713ec8a1d6895e4c059e4cdcd76ba78e51b3a6494cbe",
+        "working_file_sha256": "fe170283d26b1be8b95843733279e202d6dfa270dc90bad413374905527d45a1"
+      },
+      "dataset/custom_transforms.py": {
+        "git_blob": "fdff4a7808cd2fa4416e45e968aa96c44b32593d",
+        "canonical_lf_sha256": "d62055bea2aeea71e59cead71b41b93c0c32b856daa209b48ced891d9bc24050",
+        "working_file_sha256": "bf73490096748e66affb1211e536e1e6aea20bd84188c79c981f15234864b241"
+      }
+    }
+  },
+  "SNE-RoadSeg": {
+    "official_repository": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+    "commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+    "semantic_diff_ignoring_eol": "clean",
+    "files": {
+      "models/networks.py": {
+        "git_blob": "4ccc99f86e36ec9cc60089833d73894d708e3e7f",
+        "canonical_lf_sha256": "7f2008be951fb8c3d2056931b795cf0480790fe7019564edd8a0c85d34e11a26",
+        "working_file_sha256": "8f0b6c0d369ef80e507decc9e5bcc39c229d2d5583eb355286cb9ba0777938a7"
+      },
+      "models/roadseg_model.py": {
+        "git_blob": "258e08bfbef0e5698b2721eb4d13ca0680a1272e",
+        "canonical_lf_sha256": "1b5c3927c8730c3c87bbd9902bcf7c84c465f3ddb091c860a787624ccba43864",
+        "working_file_sha256": "a53bcb99c231b7b9652ef17eb8260cb87ed0846e1f98c6502fe33ee7b2a7309c"
+      },
+      "models/sne_model.py": {
+        "git_blob": "871267f51d2cae3457e63a6d533179ed96f63563",
+        "canonical_lf_sha256": "c034925f1dd9ea46a7d502c18f277a0d2944396fcb27632e29ee42d8a4b0f067",
+        "working_file_sha256": "cb8394d0690357c157ebbfa1e8ae99db8732e9163a06d0c63b521f7d7bbbd277"
+      },
+      "train.py": {
+        "git_blob": "9d2a58258f8cba7c7e283517d7d2ef94b09cc65a",
+        "canonical_lf_sha256": "0a1145312b5fa29ce4fa37a722388200e2bc46206bb5b80a979f0d6bb9ee83cb",
+        "working_file_sha256": "9c1ae72b02d16e9e7c1f84c861cfb29be2a3175df62c35cd398ac09be58a6807"
+      },
+      "data/kitti_dataset.py": {
+        "git_blob": "70c5662b3886117898dee56c0e680c898ede77e6",
+        "canonical_lf_sha256": "ba9b378ea045022caa3ca137cd801f82ecfcc868734c9dd171b8ac0411f75ea7",
+        "working_file_sha256": "ec21d4436872e6d5d07dab9fe4019d2d554c5540abd083f6547a96b1fd59a58f"
+      },
+      "options/base_options.py": {
+        "git_blob": "8da199cc65a1742c5f25b6b53231f5edfe085696",
+        "canonical_lf_sha256": "ae11f6a75fa7b149357e362834db6bd60e34e6219d30ae72406f9417b202089a",
+        "working_file_sha256": "7a251c48a817bc5d216f4a3f59e2b27a580f5b75bd25d533b43bda146d09d9a7"
+      },
+      "options/train_options.py": {
+        "git_blob": "8171dab77407d7c0903cf556d3121d59c8e3322f",
+        "canonical_lf_sha256": "5420d2b874f60fa015c6bf590a5c9da719eed728d9b40c6d204e3324701462a1",
+        "working_file_sha256": "204524ae8ed7d3cfb9c919d505021b46ab931cf2bc7ed8b94fbe34f5cf1db413"
+      }
+    }
+  },
+  "PLARD": {
+    "official_repository": "https://github.com/zhechen/PLARD.git",
+    "commit": "44485803092e729661c696ab6c03f6f2fabc8701",
+    "semantic_diff_ignoring_eol": "clean",
+    "files": {
+      "ptsemseg/models/plard.py": {
+        "git_blob": "c0da1783b96ad1310fc1b5757f173372f44e7c71",
+        "canonical_lf_sha256": "10c9d6da1c1d338724409a282fc1398dc0e0c894a71951c8eafc63742b60e14e",
+        "working_file_sha256": "10c9d6da1c1d338724409a282fc1398dc0e0c894a71951c8eafc63742b60e14e"
+      },
+      "ptsemseg/models/utils.py": {
+        "git_blob": "0e9c3e384ba538b9bfddd7e1b327bebc67eeb3d7",
+        "canonical_lf_sha256": "f64f9972e0fcb0bad827fd43071dab10d33b6a04e2e00858bb82039c8ad10383",
+        "working_file_sha256": "f64f9972e0fcb0bad827fd43071dab10d33b6a04e2e00858bb82039c8ad10383"
+      },
+      "ptsemseg/loss.py": {
+        "git_blob": "89ca3d1ef0f9d74e6641d95dc8560c51def2e7fa",
+        "canonical_lf_sha256": "a3e0141bae47434247c39765d24ac1d11a9cf815725ec5bfb9c8bbecc9cf4f43",
+        "working_file_sha256": "a3e0141bae47434247c39765d24ac1d11a9cf815725ec5bfb9c8bbecc9cf4f43"
+      },
+      "ptsemseg/loader/kitti_road_loader.py": {
+        "git_blob": "bcfeddfa9bf4b87aad432c1e6630199cbdf65878",
+        "canonical_lf_sha256": "5f8bddbda91260ea01cd2b46841a349b5c122e423a2575658820b7a26aaae503",
+        "working_file_sha256": "5f8bddbda91260ea01cd2b46841a349b5c122e423a2575658820b7a26aaae503"
+      },
+      "train.py": {
+        "git_blob": "609b6abff0e51e4b3e9af229d7a414e4a39630f8",
+        "canonical_lf_sha256": "bee584d36aaff7bfdc6d7dac44f9cf02bff96a2ca833d23881bffb6d55362699",
+        "working_file_sha256": "bee584d36aaff7bfdc6d7dac44f9cf02bff96a2ca833d23881bffb6d55362699"
+      }
+    }
+  },
+  "RoadFormer": {
+    "official_repository": "https://github.com/LiJiahang617/Road-Former.git",
+    "commit": "f675a3467cb168ebc727648390c304279bbcb079",
+    "semantic_diff_ignoring_eol": "clean",
+    "files": {
+      "configs/roadformer_kitti/roadformer_convnext-b_kitti-384x1280.py": {
+        "git_blob": "34cba9d0aab6e7e6b343b56274b0a936622c6767",
+        "canonical_lf_sha256": "63bf534657d5be7653a101b4aa0df139673054c46f998f94344e646873cafa65",
+        "working_file_sha256": "63bf534657d5be7653a101b4aa0df139673054c46f998f94344e646873cafa65"
+      },
+      "mmpretrain_custom/models/backbones/twin_convnext.py": {
+        "git_blob": "a58c01f040915d70d41eac81e28b56ef1b9fae8d",
+        "canonical_lf_sha256": "dc62f96b22991289124ed52101f6d0bcf4694f33b0a41a001039f24fa9ec61c1",
+        "working_file_sha256": "dc62f96b22991289124ed52101f6d0bcf4694f33b0a41a001039f24fa9ec61c1"
+      },
+      "mmdet_custom/models/dense_heads/roadformer_head.py": {
+        "git_blob": "e429d4b8756fbb38b83c7bafbfb43434d5fcba49",
+        "canonical_lf_sha256": "55deb4130ae07ceef8c5af9724450b41173bc7be43aa92998a0cb3da37364154",
+        "working_file_sha256": "55deb4130ae07ceef8c5af9724450b41173bc7be43aa92998a0cb3da37364154"
+      },
+      "mmdet_custom/models/layers/roadformer_pixel_decoder.py": {
+        "git_blob": "782ecd93aef7f3db15e908bf3405aff08db511a6",
+        "canonical_lf_sha256": "54288a8520420cad6f88d27cc14f973a3c650a755cd17ed2fa84825728cf97fa",
+        "working_file_sha256": "54288a8520420cad6f88d27cc14f973a3c650a755cd17ed2fa84825728cf97fa"
+      },
+      "mmseg_custom/models/decode_heads/roadformer_head.py": {
+        "git_blob": "7813369732be4a100452afe3cf1966bf2576971e",
+        "canonical_lf_sha256": "5db12508f3eafaa638b7e29fb0d6093f8675fa5a08100a03fd3a5f4b12c4b225",
+        "working_file_sha256": "5db12508f3eafaa638b7e29fb0d6093f8675fa5a08100a03fd3a5f4b12c4b225"
+      }
+    }
+  },
+  "inputs": {
+    "official_sne_depth_u16_google_drive_id": "1phoi_f3bwEV-oKwGe0psXj5XDhqy5DH0",
+    "depth_u16_archive_sha256": "d32bf0052ec81f87996c0c7ca2e86952b9f780ad97b7347151e62def5f8efb92",
+    "torchvision_resnet18_imagenet_v1_sha256": "f37072fd47e89c5e827621c5baffa7500819f7896bbacec160b1a16c560e07ec",
+    "torchvision_resnet152_imagenet_v1_sha256": "394f9c45966e3651a89bbb78a48410a6755854ce4a5ab64927cf1c7247f85e58",
+    "roadformer_convnext_base_in21k_sha256": "262fd0376855955f20f6c036aa882f5cb22b88333b766b0fa20174339c11d70d",
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "sne_implementation_note": "The pinned USNet SNE adds a default-true crop_top option around the top-crop branch that is unconditional in pinned SNE-RoadSeg; official USNet uses the true default, so both execute the same numerical path."
+  }
+}

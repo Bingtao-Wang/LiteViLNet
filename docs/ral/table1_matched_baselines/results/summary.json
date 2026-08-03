@@ -1,0 +1,199 @@
+{
+  "protocol": "same 231/58 category-stratified KITTI split, 384x1248 input, 101-threshold pixel-accumulated perspective-view evaluation",
+  "groups": [
+    {
+      "baseline": "sne_roadseg",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 201324806,
+      "official_remote": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+      "official_commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+      "official_file_sha256": {
+        "models/networks.py": "8f0b6c0d369ef80e507decc9e5bcc39c229d2d5583eb355286cb9ba0777938a7",
+        "models/roadseg_model.py": "a53bcb99c231b7b9652ef17eb8260cb87ed0846e1f98c6502fe33ee7b2a7309c"
+      },
+      "official_sne_sha256": "cb8394d0690357c157ebbfa1e8ae99db8732e9163a06d0c63b521f7d7bbbd277",
+      "protocol": {
+        "input_size": [
+          384,
+          1248
+        ],
+        "train_count": 231,
+        "val_count": 58,
+        "epochs_requested": 150,
+        "batch_size": 2,
+        "amp": true
+      },
+      "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+      "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9722591965813047,
+          "sample_std": 0.0020812827932616034,
+          "min": 0.9698927567628902,
+          "max": 0.9738053352209379
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9943968714964645,
+          "sample_std": 0.0006059457966873321,
+          "min": 0.9937070731042925,
+          "max": 0.9948432790278767
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.97389502391427,
+          "sample_std": 0.0030218542422140973,
+          "min": 0.9706505345862636,
+          "max": 0.976629280184115
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9706304918730194,
+          "sample_std": 0.0013486355963488674,
+          "min": 0.9691362610406877,
+          "max": 0.9717574409850592
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.005550223614856141,
+          "sample_std": 0.0006535653317114841,
+          "min": 0.004956063979272501,
+          "max": 0.006250265451202414
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.02936950812696018,
+          "sample_std": 0.0013486355963488726,
+          "min": 0.02824255901492038,
+          "max": 0.03086373895929188
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9460213637591112,
+          "sample_std": 0.003936918108839652,
+          "min": 0.9415455140303981,
+          "max": 0.9489480564364453
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.5,
+          "sample_std": 0.0,
+          "min": 0.5,
+          "max": 0.5
+        }
+      },
+      "checkpoints": {
+        "40": "7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70",
+        "41": "df44300104f2468b5e55d6272d443c364fb60cb1fa86ac08b0a8ba1cd8758eb7",
+        "42": "8eafe3bbfd8e2fa14377d631da6fd406e1d940a41f86c5060c89b5f1eeb1f9e0"
+      },
+      "source_files": [
+        "sne_roadseg_seed40/result.json",
+        "sne_roadseg_seed41/result.json",
+        "sne_roadseg_seed42/result.json"
+      ]
+    },
+    {
+      "baseline": "usnet",
+      "seeds": [
+        40,
+        41,
+        42
+      ],
+      "parameters": 30738444,
+      "official_remote": "https://github.com/morancyc/USNet.git",
+      "official_commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
+      "official_file_sha256": {
+        "model/usnet.py": "62d581badf023ba3cf4ef9ebbdfcb5962385be330851f1930364ba2c5aa5bfa9",
+        "loss.py": "0f412a9d9ff257c720116e80739b876ed7f18b20adb173f1310b4b1eda161201"
+      },
+      "official_sne_sha256": "cb8394d0690357c157ebbfa1e8ae99db8732e9163a06d0c63b521f7d7bbbd277",
+      "protocol": {
+        "input_size": [
+          384,
+          1248
+        ],
+        "train_count": 231,
+        "val_count": 58,
+        "epochs_requested": 150,
+        "batch_size": 2,
+        "amp": true
+      },
+      "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+      "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+      "metrics": {
+        "MaxF": {
+          "n": 3,
+          "mean": 0.9788132845836636,
+          "sample_std": 0.0007000949618685287,
+          "min": 0.9780941411437328,
+          "max": 0.9794926335545977
+        },
+        "AP": {
+          "n": 3,
+          "mean": 0.9832191682386812,
+          "sample_std": 0.0013556180284130129,
+          "min": 0.9819730631764627,
+          "max": 0.9846626577688302
+        },
+        "PRE": {
+          "n": 3,
+          "mean": 0.9803381120580736,
+          "sample_std": 0.0003444514289735488,
+          "min": 0.9800246017319633,
+          "max": 0.9807068347740433
+        },
+        "REC": {
+          "n": 3,
+          "mean": 0.9772934761720667,
+          "sample_std": 0.0010614494540390723,
+          "min": 0.9761713704853875,
+          "max": 0.978281534945601
+        },
+        "FPR": {
+          "n": 3,
+          "mean": 0.004180680926003193,
+          "sample_std": 7.032006955362857e-05,
+          "min": 0.004104917751704577,
+          "max": 0.0042438581303059775
+        },
+        "FNR": {
+          "n": 3,
+          "mean": 0.022706523827912772,
+          "sample_std": 0.0010614494540390725,
+          "min": 0.021718465054378605,
+          "max": 0.023828629514592106
+        },
+        "IoU": {
+          "n": 3,
+          "mean": 0.9585064066843788,
+          "sample_std": 0.0013426153570639734,
+          "min": 0.957127538239621,
+          "max": 0.9598095650761225
+        },
+        "BestThreshold": {
+          "n": 3,
+          "mean": 0.3399999936421712,
+          "sample_std": 0.04358899230699895,
+          "min": 0.28999999165534973,
+          "max": 0.3700000047683716
+        }
+      },
+      "checkpoints": {
+        "40": "09e0b77829b05d52c1ab945d9ac3fe48ea870718cddf683a7a767855950734c7",
+        "41": "b4a55ab275be5ac15a520fe6e6a0018ef18451ad3bb80a0c5ad9c749bbdac065",
+        "42": "273d490b7228e3f1fdf3233deb91f18aff7d854c207f37d44e975b7109483e2b"
+      },
+      "source_files": [
+        "usnet_seed40/result.json",
+        "usnet_seed41/result.json",
+        "usnet_seed42/result.json"
+      ]
+    }
+  ]
+}
