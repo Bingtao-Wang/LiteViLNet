@@ -2,7 +2,7 @@
 
 > **内部文档，请勿作为双盲附件上传。** 本文为作者核验保留本机数据/结果路径和完整审计说明。投稿请只使用 `tools/package_ral_reproduction.sh` 生成并通过自动身份扫描的匿名压缩包。
 
-> 状态：原修订实验与 Table I 的五个官方 baseline 同协议三种子重训练已完成；为赶 rebuttal，本轮 ORFD 快照采用 USNet seed-40 单次重训和 OFF-Net 发布 checkpoint 的独立评测，SNE/RoadFormer 及 OFF-Net 三 seed 重训命令保留但不纳入当前 Table III。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
+> 状态：原修订实验与 Table I 的五个官方 baseline 同协议三种子重训练已完成；论文 ORFD 快照采用 USNet seed-40 单次重训和 OFF-Net 发布 checkpoint 的独立评测，另已完成 USNet seed-41 作为后续更新证据归档；SNE/RoadFormer 及 OFF-Net 本地多 seed 重训命令保留但不纳入当前 Table III。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
 
 > 正文表述原则：论文正文面向正式读者，重点呈现 LiteViLNet 的创新设计、精度—效率优势、跨城市/越野场景验证和边缘部署价值。为回应评审而补充的精确 split seed、逐类别数量、manifest 路径、SHA-256、训练 seed、梯度累积和单步训练显存等审计信息，不再堆放于 Abstract 或 Section IV-A；它们集中保留在 Response 与本复现文档中。正文中仅保留理解实验所必需的数据集划分类型、评价协议、主要训练设置和三次独立运行统计。
 
@@ -20,7 +20,7 @@
 6. MSFM 增加约 10.35M 参数，必须与“简单逐尺度相加 + 同一 Bridge + 同一深监督”控制一起看。修正后的分层 split 结果见第 7 节。
 7. ORFD 用作第二数据集。除 8,392/1,245 train/validation 外，本轮进一步发现下载包的 2,193-frame testing partition 也包含完整 GT；训练和 validation 都与 test 无同名帧。论文现以 held-out test 作为主结果。
 8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`。它相对已独立评测的 OFF-Net 发布 checkpoint 高 `3.94/7.11 pp`，相对发布表格值高 `6.44/11.38 pp`；相对 USNet seed-40 高 `1.12/2.07 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的原有三 seed 优势是 `+0.71 ± 0.67 pp`。
-9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。ORFD 快照另记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU。
+9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。ORFD 论文快照记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU；USNet seed-41 已作为后续扩展归档。
 
 ## 2. 审稿意见—修改证据矩阵
 

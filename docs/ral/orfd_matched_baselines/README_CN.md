@@ -67,7 +67,7 @@ ORFD 完整发布包共有 8,392/1,245/2,193 张 train/validation/testing，且�
 
 ## 3. ORFD 正式协议
 
-当前 Table III 快照包含 USNet 的一个完整 seed-40 重训，以及 OFF-Net 发布 checkpoint 的独立核验；二者共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
+当前论文 Table III 快照使用 USNet 的 seed-40 重训，以及 OFF-Net 发布 checkpoint 的独立核验；另外已完成的 USNet seed-41 作为后续扩展证据归档。它们共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
 固定 argmax confusion-matrix evaluator。直接比较的 F/PRE/REC/IoU 都把 prediction
 最近邻恢复到原始 `1280×720`，再与未改动的原始 GT 累计一个 confusion matrix，
 避免不同网络 output stride 导致不同 GT 量化；另统一报告 101 阈值 MaxF/AP。
@@ -77,7 +77,7 @@ metadata 原尺寸恢复之前取 logits，因此阈值扫描和固定 argmax �
 所有方法都按 validation 的 101-threshold MaxF 选择 best checkpoint，与 LiteViLNet
 一致；test 只在选模后运行。作者 checkpoint 交叉核验
 还单独记录官方 `test.py` 的字面路径：OFF-Net 自身的 1/4-scale loader GT 与 prediction
-一起恢复；该诊断不混入本地统一排名。USNet 快照使用 seed 40；如需扩展多 seed 或 SNE-RoadSeg/RoadFormer，仍使用下表和英文手册中的原始 recipe：
+一起恢复；该诊断不混入本地统一排名。论文快照仍使用 seed 40；如需扩展 seed 42 或 SNE-RoadSeg/RoadFormer，仍使用下表和英文手册中的原始 recipe：
 
 | 方法 | epochs | physical batch | 梯度累积 | effective batch | 精度 |
 |---|---:|---:|---:|---:|---|
@@ -87,6 +87,16 @@ metadata 原尺寸恢复之前取 logits，因此阈值扫描和固定 argmax �
 | RoadFormer | 50 | 4 | 1 | 4 | FP32 |
 
 本轮赶时间的 Table III 不把 SNE-RoadSeg/RoadFormer 的未完成重训当作结果；OFF-Net 行使用作者发布 checkpoint 的独立本地评测，而不是声称完成了三 seed 重训。
+
+USNet 当前已完成 seed 40/41 的 ORFD test 扩展结果如下（百分比；仅用于后续更新参考，尚未替换论文 Table III）：
+
+| seed | F-score | AP | PRE | REC | IoU |
+|---:|---:|---:|---:|---:|---:|
+| 40 | 95.6188 | 97.1748 | 95.3155 | 95.9241 | 91.6054 |
+| 41 | 95.5689 | 97.9032 | 94.4440 | 96.7208 | 91.5137 |
+| 均值 ± sample SD | 95.5938±0.0353 | 97.5390±0.5151 | 94.8797±0.6162 | 96.3225±0.5633 | 91.5596±0.0648 |
+
+seed 42 以及 SNE-RoadSeg/OFF-Net/RoadFormer 的 ORFD 本地重训仍在队列中；不从当前两 seed 结果推断缺失数字。
 
 OFF-Net 官方命令是四卡全局 batch 8，每个 DataParallel replica 看到 batch 2。
 单卡复现保留 physical batch 2，每 4 个 physical batch 更新一次，因此 effective

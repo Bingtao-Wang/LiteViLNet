@@ -5,9 +5,10 @@ code, fixed split manifests, source provenance, seed-level numerical evidence,
 and aggregation utilities needed to reproduce the reported KITTI Road and ORFD
 experiments.  Datasets, pretrained checkpoints, generated normal caches, and
 third-party repositories are intentionally excluded.  The rapid ORFD rebuttal
-snapshot reports one completed official USNet retraining seed and an independent
-evaluation of the released OFF-Net checkpoint; the queued multi-seed retraining
-commands remain available for a subsequent update.
+snapshot reports USNet seed 40 and an independent evaluation of the released
+OFF-Net checkpoint; the archive additionally preserves the completed USNet
+seed-41 extension and the queued multi-seed retraining commands for a later
+manuscript update.
 
 ## 1. Contents and evidence map
 

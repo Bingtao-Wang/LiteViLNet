@@ -2,8 +2,9 @@
 
 This supplement documents the applicable RGB--geometry methods on the
 released ORFD training, validation, and testing partitions. The rapid rebuttal
-snapshot contains one completed USNet retraining seed and an independent
-evaluation of the released OFF-Net checkpoint; validation selects
+snapshot used one completed USNet retraining seed and an independent
+evaluation of the released OFF-Net checkpoint; a second completed USNet seed
+is now archived as a follow-up extension. Validation selects
 the checkpoint; the 2,193 testing images are evaluated only after selection.
 All directly compared F/PRE/REC/IoU values use one OFF-Net-style convention:
 fixed class argmax, nearest-neighbor restoration to the original `1280 x 720`
@@ -158,14 +159,28 @@ from the submission archive and are reproducible with the commands above.
 
 ## Training protocol
 
-The completed USNet row uses seed `40`; the released OFF-Net checkpoint row is
-an independent single-checkpoint audit. Extension runs use the same released
+The manuscript snapshot uses USNet seed `40`; the follow-up archive now also
+contains the completed seed `41`. The released OFF-Net checkpoint row is an
+independent single-checkpoint audit. Extension runs use the same released
 partitions, `704 x 1280` network inputs, validation 101-threshold MaxF for
 checkpoint selection, and the same final test evaluator. RoadFormer's logits
 are taken before its generic metadata-based restoration so its threshold sweep
 uses the same input grid and its discrete argmax mask follows the same
 nearest-neighbor original-GT restoration as the other rows.
 Method-specific optimization follows each pinned official recipe.
+
+The current USNet extension summary (percentages, held-out test; mean and
+sample SD are computed only over the completed seeds 40 and 41) is:
+
+| Seed | F-score | AP | PRE | REC | IoU |
+|---:|---:|---:|---:|---:|---:|
+| 40 | 95.6188 | 97.1748 | 95.3155 | 95.9241 | 91.6054 |
+| 41 | 95.5689 | 97.9032 | 94.4440 | 96.7208 | 91.5137 |
+| Mean $\pm$ sample SD | $95.5938\pm0.0353$ | $97.5390\pm0.5151$ | $94.8797\pm0.6162$ | $96.3225\pm0.5633$ | $91.5596\pm0.0648$ |
+
+Seed 42 and the SNE-RoadSeg/OFF-Net/RoadFormer local ORFD retraining rows are
+still queued; they are not silently inferred from this two-seed extension and
+are not substituted into the manuscript Table III.
 
 | Method | Epochs | Physical batch | Grad. accum. | Effective batch | Precision | Checkpoint selection |
 |---|---:|---:|---:|---:|---|---|

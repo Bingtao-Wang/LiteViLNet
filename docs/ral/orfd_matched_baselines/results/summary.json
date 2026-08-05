@@ -1,12 +1,14 @@
 {
   "protocol": "local ORFD released-split retraining",
   "seeds": [
-    40
+    40,
+    41
   ],
   "methods": {
     "usnet": {
       "seeds": [
-        40
+        40,
+        41
       ],
       "epochs_requested": [
         30
@@ -24,50 +26,51 @@
       "official_commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
       "testing_fixed_argmax": {
         "F_score": {
-          "mean": 0.9561882529254352,
-          "sample_sd": 0.0
+          "mean": 0.9559384007580479,
+          "sample_sd": 0.0003533443237073837
         },
         "PRE": {
-          "mean": 0.9531546978550647,
-          "sample_sd": 0.0
+          "mean": 0.9487974426224168,
+          "sample_sd": 0.006162089444731803
         },
         "REC": {
-          "mean": 0.9592411791189788,
-          "sample_sd": 0.0
+          "mean": 0.9632246281869623,
+          "sample_sd": 0.005633447696964782
         },
         "IoU": {
-          "mean": 0.9160543130562104,
-          "sample_sd": 0.0
+          "mean": 0.9155958958643822,
+          "sample_sd": 0.0006482998099085985
         },
         "GlobalAcc": {
-          "mean": 0.975678906131251,
-          "sample_sd": 0.0
+          "mean": 0.9754315716515934,
+          "sample_sd": 0.0003497837755741626
         }
       },
       "testing_threshold_swept": {
         "MaxF": {
-          "mean": 0.9566568750907283,
-          "sample_sd": 0.0
+          "mean": 0.9562166542127081,
+          "sample_sd": 0.0006225663361359634
         },
         "AP": {
-          "mean": 0.9717476758009432,
-          "sample_sd": 0.0
+          "mean": 0.9753898807575978,
+          "sample_sd": 0.005150855646643484
         },
         "PRE": {
-          "mean": 0.947155553646454,
-          "sample_sd": 0.0
+          "mean": 0.9459055554385531,
+          "sample_sd": 0.0017677644185553497
         },
         "REC": {
-          "mean": 0.9663508537831207,
-          "sample_sd": 0.0
+          "mean": 0.9667566119567617,
+          "sample_sd": 0.0005738287122067954
         },
         "IoU": {
-          "mean": 0.916915009153886,
-          "sample_sd": 0.0
+          "mean": 0.9161068813950627,
+          "sample_sd": 0.001142865236658126
         }
       },
       "best_epochs": [
-        6
+        6,
+        1
       ]
     }
   }
