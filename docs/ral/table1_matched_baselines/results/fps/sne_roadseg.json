@@ -1,0 +1,99 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "sne_roadseg",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp32",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 100,
+  "iterations_per_repeat": 300,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 300,
+      "mean_ms": 51.701715571085614,
+      "sample_std_ms": 0.4523250556879487,
+      "median_ms": 51.44268798828125,
+      "p95_ms": 52.39536762237549,
+      "min_ms": 51.05971145629883,
+      "max_ms": 53.09747314453125,
+      "fps_from_mean": 19.341717947929254
+    },
+    {
+      "n": 300,
+      "mean_ms": 51.697090543111166,
+      "sample_std_ms": 0.550520217687727,
+      "median_ms": 51.48313522338867,
+      "p95_ms": 52.69007530212402,
+      "min_ms": 51.07097625732422,
+      "max_ms": 55.4700813293457,
+      "fps_from_mean": 19.343448335183997
+    },
+    {
+      "n": 300,
+      "mean_ms": 51.869969062805175,
+      "sample_std_ms": 0.4643767946955786,
+      "median_ms": 51.64646530151367,
+      "p95_ms": 52.70128536224365,
+      "min_ms": 51.220481872558594,
+      "max_ms": 53.51219177246094,
+      "fps_from_mean": 19.278978146086427
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 51.75625839233398,
+    "sample_std_ms_across_repeat_means": 0.0985034778837621,
+    "fps_from_mean": 19.321334869680566
+  },
+  "parameters": 201324806,
+  "peak_allocated_cuda_mib": 34740.45556640625,
+  "checkpoint": "runs/revision_1/matched_baselines/formal/sne_roadseg_seed40/best_model.pth",
+  "checkpoint_sha256": "7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70",
+  "official_source": {
+    "remote": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+    "commit": "5e7900bfd59887634ced687ffe85a73018a38659"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "sne_roadseg",
+      "--checkpoint",
+      "runs/revision_1/matched_baselines/formal/sne_roadseg_seed40/best_model.pth",
+      "--precision",
+      "fp32",
+      "--warmup",
+      "100",
+      "--iterations",
+      "300",
+      "--repeats",
+      "3",
+      "--output",
+      "runs/revision_1/matched_baselines/fps_4090d/sne_roadseg.json",
+      "--official-source",
+      "third_party/matched_baselines/SNE-RoadSeg"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "measurements_and_hashes_changed": false
+  }
+}

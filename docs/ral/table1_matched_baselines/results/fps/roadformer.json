@@ -1,0 +1,110 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "roadformer",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp32",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 100,
+  "iterations_per_repeat": 300,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 300,
+      "mean_ms": 57.25080240885416,
+      "sample_std_ms": 0.7086991296316412,
+      "median_ms": 57.00710487365723,
+      "p95_ms": 58.37573108673096,
+      "min_ms": 56.31488037109375,
+      "max_ms": 63.36819076538086,
+      "fps_from_mean": 17.467004092947775
+    },
+    {
+      "n": 300,
+      "mean_ms": 57.24420436859131,
+      "sample_std_ms": 0.5069124460036609,
+      "median_ms": 57.07468795776367,
+      "p95_ms": 58.230322456359865,
+      "min_ms": 56.420352935791016,
+      "max_ms": 58.633216857910156,
+      "fps_from_mean": 17.46901736219569
+    },
+    {
+      "n": 300,
+      "mean_ms": 57.30532689412435,
+      "sample_std_ms": 0.9143439495630852,
+      "median_ms": 57.062400817871094,
+      "p95_ms": 58.31234550476074,
+      "min_ms": 56.21760177612305,
+      "max_ms": 63.248382568359375,
+      "fps_from_mean": 17.450384705903012
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 57.26677789052328,
+    "sample_std_ms_across_repeat_means": 0.03354702360574289,
+    "fps_from_mean": 17.462131393383036
+  },
+  "parameters": 206860175,
+  "peak_allocated_cuda_mib": 17834.01025390625,
+  "checkpoint": "runs/revision_1/matched_baselines/formal/roadformer_seed40/best_model.pth",
+  "checkpoint_sha256": "6f3648c52159ee726f4f79272d2766eeb4fe749867ed183ad6a5509cfa16d4b7",
+  "official_source": {
+    "remote": "https://github.com/LiJiahang617/Road-Former.git",
+    "commit": "f675a3467cb168ebc727648390c304279bbcb079"
+  },
+  "operator_bridge": {
+    "strategy": "official Python graph with installed MMCV 1.7 CUDA operators mapped at runtime",
+    "mapped_symbols": [
+      "batched_nms",
+      "point_sample",
+      "MultiScaleDeformableAttention",
+      "sigmoid_focal_loss",
+      "nms_match",
+      "nms",
+      "roi_align"
+    ]
+  },
+  "runtime": {
+    "python": "3.8.20",
+    "torch": "1.13.1+cu117",
+    "cuda": "11.7",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "roadformer",
+      "--official-source",
+      "third_party/matched_baselines/Road-Former",
+      "--checkpoint",
+      "runs/revision_1/matched_baselines/formal/roadformer_seed40/best_model.pth",
+      "--precision",
+      "fp32",
+      "--warmup",
+      "100",
+      "--iterations",
+      "300",
+      "--repeats",
+      "3",
+      "--output",
+      "runs/revision_1/matched_baselines/fps_4090d/roadformer.json"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "measurements_and_hashes_changed": false
+  }
+}

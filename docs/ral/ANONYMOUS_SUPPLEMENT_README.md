@@ -4,16 +4,19 @@ This archive accompanies the revised LiteViLNet manuscript.  It provides the
 code, fixed split manifests, source provenance, seed-level numerical evidence,
 and aggregation utilities needed to reproduce the reported KITTI Road and ORFD
 experiments.  Datasets, pretrained checkpoints, generated normal caches, and
-third-party repositories are intentionally excluded.
+third-party repositories are intentionally excluded.  The rapid ORFD rebuttal
+snapshot reports one completed official USNet retraining seed and an independent
+evaluation of the released OFF-Net checkpoint; the queued multi-seed retraining
+commands remain available for a subsequent update.
 
 ## 1. Contents and evidence map
 
 | Manuscript evidence | Reproduction entry point | Archived numerical evidence |
 |---|---|---|
-| Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_fps.sh` | `docs/ral/table1_matched_baselines/results/` |
+| Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_offnet.sh`, `tools/run_matched_kitti_fps.sh` | `docs/ral/table1_matched_baselines/results/` |
 | Table II KITTI ablations | `tools/run_revision_ablation_queue.sh` | `evidence/kitti/` |
 | Transformer and KD controls | `tools/run_revision_ablation_queue.sh`, `tools/run_kitti_distill_queue.sh` | `evidence/kitti/` |
-| Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py` | `evidence/orfd/` |
+| Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
 | Parameters, MAC-equivalents, memory, and latency | `tools/profile_ablation.py`, `tools/summarize_profile_repeats.py` | `evidence/profiling/` |
 | KITTI and RGB-D pipeline timing | `tools/benchmark_kitti_adi_pipeline.py`, `tools/benchmark_robot_end_to_end.py` | `evidence/pipelines/` |
 
@@ -28,12 +31,19 @@ conda env create -f configs/environments/litevilnet_ral.yml
 conda activate litevilnet_ral
 ```
 
-The recorded training runs use Python 3.10, PyTorch 2.7.1 with CUDA 12.8, FP16
-automatic mixed precision, and NVIDIA RTX 4090 D GPUs.  Device timing protocols
-are recorded separately in the manuscript and evidence JSON.
+The main recorded runs use Python 3.10, PyTorch 2.7.1 with CUDA 12.8, and
+NVIDIA RTX 4090 D GPUs. LiteViLNet, USNet, and SNE-RoadSeg use automatic mixed
+precision; PLARD and the legacy OpenMMLab graphs retain their documented FP32
+paths. Device timing protocols are recorded separately in the manuscript and
+evidence JSON.
 RoadFormer uses the separately pinned
 `configs/environments/litevilnet_roadformer_ral.yml` (Python 3.8, PyTorch
 1.13.1+cu117, MMCV-full 1.7.0) required by its official source.
+
+The current rapid snapshot leaves OFF-Net's KITTI FPS-1 cell unmeasured while
+the target GPU is occupied; the manuscript and result summary encode that
+cell as `--`. The supplied benchmark command can fill it later without
+changing any accuracy or training hyperparameters.
 
 ## 3. Data
 
@@ -43,9 +53,12 @@ RoadFormer uses the separately pinned
   `configs/splits/kitti_road/stratified_seed20260723/`.
 - ORFD: obtain the released `Final_Dataset` and retain its official
   training/validation/testing partitions.
-- Matched USNet/SNE-RoadSeg/PLARD/RoadFormer inputs: follow
+- Matched USNet/SNE-RoadSeg/PLARD/RoadFormer/OFF-Net inputs: follow
   `docs/ral/table1_matched_baselines/README.md`, including the official
   SNE-RoadSeg `depth_u16` archive and its recorded SHA-256.
+- Matched ORFD baseline geometry preparation follows
+  `docs/ral/orfd_matched_baselines/README.md`. Generated normal caches are not
+  included in the archive and are reconstructed from pinned authors' code.
 
 No validation or testing sample is used for training.  Validation selects the
 checkpoint; the held-out ORFD testing partition is evaluated only afterward.
@@ -110,13 +123,13 @@ docs/ral/table1_matched_baselines/source_provenance.json
 
 No baseline network is reimplemented.  Model/loss definitions come directly
 from the authors' official repositories at pinned commits.  The local adapter
-only provides the common split, 150-epoch schedule, seed control, official
-recipe calls, common evaluator, and provenance output.
-The four baselines are USNet, SNE-RoadSeg, PLARD, and RoadFormer, all fetched
+only provides the common split, 150-epoch budget, seed control, method-specific
+official optimization recipes, common evaluator, and provenance output.
+The five baselines are USNet, SNE-RoadSeg, PLARD, RoadFormer, and OFF-Net, all fetched
 from their authors' official GitHub repositories at the full commits recorded
 in `source_provenance.json`. FPS-1 additionally uses one common RTX 4090 D,
 `384 x 1248`, batch-1, PyTorch FP32, model-only CUDA-event protocol for all
-five architectures.
+six architectures.
 
 ## 6. ORFD training and held-out testing
 
@@ -130,9 +143,16 @@ bash tools/run_orfd_revision_queue.sh 1 optimal:40 optimal:41 optimal:42
 
 Evaluate each validation-selected checkpoint on the official testing
 partition, then aggregate with `tools/summarize_orfd_test.py`.  The evaluator
-uses the released OFF-Net fixed argmax/0.5 convention, restores predictions to
+uses an OFF-Net-style fixed argmax/0.5 convention, restores predictions to
 the original ground-truth size, and accumulates one foreground confusion
 matrix over all 2,193 testing frames.
+
+For the locally reproduced ORFD comparison, follow
+`docs/ral/orfd_matched_baselines/README.md`. The current rebuttal snapshot
+contains one completed USNet seed plus the separately audited released OFF-Net
+checkpoint under the common held-out testing and fixed-argmax evaluator. The
+same README retains commands for extending this snapshot to SNE-RoadSeg,
+OFF-Net retraining, and RoadFormer when exclusive GPU time is available.
 
 ## 7. Verification
 
@@ -151,8 +171,9 @@ values, or FPS device/precision/timing scopes.
 This archive is generated by `tools/package_ral_reproduction.sh`.  Before
 archiving, it replaces local paths in temporary evidence copies, scans file
 names and contents for home/data paths, email addresses, SSH remotes, and
-private identity tokens supplied through `LITEVILNET_DOUBLE_BLIND_TOKENS`, and
-normalizes tar owner/group
+the runtime username/hostname automatically. Additional private identity tokens
+are supplied through `LITEVILNET_DOUBLE_BLIND_TOKENS`. The packager normalizes
+tar owner/group
 to numeric `0/0`.  The original evidence is never rewritten.  The archive does
 not contain the project homepage, manuscript source, images, `.git` history,
 datasets, checkpoints, caches, or third-party source trees.

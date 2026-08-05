@@ -114,7 +114,7 @@ def main() -> None:
             if isinstance(logits, tuple):
                 logits = logits[0]
             meter.update(logits, label, input_type="logits")
-            # Match the released OFF-Net test protocol: turn model output into
+            # Apply an OFF-Net-style fixed-argmax protocol: turn model output into
             # a discrete binary prediction, resize it with nearest-neighbor to
             # the original 1280x720 label, and accumulate one confusion matrix
             # over the complete testing partition.  For a one-logit BCE model,

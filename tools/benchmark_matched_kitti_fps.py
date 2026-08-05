@@ -27,6 +27,7 @@ EXPECTED_COMMITS = {
     "sne_roadseg": "5e7900bfd59887634ced687ffe85a73018a38659",
     "plard": "44485803092e729661c696ab6c03f6f2fabc8701",
     "roadformer": "f675a3467cb168ebc727648390c304279bbcb079",
+    "offnet": "50e63d24836198e8fb5af707e521f414104b4876",
 }
 
 
@@ -35,7 +36,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--method",
         required=True,
-        choices=("litevilnet", "usnet", "sne_roadseg", "plard", "roadformer"),
+        choices=("litevilnet", "usnet", "sne_roadseg", "plard", "roadformer", "offnet"),
     )
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--official-source", type=Path)
@@ -99,11 +100,13 @@ def build_standard_model(
         model = get_ablation_model("full", pretrained=False)
     else:
         from tools.train_matched_kitti_baseline import load_plard, load_sne_roadseg, load_usnet
+        from tools.train_matched_orfd_baseline import load_offnet
 
         loader = {
             "usnet": load_usnet,
             "sne_roadseg": load_sne_roadseg,
             "plard": load_plard,
+            "offnet": load_offnet,
         }[method]
         load_args = SimpleNamespace(
             official_source=source,
@@ -174,8 +177,8 @@ def main() -> None:
         raise RuntimeError("CUDA is required")
     if args.batch_size != 1:
         raise ValueError("The matched Table-I protocol requires batch size 1")
-    if args.method == "roadformer" and args.precision != "fp32":
-        raise ValueError("Pinned MMCV 1.7 deformable attention supports RoadFormer FP32 only")
+    if args.method in {"roadformer", "offnet"} and args.precision != "fp32":
+        raise ValueError("Pinned OpenMMLab baselines are measured in their FP32 environment")
     if args.warmup <= 0 or args.iterations <= 0 or args.repeats < 2:
         raise ValueError("Use positive warmup/iterations and at least two repeats")
     if not args.checkpoint.is_file():

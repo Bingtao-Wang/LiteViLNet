@@ -61,5 +61,9 @@ clone_or_pin \
   Road-Former \
   https://github.com/LiJiahang617/Road-Former.git \
   f675a3467cb168ebc727648390c304279bbcb079
+clone_or_pin \
+  OFF-Net \
+  https://github.com/chaytonmin/Off-Road-Freespace-Detection \
+  50e63d24836198e8fb5af707e521f414104b4876
 
 echo "Pinned official sources are ready under ${TARGET_ROOT}."

@@ -32,6 +32,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--official-source", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument(
+        "--profile",
+        choices=("sne_roadseg", "offnet"),
+        default="sne_roadseg",
+        help="Record and verify which authors' SNE implementation is imported",
+    )
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--include-flipped-val", action="store_true")
@@ -86,6 +92,12 @@ def compute_one(task: tuple[str, str, str, bool, bool]) -> dict[str, object]:
     calib_path = Path(calib_path_string)
     output_path = Path(output_path_string)
     if output_path.is_file() and not force:
+        cached = np.load(output_path, mmap_mode="r", allow_pickle=False)
+        if cached.shape != (3, 384, 1248) or cached.dtype != np.float32:
+            raise ValueError(
+                f"Invalid existing normal cache: {output_path}, "
+                f"{cached.shape}, {cached.dtype}"
+            )
         return {"path": output_path_string, "cached": True}
 
     depth = cv2.imread(str(depth_path), cv2.IMREAD_ANYDEPTH)
@@ -100,7 +112,10 @@ def compute_one(task: tuple[str, str, str, bool, bool]) -> dict[str, object]:
     if normal.shape != (3, depth.shape[0], depth.shape[1]) or not np.isfinite(normal).all():
         raise ValueError(f"Invalid normal array for {depth_path}: {normal.shape}")
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    np.save(output_path, normal, allow_pickle=False)
+    temporary_path = output_path.with_suffix(output_path.suffix + ".tmp")
+    with temporary_path.open("wb") as handle:
+        np.save(handle, normal, allow_pickle=False)
+    os.replace(temporary_path, output_path)
     return {"path": output_path_string, "cached": False}
 
 
@@ -117,7 +132,10 @@ def collect_tasks(args: argparse.Namespace) -> list[tuple[str, str, str, bool, b
             tasks.append(
                 (str(depth_path), str(calib_path), str(args.output_root / split / "normal" / f"{sample}.npy"), False, args.force)
             )
-            if split == "training" or args.include_flipped_val:
+            needs_flipped = args.profile == "sne_roadseg" and (
+                split == "training" or args.include_flipped_val
+            )
+            if needs_flipped:
                 tasks.append(
                     (str(depth_path), str(calib_path), str(args.output_root / split / "normal_flipped" / f"{sample}.npy"), True, args.force)
                 )
@@ -145,17 +163,40 @@ def main() -> None:
             if completed % 25 == 0 or completed == len(tasks):
                 print(f"cached normals: {completed}/{len(tasks)} (reused {reused})", flush=True)
 
+    expected = {
+        "sne_roadseg": (
+            "https://github.com/hlwang1124/SNE-RoadSeg.git",
+            "5e7900bfd59887634ced687ffe85a73018a38659",
+        ),
+        "offnet": (
+            "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+            "50e63d24836198e8fb5af707e521f414104b4876",
+        ),
+    }
+    remote = subprocess.check_output(
+        ["git", "remote", "get-url", "origin"], cwd=args.official_source, text=True
+    ).strip()
+    commit = git_commit(args.official_source)
+    if (remote, commit) != expected[args.profile]:
+        raise RuntimeError(
+            f"Unexpected {args.profile} source: remote={remote!r}, commit={commit!r}"
+        )
     metadata = {
-        "generator": "official SNE-RoadSeg models/sne_model.py",
-        "official_repository": "https://github.com/hlwang1124/SNE-RoadSeg",
+        "generator": f"official {args.profile} models/sne_model.py",
+        "profile": args.profile,
+        "official_repository": remote,
         "official_source": str(args.official_source.resolve()),
-        "official_commit": git_commit(args.official_source),
+        "official_commit": commit,
         "official_sne_sha256": sha256(official_file),
         "storage_dtype": "float32",
         "units": "depth_u16 / 1000 (metres)",
         "task_count": len(tasks),
         "reused_count": reused,
-        "training_flip_semantics": "depth is horizontally flipped before official SNE",
+        "training_flip_semantics": (
+            "depth is horizontally flipped before official SNE"
+            if args.profile == "sne_roadseg"
+            else "not generated for OFF-Net"
+        ),
     }
     args.output_root.mkdir(parents=True, exist_ok=True)
     (args.output_root / "normal_cache_metadata.json").write_text(

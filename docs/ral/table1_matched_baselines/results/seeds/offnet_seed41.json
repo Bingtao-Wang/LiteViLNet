@@ -1,0 +1,129 @@
+{
+  "protocol": "matched local KITTI perspective-view retraining",
+  "baseline": "offnet",
+  "seed": 41,
+  "input_size": [
+    384,
+    1248
+  ],
+  "train_count": 231,
+  "val_count": 58,
+  "epochs_requested": 150,
+  "best_epoch": 145,
+  "batch_size": 2,
+  "amp": false,
+  "metrics": {
+    "MaxF": 0.954243496107379,
+    "BestThreshold": 0.5,
+    "PRE": 0.9460245156976945,
+    "REC": 0.9626066414821995,
+    "FPR": 0.011714380660930992,
+    "FNR": 0.0373933585177801,
+    "IoU": 0.9124911852546472,
+    "AP": 0.9809981370702284,
+    "Precision": 0.9460245156976945,
+    "Recall": 0.9626066414821995
+  },
+  "validation": {
+    "samples": 58,
+    "threshold_swept": {
+      "MaxF": 0.954243496107379,
+      "BestThreshold": 0.5,
+      "PRE": 0.9460245156976945,
+      "REC": 0.9626066414821995,
+      "FPR": 0.011714380660930992,
+      "FNR": 0.0373933585177801,
+      "IoU": 0.9124911852546472,
+      "AP": 0.9809981370702284,
+      "Precision": 0.9460245156976945,
+      "Recall": 0.9626066414821995
+    }
+  },
+  "parameters": 25209608,
+  "best_checkpoint": "runs/revision_1/matched_baselines/formal/offnet_seed41/best_model.pth",
+  "best_checkpoint_sha256": "3b0642f66d13fad53bb21a40e92ed4fd76965cff4d071f9fa6bbef3899f1df61",
+  "official_source": "${OFFNET_SOURCE}",
+  "official_remote": "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+  "official_commit": "50e63d24836198e8fb5af707e521f414104b4876",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "models/transformer_models/backbones/transformer.py": "1d6be40a88a27204575c19fa8be2f211d357cc14c928c40d0f6545aaa65b5721",
+    "models/transformer_models/decode_heads/head.py": "c975526fa8c3ffc62e8564feb2f5bc44a771df3ff2cba55a364decf94b9007d4",
+    "models/roadseg_model.py": "7ead7db021c6f8f1b711f5a99690fd9f6611247f68d3c5356ffa0c8edb20aa6b",
+    "models/loss.py": "8aea0cc92a2525bee1f6168227d85ab0b44fd9196f264cb20c39618a2a299681",
+    "models/sne_model.py": "cc45afcf113373b9c806db24fcaefa2600b673e277efdd3f60b758a3d10ea282",
+    "data/ORFD_dataset.py": "1f5734d1bea5b5ef5b29e9352c14c41da3f2e1951b450ae7d9920155bbc25bab",
+    "train.py": "ad228742c21a2607b717c7c9cd54c58efe04a3488b1eae3613a1c57f696bc695"
+  },
+  "normal_cache_metadata": {
+    "generator": "official offnet models/sne_model.py",
+    "profile": "offnet",
+    "official_repository": "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+    "official_source": "${OFFNET_SOURCE}",
+    "official_commit": "50e63d24836198e8fb5af707e521f414104b4876",
+    "official_sne_sha256": "cc45afcf113373b9c806db24fcaefa2600b673e277efdd3f60b758a3d10ea282",
+    "storage_dtype": "float32",
+    "units": "depth_u16 / 1000 (metres)",
+    "task_count": 289,
+    "reused_count": 91,
+    "training_flip_semantics": "not generated for OFF-Net"
+  },
+  "split_metadata": {
+    "protocol": "matched local KITTI perspective-view retraining",
+    "data_root": "${KITTI_ROOT}",
+    "depth_root": "${DEPTH_ROOT}/depth_u16",
+    "train_manifest": "configs/splits/kitti_road/stratified_seed20260723/train.txt",
+    "val_manifest": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "train_count": 231,
+    "val_count": 58,
+    "train_val_overlap": 0,
+    "subdirectories": [
+      "image_2",
+      "gt_image_2",
+      "calib",
+      "ADI",
+      "depth_u16"
+    ]
+  },
+  "runtime": {
+    "seconds": 4697.459669351578,
+    "python": "3.8.20",
+    "torch": "1.13.1+cu117",
+    "cuda": "11.7",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_kitti_offnet.py",
+      "--official-source",
+      "third_party/matched_baselines/OFF-Net",
+      "--data-root",
+      "runs/revision_1/matched_baselines/kitti_road",
+      "--normal-root",
+      "runs/revision_1/matched_baselines/kitti_offnet_normals",
+      "--output-dir",
+      "runs/revision_1/matched_baselines/formal/offnet_seed41",
+      "--seed",
+      "41",
+      "--epochs",
+      "150",
+      "--batch-size",
+      "2",
+      "--num-workers",
+      "4",
+      "--height",
+      "384",
+      "--width",
+      "1248",
+      "--val-every",
+      "5",
+      "--early-stop-validations",
+      "20"
+    ],
+    "peak_allocated_cuda_mib": 5140.6328125
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "metrics_and_hashes_changed": false
+  }
+}

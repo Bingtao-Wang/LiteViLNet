@@ -120,6 +120,26 @@
     "commit": "f675a3467cb168ebc727648390c304279bbcb079",
     "semantic_diff_ignoring_eol": "clean",
     "files": {
+      "configs/roadformer_orfd/roadformer_convnext-b_orfd-352x640.py": {
+        "git_blob": "035ef8dffafe2e6b871b9086b93f8455a4b3578d",
+        "canonical_lf_sha256": "82d7496213d3d486467611a660c6276578e07fa10038589241c03f2f8121b941",
+        "working_file_sha256": "82d7496213d3d486467611a660c6276578e07fa10038589241c03f2f8121b941"
+      },
+      "configs/_base_/datasets/mmorfd_640x352.py": {
+        "git_blob": "6375a8a3aaa0645280f051c27f1181fc6a7bb0b3",
+        "canonical_lf_sha256": "c970d9f80969ada54d480455bdb9662e2e374756964686d0e9eb26db6f8e3f2a",
+        "working_file_sha256": "c970d9f80969ada54d480455bdb9662e2e374756964686d0e9eb26db6f8e3f2a"
+      },
+      "mmcv_custom/transforms/loading.py": {
+        "git_blob": "08565d984a28dd2f86b787d4f58b17b083e2ac76",
+        "canonical_lf_sha256": "8bb0c782da847f6fce7e0f0cff5ab79004cc5c917f79a5d94710340dc9365b4f",
+        "working_file_sha256": "8bb0c782da847f6fce7e0f0cff5ab79004cc5c917f79a5d94710340dc9365b4f"
+      },
+      "mmseg_custom/datasets/mmorfd.py": {
+        "git_blob": "adba9f23de2cc2ba6faa4e18b475ace1379e3dad",
+        "canonical_lf_sha256": "e30cccd53bfa0851807bd4d95c65661ab6ae1b75cb481e9df496014d6f8db3f3",
+        "working_file_sha256": "e30cccd53bfa0851807bd4d95c65661ab6ae1b75cb481e9df496014d6f8db3f3"
+      },
       "configs/roadformer_kitti/roadformer_convnext-b_kitti-384x1280.py": {
         "git_blob": "34cba9d0aab6e7e6b343b56274b0a936622c6767",
         "canonical_lf_sha256": "63bf534657d5be7653a101b4aa0df139673054c46f998f94344e646873cafa65",
@@ -147,12 +167,71 @@
       }
     }
   },
+  "OFF-Net": {
+    "official_repository": "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+    "commit": "50e63d24836198e8fb5af707e521f414104b4876",
+    "semantic_diff_ignoring_eol": "clean",
+    "files": {
+      "models/transformer_models/backbones/transformer.py": {
+        "git_blob": "6fa9f4abff0799a64a0558681fe3ff7cbd485dc8",
+        "canonical_lf_sha256": "1d6be40a88a27204575c19fa8be2f211d357cc14c928c40d0f6545aaa65b5721",
+        "working_file_sha256": "1d6be40a88a27204575c19fa8be2f211d357cc14c928c40d0f6545aaa65b5721"
+      },
+      "models/transformer_models/decode_heads/head.py": {
+        "git_blob": "3dcc759cd5774fa15b9775d0781525524a8129db",
+        "canonical_lf_sha256": "c975526fa8c3ffc62e8564feb2f5bc44a771df3ff2cba55a364decf94b9007d4",
+        "working_file_sha256": "c975526fa8c3ffc62e8564feb2f5bc44a771df3ff2cba55a364decf94b9007d4"
+      },
+      "models/roadseg_model.py": {
+        "git_blob": "98224733b057a48ce5ed130a5cfa1332800473b5",
+        "canonical_lf_sha256": "7ead7db021c6f8f1b711f5a99690fd9f6611247f68d3c5356ffa0c8edb20aa6b",
+        "working_file_sha256": "7ead7db021c6f8f1b711f5a99690fd9f6611247f68d3c5356ffa0c8edb20aa6b"
+      },
+      "models/loss.py": {
+        "git_blob": "acdff3fdaba67bacc2874c2068819e6e7b3e095e",
+        "canonical_lf_sha256": "8aea0cc92a2525bee1f6168227d85ab0b44fd9196f264cb20c39618a2a299681",
+        "working_file_sha256": "8aea0cc92a2525bee1f6168227d85ab0b44fd9196f264cb20c39618a2a299681"
+      },
+      "models/sne_model.py": {
+        "git_blob": "58a915da5ec0b3e33dcd1f966a3c2e43575d5d7c",
+        "canonical_lf_sha256": "cc45afcf113373b9c806db24fcaefa2600b673e277efdd3f60b758a3d10ea282",
+        "working_file_sha256": "cc45afcf113373b9c806db24fcaefa2600b673e277efdd3f60b758a3d10ea282"
+      },
+      "data/ORFD_dataset.py": {
+        "git_blob": "55841aac195d032cb0e4f5ded05f74897fca4867",
+        "canonical_lf_sha256": "1f5734d1bea5b5ef5b29e9352c14c41da3f2e1951b450ae7d9920155bbc25bab",
+        "working_file_sha256": "1f5734d1bea5b5ef5b29e9352c14c41da3f2e1951b450ae7d9920155bbc25bab"
+      },
+      "train.py": {
+        "git_blob": "70aecb4b027a3dd5d20733970144d94ddfd72870",
+        "canonical_lf_sha256": "ad228742c21a2607b717c7c9cd54c58efe04a3488b1eae3613a1c57f696bc695",
+        "working_file_sha256": "ad228742c21a2607b717c7c9cd54c58efe04a3488b1eae3613a1c57f696bc695"
+      },
+      "options/base_options.py": {
+        "git_blob": "0e7c3ddc5546cd7717c7faab781f3393692b6f02",
+        "canonical_lf_sha256": "a376f44cd1ae71f4fa05e3c103a8e2951153934933803b0983aa1ec45cfed29a",
+        "working_file_sha256": "a376f44cd1ae71f4fa05e3c103a8e2951153934933803b0983aa1ec45cfed29a"
+      },
+      "options/train_options.py": {
+        "git_blob": "95f35aa2920b1a8ed992c86f6d87af72a0e5b263",
+        "canonical_lf_sha256": "8754358707464581029522111321c96af02f9eed223585d9b6f1ac1a241c0d8e",
+        "working_file_sha256": "8754358707464581029522111321c96af02f9eed223585d9b6f1ac1a241c0d8e"
+      },
+      "scripts/train.sh": {
+        "git_blob": "9800950e0f360b402550d315c0726c1cc720de39",
+        "canonical_lf_sha256": "7a2cd8130529c7457222854b7bd0037fe99dd15344ba40e381ca4e1cfe7d04de",
+        "working_file_sha256": "7a2cd8130529c7457222854b7bd0037fe99dd15344ba40e381ca4e1cfe7d04de"
+      }
+    }
+  },
   "inputs": {
     "official_sne_depth_u16_google_drive_id": "1phoi_f3bwEV-oKwGe0psXj5XDhqy5DH0",
     "depth_u16_archive_sha256": "d32bf0052ec81f87996c0c7ca2e86952b9f780ad97b7347151e62def5f8efb92",
     "torchvision_resnet18_imagenet_v1_sha256": "f37072fd47e89c5e827621c5baffa7500819f7896bbacec160b1a16c560e07ec",
     "torchvision_resnet152_imagenet_v1_sha256": "394f9c45966e3651a89bbb78a48410a6755854ce4a5ab64927cf1c7247f85e58",
     "roadformer_convnext_base_in21k_sha256": "262fd0376855955f20f6c036aa882f5cb22b88333b766b0fa20174339c11d70d",
+    "offnet_official_checkpoint_google_drive_id": "1X53H8QFuiVv1OMTkyCbPZ3Hu0e_oO7sp",
+    "offnet_official_checkpoint_sha256": "4d82a9ba1c5411a8159e1a262f1741a6a163c8bd9751d52a90fb10deb237650d",
     "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
     "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
     "sne_implementation_note": "The pinned USNet SNE adds a default-true crop_top option around the top-crop branch that is unconditional in pinned SNE-RoadSeg; official USNet uses the true default, so both execute the same numerical path."

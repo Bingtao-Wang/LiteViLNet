@@ -1,0 +1,67 @@
+{
+  "protocol": {
+    "protocol": "matched Table-I model-only CUDA-event latency",
+    "input_shape_rgb": [
+      1,
+      3,
+      384,
+      1248
+    ],
+    "precision": "fp32",
+    "backend": "PyTorch",
+    "preprocessing_included": false,
+    "host_to_device_transfer_included": false,
+    "postprocessing_included": false,
+    "warmup": 100,
+    "iterations_per_repeat": 300,
+    "repeats": 3
+  },
+  "device": "NVIDIA GeForce RTX 4090 D",
+  "rows": [
+    {
+      "method": "litevilnet",
+      "parameters_M": 14.035153,
+      "mean_ms": 4.616645985179477,
+      "sample_std_ms": 0.011726192672250196,
+      "fps": 216.60746854106554,
+      "peak_allocated_cuda_MiB": 15004.87890625,
+      "checkpoint_sha256": "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79"
+    },
+    {
+      "method": "usnet",
+      "parameters_M": 30.738444,
+      "mean_ms": 4.170039767689175,
+      "sample_std_ms": 0.0003151771517171114,
+      "fps": 239.8058665407283,
+      "peak_allocated_cuda_MiB": 10766.8828125,
+      "checkpoint_sha256": "09e0b77829b05d52c1ab945d9ac3fe48ea870718cddf683a7a767855950734c7"
+    },
+    {
+      "method": "sne_roadseg",
+      "parameters_M": 201.324806,
+      "mean_ms": 51.75625839233398,
+      "sample_std_ms": 0.0985034778837621,
+      "fps": 19.321334869680566,
+      "peak_allocated_cuda_MiB": 34740.45556640625,
+      "checkpoint_sha256": "7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70"
+    },
+    {
+      "method": "plard",
+      "parameters_M": 76.929142,
+      "mean_ms": 37.07437963697645,
+      "sample_std_ms": 0.019390890945501275,
+      "fps": 26.972804664346732,
+      "peak_allocated_cuda_MiB": 33897.1298828125,
+      "checkpoint_sha256": "e69cdc463fc403a9d858ef745de04c5eb2ba2d17021a5c014b01badd22a9bb75"
+    },
+    {
+      "method": "roadformer",
+      "parameters_M": 206.860175,
+      "mean_ms": 57.26677789052328,
+      "sample_std_ms": 0.03354702360574289,
+      "fps": 17.462131393383036,
+      "peak_allocated_cuda_MiB": 17834.01025390625,
+      "checkpoint_sha256": "6f3648c52159ee726f4f79272d2766eeb4fe749867ed183ad6a5509cfa16d4b7"
+    }
+  ]
+}

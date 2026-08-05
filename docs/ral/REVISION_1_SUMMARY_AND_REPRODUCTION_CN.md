@@ -2,7 +2,7 @@
 
 > **内部文档，请勿作为双盲附件上传。** 本文为作者核验保留本机数据/结果路径和完整审计说明。投稿请只使用 `tools/package_ral_reproduction.sh` 生成并通过自动身份扫描的匿名压缩包。
 
-> 状态：修订实验、Table I 的 USNet/SNE-RoadSeg 官方源码同协议三种子重训练、论文/Response 回填与证据审计均已完成。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
+> 状态：原修订实验与 Table I 的五个官方 baseline 同协议三种子重训练已完成；为赶 rebuttal，本轮 ORFD 快照采用 USNet seed-40 单次重训和 OFF-Net 发布 checkpoint 的独立评测，SNE/RoadFormer 及 OFF-Net 三 seed 重训命令保留但不纳入当前 Table III。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
 
 > 正文表述原则：论文正文面向正式读者，重点呈现 LiteViLNet 的创新设计、精度—效率优势、跨城市/越野场景验证和边缘部署价值。为回应评审而补充的精确 split seed、逐类别数量、manifest 路径、SHA-256、训练 seed、梯度累积和单步训练显存等审计信息，不再堆放于 Abstract 或 Section IV-A；它们集中保留在 Response 与本复现文档中。正文中仅保留理解实验所必需的数据集划分类型、评价协议、主要训练设置和三次独立运行统计。
 
@@ -19,15 +19,15 @@
 5. 机器人分支使用 aligned depth 生成 `depth3`，不是 ADI，也不是 KITTI 模型 zero-shot transfer。历史导航没有保留成功率、碰撞、干预、横向误差或功耗日志，因此只能作为定性系统演示。
 6. MSFM 增加约 10.35M 参数，必须与“简单逐尺度相加 + 同一 Bridge + 同一深监督”控制一起看。修正后的分层 split 结果见第 7 节。
 7. ORFD 用作第二数据集。除 8,392/1,245 train/validation 外，本轮进一步发现下载包的 2,193-frame testing partition 也包含完整 GT；训练和 validation 都与 test 无同名帧。论文现以 held-out test 作为主结果。
-8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`，相对 OFF-Net 公布值高 `6.44/11.38 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的 seed-matched 优势是 `+0.71 ± 0.67 pp`，三个 seeds 均为正；其 F-score 标准差也约为 compact 的三分之一。
-9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 USNet 以 `0.65 pp` MaxF 差换取 `54.3%` 更少参数和 `1.53×/3.54×` 的 RTX/Jetson 吞吐。
+8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`。它相对已独立评测的 OFF-Net 发布 checkpoint 高 `3.94/7.11 pp`，相对发布表格值高 `6.44/11.38 pp`；相对 USNet seed-40 高 `1.12/2.07 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的原有三 seed 优势是 `+0.71 ± 0.67 pp`。
+9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。ORFD 快照另记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU。
 
 ## 2. 审稿意见—修改证据矩阵
 
 | 审稿关注 | 修改位置 | 证据/实验 |
 |---|---|---|
 | 只有 KITTI，数据太小 | 论文 Section IV-A、IV-D、Table III | ORFD 官方 train/val/test，8,392/1,245/2,193 帧；held-out test F-score `96.74±0.09%` |
-| KITTI 比较不公平、数字错误 | Section IV-A、IV-B、Table I | 从作者官方源码同协议重训 USNet/SNE-RoadSeg；三种方法统一 split、尺寸、预算、评测与三种子统计 |
+| KITTI 比较不公平、数字错误 | Section IV-A、IV-B、Table I | 从作者官方源码同协议重训 USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer；六种方法统一 split、尺寸、预算、评测与三种子统计 |
 | 缺少多种子 | Section IV-A、IV-C、Tables I–II；精确 seed 见 Response/本文档 | 三次独立运行，mean ± sample std；复现 seed 为 40/41/42 |
 | MSFM 单独下降、缺简单融合控制 | Section III-C、IV-C、Table II | `optimal`：simple addition + Bridge + DeepSup |
 | 缺 FLOPs/显存/延迟 | Section IV-A、IV-C、Table II | fvcore GMAC-equivalent、CUDA allocation、FP16 latency distribution |
@@ -269,7 +269,7 @@ auxiliary weights = [0.4, 0.3, 0.2]
 
 ### 7.1 Table I 官方源码同协议基线
 
-Table I 的核心精度行不再混用 KITTI official BEV test-server 与本地 perspective-view 指标。USNet、SNE-RoadSeg、PLARD、RoadFormer 和 LiteViLNet 现在统一使用：
+Table I 的核心精度行不再混用 KITTI official BEV test-server 与本地 perspective-view 指标。USNet、SNE-RoadSeg、PLARD、OFF-Net、RoadFormer 和 LiteViLNet 现在统一使用：
 
 ```text
 split: category-stratified 231 train / 58 validation
@@ -287,9 +287,10 @@ statistics: mean ± sample SD
 | USNet | `https://github.com/morancyc/USNet.git` | `d761158ad42df7dcb62fa257dd02ce11c85f94a5` | 官方 ResNet-18 双分支 USNet |
 | SNE-RoadSeg | `https://github.com/hlwang1124/SNE-RoadSeg.git` | `5e7900bfd59887634ced687ffe85a73018a38659` | 官方双 ResNet-152 RoadSeg + 官方 SNE normal |
 | PLARD | `https://github.com/zhechen/PLARD.git` | `44485803092e729661c696ab6c03f6f2fabc8701` | 官方 RGB--ADI PLARD + 三路监督 |
+| OFF-Net | `https://github.com/chaytonmin/Off-Road-Freespace-Detection` | `50e63d24836198e8fb5af707e521f414104b4876` | 官方 MiT-B2 RGB--normal fusion + 官方 SNE |
 | RoadFormer | `https://github.com/LiJiahang617/Road-Former.git` | `f675a3467cb168ebc727648390c304279bbcb079` | 官方 TwinConvNeXt-B + RoadFormer decoder |
 
-本地适配器没有重写基线网络和 loss。它直接导入官方定义，保留 USNet 的 evidential objective、SNE-RoadSeg 的 dual-ResNet/SNE、PLARD 的 RGB--ADI 图与三路监督，以及 RoadFormer 的 TwinConvNeXt-B、Hungarian matching losses 和 decoder；新增部分仅为统一 manifest、预算、seed、normal 编码/缓存、评测与 provenance 输出。四个仓库的 remote、完整 commit、语义 diff 和关键文件 SHA-256 均由 `source_provenance.json` 与汇总器逐项复核。
+本地适配器没有重写基线网络和 loss。它直接导入官方定义，保留 USNet 的 evidential objective、SNE-RoadSeg 的 dual-ResNet/SNE、PLARD 的 RGB--ADI 图与三路监督、OFF-Net 的 MiT-B2 fusion/loss/SNE，以及 RoadFormer 的 TwinConvNeXt-B、Hungarian matching losses 和 decoder；新增部分仅为统一 manifest、预算、seed、normal 编码/缓存、评测与 provenance 输出。五个仓库的 remote、完整 commit、语义 diff 和关键文件 SHA-256 均由 `source_provenance.json` 与汇总器逐项复核。
 
 逐 seed 正式结果（百分数）：
 
@@ -301,6 +302,9 @@ statistics: mean ± sample SD
 | SNE-RoadSeg | 40 | 35 | 96.9893 | 97.0651 | 96.9136 | `7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70` |
 | SNE-RoadSeg | 41 | 40 | 97.3079 | 97.4405 | 97.1757 | `df44300104f2468b5e55d6272d443c364fb60cb1fa86ac08b0a8ba1cd8758eb7` |
 | SNE-RoadSeg | 42 | 45 | 97.3805 | 97.6629 | 97.0998 | `8eafe3bbfd8e2fa14377d631da6fd406e1d940a41f86c5060c89b5f1eeb1f9e0` |
+| OFF-Net | 40 | 100 | 95.9813 | 95.9080 | 96.0548 | `f8193fb055a94b2290216f38b697e014a037cc946599851e07570b2c23a3aa78` |
+| OFF-Net | 41 | 145 | 95.4243 | 94.6025 | 96.2607 | `3b0642f66d13fad53bb21a40e92ed4fd76965cff4d071f9fa6bbef3899f1df61` |
+| OFF-Net | 42 | 120 | 94.6617 | 94.1409 | 95.1882 | `04ef8174615d98d8ddb3fdc3a1838046965d4bd60eb5e96b35a291183666f495` |
 
 Table I 汇总：
 
@@ -308,9 +312,24 @@ Table I 汇总：
 |---|---:|---:|---:|---:|---:|
 | USNet | 3 | 97.88 ± 0.07 | 98.03 ± 0.03 | 97.73 ± 0.11 | 30.74M |
 | SNE-RoadSeg | 3 | 97.23 ± 0.21 | 97.39 ± 0.30 | 97.06 ± 0.13 | 201.32M |
+| PLARD | 3 | 95.25 ± 0.19 | 95.46 ± 0.29 | 95.03 ± 0.09 | 76.93M |
+| OFF-Net | 3 | 95.36 ± 0.66 | 94.88 ± 0.92 | 95.83 ± 0.57 | 25.21M |
+| RoadFormer | 3 | 97.28 ± 0.05 | 97.96 ± 0.09 | 96.61 ± 0.16 | 206.86M |
 | LiteViLNet | 3 | 97.23 ± 0.15 | 97.31 ± 0.59 | 97.16 ± 0.30 | 14.04M |
 
-专业解读：LiteViLNet 的 MaxF 比 SNE-RoadSeg 高 `0.0085 pp`（表中四舍五入后均为 97.23），且 MaxF sample SD 更低，同时参数量少 `93.03%`。USNet 的 MaxF 高 `0.6469 pp`，但 LiteViLNet 参数量少 `54.34%`，RTX 4060 Ti/Jetson Orin NX model-only 吞吐为其 `1.528×/3.545×`。因此正文把 LiteViLNet 定位为精度—参数—目标设备速度的 Pareto operating point，不声称所有精度指标绝对第一。
+专业解读：LiteViLNet 的 MaxF 比 SNE-RoadSeg 高 `0.0085 pp`（表中四舍五入后均为 97.23），且 MaxF sample SD 更低，同时参数量少 `93.03%`。相对 USNet，LiteViLNet 参数量少 `54.34%`，MaxF 差 `0.6469 pp`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D model-only FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。因此正文把 LiteViLNet 定位为精度—参数—目标设备速度的 Pareto operating point，不声称所有精度指标绝对第一。
+
+USNet 的参数量较大但 FPS-1 略高，是算子效率而非计时错误。参数量只统计权重；统一输入下 fvcore 可识别的 USNet 计算量约为 `39.13 GMAC-eq`，虽高于 LiteViLNet 的 `10.17 GMAC-eq`，但 USNet 以 4090 D 上高度优化的大块标准卷积为主。LiteViLNet 的深度卷积、逐尺度融合/attention、插值及较多小 kernel 降低了参数和 MAC，却可能带来更低算术强度和更多调度开销。原始三次 repeat 的 USNet 均约 `4.170 ms`，LiteViLNet 为 `4.617±0.012 ms`；两者都排除了 normal/SNE 或 ADI 预处理。因此论文强调 LiteViLNet 相对 SNE-RoadSeg、PLARD 和 RoadFormer 的准确率—参数—速度优势，不把“参数更少”误写成“必然比所有网络更快”。
+
+统一 RTX 4090 D FPS-1 快照（`384×1248`、batch 1、PyTorch FP32、100 次 warmup、300 次计时、三次 repeat、仅 model forward）如下：
+
+| Method | FPS-1 | 参数量 |
+|---|---:|---:|
+| USNet | 239.81 | 30.74M |
+| SNE-RoadSeg | 19.32 | 201.32M |
+| PLARD | 26.97 | 76.93M |
+| RoadFormer | 17.46 | 206.86M |
+| LiteViLNet | 216.61 | 14.04M |
 
 正式汇总与匿名逐 seed 证据：
 
@@ -579,6 +598,23 @@ testing:    2,193
 total:     11,830
 ```
 
+为新增的本地 ORFD baseline 复现，又从完整官方 ZIP 单独解压了一份可长期保留的本机副本：
+
+```text
+runs/revision_1/matched_orfd/local_data/Final_Dataset
+ZIP SHA-256 = 02359e4b569b12766e317097d84d45d8b9609d8eccea63a9e6c0024e9a2dc92b
+unzip -tq   = No errors detected
+```
+
+该副本的 RGB、dense depth、GT 和 calib 在 training/validation/testing 中均分别为
+8,392/1,245/2,193，所有 11,830 个 dense-depth 时间戳都有同名 calib。正式 normal
+cache 强制核验 `released_calibration_files=11830`、`exact_sample_matches=11830`、
+`nearest_timestamp_matches=0` 和 `maximum_nearest_timestamp_gap=0`。两套 cache 分别
+保存 SNE-RoadSeg 与 OFF-Net 作者源码生成的 float32 normal；前者含 USNet 所需的
+8,392 份 pre-SNE flipped training cache，共 20,222 个数组，后者共 11,830 个数组。
+每套 cache 生成后又在不加 `--force` 的情况下完整扫描一次 shape/dtype，全部条目均
+被成功复用。对应元数据随匿名附件提交，但数百 GB 的可重建数组本身不打包。
+
 tmpfs 副本的全部 ZIP 条目通过 CRC；training/validation/testing 的 `image_data`、`dense_depth`、`gt_image` 分别逐一核验为 8,392/1,245/2,193 个同名配对。协议核验参照 ORFD 官方仓库 `chaytonmin/Off-Road-Freespace-Detection` 的 commit `50e63d24836198e8fb5af707e521f414104b4876`。官方 loader 的标签规则是 RGB 顺序 channel 2 > 200；本次 archive 的 fill-color GT 实际以单通道 PNG 存储，读取成 RGB 后三个通道相同，因此白色区域为 positive。
 
 ORFD 第二路输入不是 ADI：
@@ -699,8 +735,12 @@ python -m tools.summarize_orfd_test \
 
 Table III 使用的 official-protocol test 结果：
 
+> 当前提交快照：USNet 使用已完成的 seed 40；OFF-Net 使用作者发布 checkpoint 的独立本地评测。SNE-RoadSeg、RoadFormer 和 OFF-Net 多 seed 重训命令仍保留，但不把未完成过程写成正式结果。
+
 | Variant | n | F-score | AP | PRE | REC | IoU |
 |---|---:|---:|---:|---:|---:|---:|
+| USNet local seed 40 | 1 | 95.62 | 97.17 | 95.32 | 95.92 | 91.61 |
+| OFF-Net released checkpoint, local test | 1 | 92.80 | 97.58 | 94.53 | 91.13 | 86.57 |
 | OFF-Net published | -- | 90.30 | -- | 86.60 | 94.30 | 82.30 |
 | full: MSFM + LKB + DS | 3 | **96.74 ± 0.09** | **98.31 ± 0.37** | 97.03 ± 0.44 | 96.45 ± 0.39 | 93.68 ± 0.18 |
 | optimal/compact: simple + LKB + DS | 3 | 96.77 ± 0.27 | 97.60 ± 0.41 | 97.15 ± 0.74 | 96.39 ± 0.28 | 93.74 ± 0.52 |
@@ -856,17 +896,52 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
 
 提交前请逐项检查：
 
+最终数字回填范围（只改这些审稿驱动位置，不扩大正文改动）：
+
+- `root.tex` Abstract：将 published OFF-Net 的旧式单行比较替换为本地共同协议的
+  ORFD 多方法结论；不写本机路径、manifest、hash 或 seed。
+- Section IV-A：把 ORFD evaluator 表述改成四个 baseline 与 LiteViLNet 共用的
+  fixed-argmax/original-GT protocol，并补一句作者官方源码、本地重训、validation-only
+  选模；保留各方法自己的官方优化 recipe。
+- Table I/Section IV-B：新增 OFF-Net 的三种子精度、25.21M 参数和最终 RTX 4090 D
+  FPS-1，同时保留 USNet 高 FPS 的真实测量，不作选择性删除；USNet 的网络第二路来自
+  官方 SNE 输出，Input 单元格应精准标为 `RGB+Normal`，而不是按其内部变量名写成
+  `RGB+Depth`。
+- Table III/Section IV-D：加入已完成的 USNet seed-40 本地结果与 OFF-Net 作者发布
+  checkpoint 的独立核验，并增加 Params 列；SNE-RoadSeg/RoadFormer 的 ORFD 训练入口
+  保留在补充材料中，PLARD 因没有官方 ORFD-compatible ADI 构造链而不做不成立的输入替换。
+- Conclusion：只使用最终本地可比结果总结优势，不再用 published OFF-Net
+  `90.30/82.30` 作为核心胜幅。
+- `ral_response_1.tex`：同步更新 `\RevisedTableOne`、`\RevisedTableThree` 及所有引用
+  旧 ORFD 胜幅的回复；礼貌说明基线集合按“作者官方、可本地重训和统一评测”原则调整，
+  并在相关回复下重复完整新表，方便评审直接核验。
+- 上述全部属于评审要求，正文使用精准 `cyan`；不在 Response 中讨论 self-audit-only
+  的 `blue` 修改，也不修改任何论文图片。
+
+最终 Table-I 输入标签核对表：
+
+| 方法 | 网络实际第二路输入 | 正文 Input 单元格 |
+|---|---|---|
+| USNet | 官方 SNE surface normal | `RGB+Normal` |
+| SNE-RoadSeg | 官方 SNE surface normal | `RGB+Normal` |
+| PLARD | LiDAR-derived ADI | `RGB+ADI` |
+| OFF-Net | OFF-Net 官方 SNE surface normal | `RGB+Normal` |
+| RoadFormer | SNE-RoadSeg normal cache encoded for official loader | `RGB+Normal` |
+| LiteViLNet | LiDAR-derived ADI | `RGB+ADI` |
+
 - [x] Abstract、Table I、Table II、Conclusion 的 KITTI MaxF/参数/GMAC 数字来自同一个分层 split 汇总 JSON。
-- [x] Abstract、Table III、Conclusion 的 ORFD test 数字来自 `orfd_test_summary.json`，且 F/PRE/REC/IoU 使用官方 fixed-argmax 原始 GT 尺寸口径。
-- [x] Table I 的三个核心精度行全部来自同一 231/58 split、尺寸、150-epoch budget、三种子和 evaluator，不再混合 official BEV 与 local PV 排名。
-- [x] USNet/SNE-RoadSeg 的官方仓库、固定 commit、源码哈希、逐 seed JSON 与 checkpoint SHA 均进入匿名 Supplement。
+- [x] ORFD Table III 已先纳入 USNet seed-40 和 OFF-Net 发布 checkpoint 的共同 fixed-argmax evaluator 结果；LiteViLNet 现有数字来自 `orfd_test_summary.json`。SNE/RoadFormer 与 OFF-Net 多 seed 扩展命令保留待后续 GPU 空闲时运行。
+- [x] Table I 的 USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer/LiteViLNet 六个精度行全部来自同一 231/58 split、尺寸、150-epoch budget、三种子和 evaluator，不再混合 official BEV 与 local PV 排名。
+- [x] USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer 的官方仓库、固定 commit、源码哈希、逐 seed JSON 与 checkpoint SHA 均已整理到待打包结果树；最终匿名 Supplement 将在 ORFD/FPS 完成后重建。
+- [ ] OFF-Net 的 RTX 4090 D FPS-1 尚待 GPU 独占后测量；当前 GPU 被外部任务占用，
+  因此 Table I/Response 暂以 ``--'' 保持，不把未完成测速写成结果。
 - [x] 论文没有 `best CNN`、`standard split`、`collision-free`、`RGB-D-compatible ADI`。
 - [x] PyTorch 22.18/22.19 FPS 与 TensorRT 68.73 FPS 的 checkpoint/backend 已分开。
 - [x] TensorRT 没有被用来声称 KITTI accuracy 等价。
 - [x] 没有虚构机器人 success/intervention/collision/lateral-error/power。
 - [x] cyan 已收缩到评审要求的协议、公式、关键数字和结论短语，不再整段着色。
 - [x] Fig. 1、3、4、5 的手工绘制说明、参考副本和 Fig. 4 逐面板素材已准备，生成脚本不会覆盖作者原图。
-- [x] 恢复原图后的当前版本可编译：论文 8 页、Response 24 页，无 fatal/undefined reference/overfull；这两份 PDF 是手工重画前的核验版。
+- [ ] 最终 ORFD/Table-I 数字回填后重新编译论文与 Response，并再次检查 fatal、undefined reference、overfull 和页数；此前 8/24 页 PDF 只证明旧快照可编译。
 - [ ] 作者按 `FIGURE_MANUAL_REVISION_GUIDE_CN.md` 手工覆盖 Fig. 1、3、4、5，并重新编译最终 PDF。
 - [x] Response 每条都引用对应 Section/Table/Figure；图片宏继续引用论文原文件名，作者手工覆盖后会自动同步到 Response。
 
@@ -874,7 +949,7 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
 
 1. 没有 KITTI official test-server submission；本地 PV 数字不能建立官方排名。
 2. 旧的预计算 ADI provenance 不完整，reference regeneration 与 stored PNG 不一致。
-3. RTX 4060 Ti/Jetson 的历史 checkpoint FPS 汇总保存在 `FPS/FPS_README.md`，但 README 指向的 Windows `F:` 原始结果目录不在当前 Linux 主机；论文使用这些数字时必须保留这一证据限制。
+3. RTX 4060 Ti/Jetson 的历史 checkpoint FPS 汇总仅保存在 `FPS/FPS_README.md` 作为审计记录；当前 Table I 已改用可复核的 RTX 4090 D FPS-1，论文不再用历史 4060 Ti 数值作主结果。
 4. 早期受共驻任务污染的 latency 只作诊断；论文 Table II 使用无其他 compute process 的 clean 三次 4090D profile。
 5. ORFD 是在第二数据集上重新训练/验证，不是 KITTI→ORFD zero-shot generalization。
 6. 机器人实验是 perception/control integration demonstration，不是受控导航 benchmark。
@@ -903,14 +978,18 @@ tools/summarize_revision_experiments.py    mean ± sample std + seed-matched pai
 tools/summarize_distillation_control.py    KD student 与同 seed 非 KD student 配对汇总
 tools/summarize_profile_repeats.py         repeated profiler invocation mean ± sample std
 tools/generate_revision_figures.py         只生成 Fig. 1/3/4/5 手工绘图参考素材与哈希清单，不覆盖论文原图
-tools/fetch_matched_baseline_sources.sh    从作者官方仓库拉取并固定四个 baseline commit
+tools/fetch_matched_baseline_sources.sh    从作者官方仓库拉取并固定五个 baseline commit
 tools/prepare_matched_kitti_baselines.py   构造同协议无泄漏软链接数据树
 tools/prepare_matched_roadformer.py        为官方 RoadFormer loader 编码同源 normal 与 split tree
 tools/cache_official_sne_normals.py        直接调用官方 SNE 并缓存确定性 float32 normal
+tools/cache_official_orfd_normals.py       ORFD 完整标定核验与两套作者 SNE cache
 tools/train_matched_kitti_baseline.py      USNet/SNE-RoadSeg/PLARD 官方模型与 loss 的同协议训练适配器
+tools/train_matched_kitti_offnet.py        OFF-Net 官方图的 KITTI 同协议训练适配器
 tools/train_matched_kitti_roadformer.py    RoadFormer 官方图/MMCV 算子的同协议训练适配器
+tools/train_matched_orfd_baseline.py       USNet/SNE-RoadSeg/OFF-Net 的 ORFD 同协议训练适配器
+tools/train_matched_orfd_roadformer.py     RoadFormer ORFD 官方图训练适配器
 tools/summarize_matched_kitti_baselines.py 严格来源/协议/checkpoint 核验与 mean/sample-SD 汇总
-tools/benchmark_matched_kitti_fps.py       五方法统一 RTX 4090 D FP32 FPS-1 benchmark
+tools/benchmark_matched_kitti_fps.py       六方法统一 RTX 4090 D FP32 FPS-1 benchmark
 tools/summarize_matched_kitti_fps.py       FPS 协议/来源/参数量核验与 JSON/CSV 汇总
 tools/package_table1_matched_baselines.sh  Table I 轻量匿名复现包
 tools/package_ral_reproduction.sh          全部修订证据的双盲匿名复现包
@@ -927,21 +1006,34 @@ tests/test_revision_figure_manifest.py     素材输出目录保护、哈希、v
 
 ## 14. 双盲附件交付
 
-Table I 轻量复现包：
+旧版 Table I 轻量复现包（已作废，仅供本机追溯，禁止投稿）：
 
 ```text
 dist/LiteViLNet_RAL_TableI_Reproduction.tar.gz
-SHA-256 = 3c91673ee79eba885c1bdf6b15bc036009f0c815ce3e097c69a8f9ef37624990
+SHA-256 = 0414aaffb67692137bf114011f0f8def05f8d834613c36cc94880363d2ae2ed8
 ```
 
-完整修订复现包（推荐作为投稿 Supplement）：
+旧版完整修订复现包（已作废，仅供本机追溯，禁止投稿）：
 
 ```text
 dist/LiteViLNet_RAL_Anonymous_Reproduction.tar.gz
-SHA-256 = 98026b56c084e33da9b756d8ca5b49769413edc101bbfc9d77b80fb30b00b1fa
+SHA-256 = bb1a8e9071e804d24ce6eb08657466360f9192899e05aa260e420e987b4b54ab
 ```
 
-两个包均已完成以下检查：
+上述旧包已由当前快照替换。当前可交付包为：
+
+```text
+dist/LiteViLNet_RAL_Anonymous_Reproduction.tar.gz
+SHA-256 = 9949bc3eae45d8ae154019df0a5081d64b9b7c35457fe4ed99ec67e4a5930a0c
+dist/LiteViLNet_RAL_TableI_Reproduction.tar.gz
+SHA-256 = e5e5e661dd26d806d4e79c69066ca17e5dbad12b44b1d5108daac17e0f51e989
+```
+
+两包均已重新执行 companion hash、tar owner/group、身份/绝对路径扫描；OFF-Net
+KITTI FPS-1 在目标 GPU 被外部任务占用期间保留为论文中的 ``--''，不影响其余
+精度、复现代码和匿名证据交付。
+
+当前两包已完成以下检查：
 
 - companion `.sha256` 校验通过；
 - 包内 `ARTIFACT_MANIFEST.sha256` 的逐文件校验通过；

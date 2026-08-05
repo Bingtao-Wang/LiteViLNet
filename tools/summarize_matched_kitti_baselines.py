@@ -34,6 +34,7 @@ EXPECTED_METHOD_PROTOCOL = {
     "sne_roadseg": {"batch_size": 2, "amp": True},
     "plard": {"batch_size": 4, "amp": False},
     "roadformer": {"batch_size": 4, "amp": False},
+    "offnet": {"batch_size": 2, "amp": False},
 }
 EXPECTED_SOURCES = {
     "usnet": (
@@ -52,6 +53,10 @@ EXPECTED_SOURCES = {
         "https://github.com/LiJiahang617/Road-Former.git",
         "f675a3467cb168ebc727648390c304279bbcb079",
     ),
+    "offnet": (
+        "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+        "50e63d24836198e8fb5af707e521f414104b4876",
+    ),
 }
 EXPECTED_SPLIT_HASHES = (
     "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
@@ -69,6 +74,7 @@ PROVENANCE_NAMES = {
     "sne_roadseg": "SNE-RoadSeg",
     "plard": "PLARD",
     "roadformer": "RoadFormer",
+    "offnet": "OFF-Net",
 }
 EXPECTED_RECORDED_FILES = {
     "usnet": {"model/usnet.py", "loss.py"},
@@ -85,12 +91,18 @@ EXPECTED_RECORDED_FILES = {
         "mmpretrain_custom/models/backbones/twin_convnext.py",
         "mmdet_custom/models/layers/roadformer_pixel_decoder.py",
     },
+    "offnet": {
+        "models/transformer_models/backbones/transformer.py",
+        "models/transformer_models/decode_heads/head.py",
+        "models/loss.py",
+    },
 }
 EXPECTED_PARAMETERS = {
     "usnet": 30_738_444,
     "sne_roadseg": 201_324_806,
     "plard": 76_929_142,
     "roadformer": 206_860_175,
+    "offnet": 25_209_608,
 }
 
 
@@ -249,6 +261,18 @@ def main() -> None:
                 sne_hashes = accepted_source_hashes(provenance, "sne_roadseg")["models/sne_model.py"]
                 if normal_metadata.get("official_sne_sha256") not in sne_hashes:
                     raise ValueError(f"{baseline}: unexpected official SNE cache source hash")
+            elif baseline == "offnet":
+                if not isinstance(normal_metadata, dict):
+                    raise ValueError("offnet: missing OFF-Net SNE cache metadata")
+                if normal_metadata.get("profile") != "offnet":
+                    raise ValueError("offnet: normal cache used the wrong SNE profile")
+                if normal_metadata.get("official_commit") != EXPECTED_SOURCES["offnet"][1]:
+                    raise ValueError("offnet: unexpected SNE cache commit")
+                offnet_sne_hashes = accepted_source_hashes(provenance, "offnet")[
+                    "models/sne_model.py"
+                ]
+                if normal_metadata.get("official_sne_sha256") not in offnet_sne_hashes:
+                    raise ValueError("offnet: unexpected SNE cache source hash")
             checkpoint_hash = payload.get("best_checkpoint_sha256")
             if not isinstance(checkpoint_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", checkpoint_hash):
                 raise ValueError(f"{baseline}: invalid checkpoint SHA-256 for seed {payload['seed']}")
@@ -287,7 +311,7 @@ def main() -> None:
             "official_file_sha256": recorded_hashes,
             "official_sne_sha256": (
                 records[0][0]["normal_cache_metadata"]["official_sne_sha256"]
-                if baseline in {"usnet", "sne_roadseg"}
+                if baseline in {"usnet", "sne_roadseg", "offnet"}
                 else None
             ),
             "protocol": {field: records[0][0][field] for field in PROTOCOL_FIELDS},
@@ -319,7 +343,9 @@ def main() -> None:
     args.output_json.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
     with args.output_csv.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(csv_rows[0]))
+        writer = csv.DictWriter(
+            handle, fieldnames=list(csv_rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(csv_rows)
     if args.seed_output_dir is not None:

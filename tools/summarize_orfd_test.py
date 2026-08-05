@@ -133,7 +133,7 @@ def main() -> None:
             "input_resolution": [704, 1280],
             "precision": records[0]["precision"],
             "thresholds": records[0]["thresholds"],
-            "official_metric": "fixed argmax/0.5 prediction resized with nearest-neighbor to original 1280x720 GT, following OFF-Net commit 50e63d2",
+            "official_metric": "OFF-Net-style fixed argmax/0.5 prediction resized with nearest-neighbor to original 1280x720 GT",
             "split_overlap": {"train_test_filenames": 0, "validation_test_filenames": 0},
         },
         "groups": groups,
@@ -148,7 +148,7 @@ def main() -> None:
             fieldnames.extend((f"{metric}_mean", f"{metric}_sample_std"))
         for metric in OFFICIAL_METRICS:
             fieldnames.extend((f"official_{metric}_mean", f"official_{metric}_sample_std"))
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for group in groups:
             row: dict[str, Any] = {

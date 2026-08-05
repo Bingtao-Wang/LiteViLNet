@@ -1,7 +1,7 @@
 # Reproducing the Matched-Protocol KITTI Table I
 
 This package reproduces the local accuracy rows used in Table I of the revised
-LiteViLNet manuscript.  Its purpose is to compare LiteViLNet and four public
+LiteViLNet manuscript.  Its purpose is to compare LiteViLNet and five public
 RGB--geometry baselines under one executable protocol: the same 231/58
 category-stratified KITTI Road split, `384 x 1248` network input, and the same
 pixel-accumulated 101-threshold perspective-view MaxF evaluator.
@@ -18,15 +18,16 @@ repositories.
 | SNE-RoadSeg | <https://github.com/hlwang1124/SNE-RoadSeg> | `5e7900bfd59887634ced687ffe85a73018a38659` | `models/networks.py`, `models/roadseg_model.py`, `models/sne_model.py` |
 | PLARD | <https://github.com/zhechen/PLARD> | `44485803092e729661c696ab6c03f6f2fabc8701` | `ptsemseg/models/plard.py`, `ptsemseg/loss.py`, `ptsemseg/loader/kitti_road_loader.py` |
 | RoadFormer | <https://github.com/LiJiahang617/Road-Former> | `f675a3467cb168ebc727648390c304279bbcb079` | official TwinConvNeXt backbone, RoadFormer head/pixel decoder, and KITTI config |
+| OFF-Net | <https://github.com/chaytonmin/Off-Road-Freespace-Detection> | `50e63d24836198e8fb5af707e521f414104b4876` | `models/transformer_models`, `models/loss.py`, `models/sne_model.py` |
 
 The direct table uses a reproducibility-based inclusion rule: an authors'
 official source tree must expose the complete trainable graph and required
 input path, and we must be able to retrain and time that exact graph locally.
 Methods for which only paper/server values or an incompatible third-party
 legacy port could be verified remain in Related Work but are not numerically
-ranked against local perspective-view runs. This rule yields two CNN fusion
-families (USNet/SNE-RoadSeg), the classic RGB--LiDAR PLARD architecture, and
-the Transformer-based RGB--normal RoadFormer architecture.
+ranked against local perspective-view runs. This rule yields three CNN fusion
+baselines (USNet/SNE-RoadSeg/OFF-Net), the classic RGB--LiDAR PLARD
+architecture, and the Transformer-based RGB--normal RoadFormer architecture.
 
 The official files used on our machine differed from the pinned Git objects
 only in CRLF/LF line endings (`git diff --ignore-space-at-eol --exit-code`
@@ -44,8 +45,9 @@ The networks and losses are imported directly.  The split-safe local data and
 training loops mirror the recipes documented by the pinned USNet `train.py`,
 `utils.py`, `dataset/kitti.py`, and `dataset/custom_transforms.py`; SNE-RoadSeg
 `train.py`, `data/kitti_dataset.py`, `options/*.py`, `models/networks.py`, and
-`models/roadseg_model.py`; PLARD `train.py`, loader, model, and loss; and the
-RoadFormer KITTI configuration plus its official custom OpenMMLab modules. Hashes for these recipe
+`models/roadseg_model.py`; PLARD `train.py`, loader, model, and loss; OFF-Net
+`train.py`, ORFD loader, model, loss, and SNE; and the RoadFormer KITTI
+configuration plus its official custom OpenMMLab modules. Hashes for these recipe
 sources are included in `source_provenance.json`; this makes the small adapter
 boundary inspectable rather than presenting a reimplementation as official
 code.
@@ -58,6 +60,7 @@ export USNET_SOURCE="$PWD/third_party/matched_baselines/USNet"
 export SNE_SOURCE="$PWD/third_party/matched_baselines/SNE-RoadSeg"
 export PLARD_SOURCE="$PWD/third_party/matched_baselines/PLARD"
 export ROADFORMER_SOURCE="$PWD/third_party/matched_baselines/Road-Former"
+export OFFNET_SOURCE="$PWD/third_party/matched_baselines/OFF-Net"
 ```
 
 The fetch script uses the authors' official GitHub repositories, not mirrors
@@ -92,6 +95,11 @@ For USNet and SNE-RoadSeg, use the `depth_u16` archive linked by the official
 SNE-RoadSeg README:
 
 <https://drive.google.com/file/d/1phoi_f3bwEV-oKwGe0psXj5XDhqy5DH0/view>
+
+USNet reads this depth to run its vendored official SNE and feeds the resulting
+three-channel surface normal to the network. Its Table-I network input is
+therefore reported as `RGB+Normal`, rather than inferred from the internal
+`depth` variable name.
 
 Archive SHA-256:
 
@@ -140,7 +148,8 @@ runs use Python 3.10.20, PyTorch 2.7.1+cu128, torchvision
 The adapter retains the deprecated `pretrained=True` calls in the official
 source; torchvision maps these calls to the cited ImageNet V1 weights.
 
-RoadFormer is pinned to the older OpenMMLab ABI used by its official source:
+RoadFormer and OFF-Net are run in the older pinned environment used by their
+official source dependencies:
 
 ```bash
 conda env create -f configs/environments/litevilnet_roadformer_ral.yml
@@ -192,6 +201,17 @@ python tools/cache_official_sne_normals.py \
 The cache metadata records the official SNE file hash and commit.  Caching is
 only a deterministic preprocessing optimization; it does not change the
 normal estimator or network inputs.
+
+OFF-Net uses its own pinned SNE implementation, so its cache is intentionally
+separate from the SNE-RoadSeg/USNet cache:
+
+```bash
+export KITTI_OFFNET_NORMAL_ROOT=runs/revision_1/matched_baselines/kitti_offnet_normals
+conda run -n litevilnet_roadformer_ral env PYTHONPATH=. \
+  python tools/cache_official_sne_normals.py \
+  --data-root "$MATCHED_ROOT" --official-source "$OFFNET_SOURCE" \
+  --output-root "$KITTI_OFFNET_NORMAL_ROOT" --profile offnet --workers 4
+```
 
 RoadFormer's official loader expects the three-channel normal field as a PNG.
 The preparation adapter deterministically maps the cached float32 normal from
@@ -269,7 +289,23 @@ CUDA_VISIBLE_DEVICES=1 conda run --no-capture-output \
   --val-every 5 --early-stop-validations 20
 ```
 
-Repeat all four commands for seeds 41 and 42.  The common 150-epoch budget matches
+OFF-Net retains its official MiT-B2 RGB--normal graph, Kaiming
+initialization, cross-entropy loss, SGD optimizer, and stepwise decay. Its
+native 1/4-resolution training target is constructed directly from the KITTI
+ground truth.
+
+```bash
+CUDA_VISIBLE_DEVICES=0 conda run --no-capture-output \
+  -n litevilnet_roadformer_ral env PYTHONPATH=. \
+  python tools/train_matched_kitti_offnet.py \
+  --official-source "$OFFNET_SOURCE" --data-root "$MATCHED_ROOT" \
+  --normal-root "$KITTI_OFFNET_NORMAL_ROOT" \
+  --output-dir runs/revision_1/matched_baselines/formal/offnet_seed40 \
+  --seed 40 --epochs 150 --batch-size 2 --num-workers 4 \
+  --height 384 --width 1248 --val-every 5 --early-stop-validations 20
+```
+
+Repeat all five commands for seeds 41 and 42.  The common 150-epoch budget matches
 the LiteViLNet runs.  Best checkpoints are selected by validation MaxF for all
 methods.
 
@@ -308,24 +344,43 @@ statistics (percent; mean $\pm$ sample standard deviation):
 |---|---|---:|---:|---:|---:|
 | USNet | 40/41/42 | 97.88 $\pm$ 0.07 | 98.03 $\pm$ 0.03 | 97.73 $\pm$ 0.11 | 30.74M |
 | SNE-RoadSeg | 40/41/42 | 97.23 $\pm$ 0.21 | 97.39 $\pm$ 0.30 | 97.06 $\pm$ 0.13 | 201.32M |
+| PLARD | 40/41/42 | 95.25 $\pm$ 0.19 | 95.46 $\pm$ 0.29 | 95.03 $\pm$ 0.09 | 76.93M |
+| OFF-Net | 40/41/42 | 95.36 $\pm$ 0.66 | 94.88 $\pm$ 0.92 | 95.83 $\pm$ 0.57 | 25.21M |
+| RoadFormer | 40/41/42 | 97.28 $\pm$ 0.05 | 97.96 $\pm$ 0.09 | 96.61 $\pm$ 0.16 | 206.86M |
+| LiteViLNet | 40/41/42 | 97.23 $\pm$ 0.15 | 97.31 $\pm$ 0.59 | 97.16 $\pm$ 0.30 | 14.04M |
 
-The exact unrounded values, best epochs, source hashes, and all twelve checkpoint
+The exact unrounded values, best epochs, source hashes, and all baseline checkpoint
 SHA-256 values are in `results/summary.json` and `results/seeds/*.json`.  The
-LiteViLNet row ($97.23\pm0.15$ MaxF, 14.04M parameters) is generated by the
-main revision queues documented in the complete anonymous supplement.
+LiteViLNet's row is generated by the main revision queues documented in the
+complete anonymous supplement.
+
+The matched RTX 4090 D FPS-1 snapshot is:
+
+| Method | Parameters | FPS-1 |
+|---|---:|---:|
+| USNet | 30.74M | 239.81 |
+| SNE-RoadSeg | 201.32M | 19.32 |
+| PLARD | 76.93M | 26.97 |
+| RoadFormer | 206.86M | 17.46 |
+| LiteViLNet | 14.04M | 216.61 |
+
+FPS-1 uses RTX 4090 D, PyTorch FP32, batch 1, `384 x 1248`, resident inputs,
+100 warmups, 300 timed iterations, and three independent repeats; it measures
+only the model forward. Jetson FPS-2 is reported in the manuscript only for
+the configurations with a matching Orin NX measurement.
 
 ## 7. Matched RTX 4090 D FPS-1
 
-FPS-1 is remeasured locally for all five exact architectures. Each command uses
+FPS-1 is remeasured locally for all six exact architectures. Each command uses
 the best checkpoint from one completed matched seed, a resident random RGB--geometry
 pair, `384 x 1248`, batch 1, PyTorch FP32, 100 warmups, 300 timed iterations,
 and three repeats. CUDA events bracket only the model forward; decoding,
 preprocessing, host-to-device transfer, and postprocessing are excluded.
 
-Use `tools/run_matched_kitti_fps.sh` to run all five measurements sequentially
-on one otherwise idle target GPU. The three CNN baselines and LiteViLNet run
-in the active `litevilnet_ral` environment; the wrapper launches RoadFormer in
-`litevilnet_roadformer_ral` automatically. Point each variable to one
+Use `tools/run_matched_kitti_fps.sh` to run all six measurements sequentially
+on one otherwise idle target GPU. USNet, SNE-RoadSeg, PLARD, and LiteViLNet run
+in the active `litevilnet_ral` environment; the wrapper launches RoadFormer
+and OFF-Net in `litevilnet_roadformer_ral` automatically. Point each variable to one
 validation-selected checkpoint from the completed matched runs:
 
 ```bash
@@ -334,13 +389,14 @@ export USNET_CHECKPOINT=runs/revision_1/matched_baselines/formal/usnet_seed40/be
 export SNE_CHECKPOINT=runs/revision_1/matched_baselines/formal/sne_roadseg_seed40/best_model.pth
 export PLARD_CHECKPOINT=runs/revision_1/matched_baselines/formal/plard_seed40/best_model.pth
 export ROADFORMER_CHECKPOINT=runs/revision_1/matched_baselines/formal/roadformer_seed40/best_model.pth
+export OFFNET_CHECKPOINT=runs/revision_1/matched_baselines/formal/offnet_seed40/best_model.pth
 export FPS_GPU=0
 bash tools/run_matched_kitti_fps.sh
 ```
 
 The wrapper calls `benchmark_matched_kitti_fps.py` once per method and then
 validates and aggregates `litevilnet.json`, `usnet.json`, `sne_roadseg.json`,
-`plard.json`, and `roadformer.json`. To rerun only the aggregation step:
+`plard.json`, `roadformer.json`, and `offnet.json`. To rerun only the aggregation step:
 
 ```bash
 python tools/summarize_matched_kitti_fps.py \
@@ -372,7 +428,7 @@ test-server scores.
 
 ## 9. Build the review supplement
 
-After all twelve baseline seed JSON files and five FPS JSON files have been generated, build a self-contained code
+After all fifteen baseline seed JSON files and six FPS JSON files have been generated, build a self-contained code
 and evidence archive with:
 
 ```bash
@@ -386,8 +442,9 @@ manuals, provenance, and seed/aggregated JSON, but intentionally excludes KITTI
 data, normal caches, checkpoints, third-party source trees, and the project
 homepage README.  Before archiving, a temporary copy replaces local absolute
 paths with portable placeholders and scans for home paths, local account names,
-email addresses, SSH remotes, and any comma-separated tokens supplied through
-`LITEVILNET_DOUBLE_BLIND_TOKENS`; the host JSON is never rewritten.  Tar
+email addresses, SSH remotes, the current runtime username/hostname, and any
+comma-separated tokens supplied through `LITEVILNET_DOUBLE_BLIND_TOKENS`; the
+host JSON is never rewritten. Tar
 owner/group are normalized to numeric `0/0`, and gzip name/time metadata are
 disabled.  Any detected double-blind leak aborts packaging.  The pinned official
 sources are reconstructed by the fetch script.

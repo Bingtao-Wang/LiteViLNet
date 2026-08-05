@@ -1,0 +1,99 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "usnet",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp32",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 100,
+  "iterations_per_repeat": 300,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 300,
+      "mean_ms": 4.170376545588176,
+      "sample_std_ms": 0.017752573646546532,
+      "median_ms": 4.168191909790039,
+      "p95_ms": 4.1994750022888185,
+      "min_ms": 4.125696182250977,
+      "max_ms": 4.232192039489746,
+      "fps_from_mean": 239.78650106736666
+    },
+    {
+      "n": 300,
+      "mean_ms": 4.169990844726563,
+      "sample_std_ms": 0.015558089403636118,
+      "median_ms": 4.168704032897949,
+      "p95_ms": 4.195328235626221,
+      "min_ms": 4.1359357833862305,
+      "max_ms": 4.205567836761475,
+      "fps_from_mean": 239.80867997938557
+    },
+    {
+      "n": 300,
+      "mean_ms": 4.169751912752787,
+      "sample_std_ms": 0.015999000078992916,
+      "median_ms": 4.167679786682129,
+      "p95_ms": 4.194355201721192,
+      "min_ms": 4.124671936035156,
+      "max_ms": 4.208640098571777,
+      "fps_from_mean": 239.82242131518564
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 4.170039767689175,
+    "sample_std_ms_across_repeat_means": 0.0003151771517171114,
+    "fps_from_mean": 239.8058665407283
+  },
+  "parameters": 30738444,
+  "peak_allocated_cuda_mib": 10766.8828125,
+  "checkpoint": "runs/revision_1/matched_baselines/formal/usnet_seed40/best_model.pth",
+  "checkpoint_sha256": "09e0b77829b05d52c1ab945d9ac3fe48ea870718cddf683a7a767855950734c7",
+  "official_source": {
+    "remote": "https://github.com/morancyc/USNet.git",
+    "commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "usnet",
+      "--checkpoint",
+      "runs/revision_1/matched_baselines/formal/usnet_seed40/best_model.pth",
+      "--precision",
+      "fp32",
+      "--warmup",
+      "100",
+      "--iterations",
+      "300",
+      "--repeats",
+      "3",
+      "--output",
+      "runs/revision_1/matched_baselines/fps_4090d/usnet.json",
+      "--official-source",
+      "third_party/matched_baselines/USNet"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "measurements_and_hashes_changed": false
+  }
+}

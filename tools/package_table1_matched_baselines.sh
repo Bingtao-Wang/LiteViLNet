@@ -2,8 +2,9 @@
 set -euo pipefail
 
 # Build the small, review-ready Table I reproducibility supplement.  Run from
-# the LiteViLNet repository root after all twelve formal runs and five FPS
-# measurements are summarized.
+# the LiteViLNet repository root after the formal runs and available FPS
+# measurements are summarized. OFF-Net FPS is optional when the target GPU is
+# occupied; the manuscript then records ``--`` for that cell.
 
 OUTPUT="${1:-dist/LiteViLNet_RAL_TableI_Reproduction.tar.gz}"
 RESULT_ROOT="docs/ral/table1_matched_baselines/results"
@@ -18,7 +19,7 @@ required=(
   "docs/ral/table1_matched_baselines/README_CN.md"
   "docs/ral/table1_matched_baselines/source_provenance.json"
 )
-for method in usnet sne_roadseg plard roadformer; do
+for method in usnet sne_roadseg plard roadformer offnet; do
   for seed in 40 41 42; do
     required+=("${SOURCE_RESULT_ROOT}/seeds/${method}_seed${seed}.json")
   done
@@ -56,7 +57,9 @@ files=(
   "litevilnet/models/vllinet.py"
   "litevilnet/models/vllinet_ablation.py"
   "tests/test_matched_kitti_baselines.py"
+  "tools/cache_official_orfd_normals.py"
   "tools/cache_official_sne_normals.py"
+  "tools/train_matched_kitti_offnet.py"
   "tools/benchmark_matched_kitti_fps.py"
   "tools/fetch_matched_baseline_sources.sh"
   "tools/package_table1_matched_baselines.sh"
@@ -64,11 +67,13 @@ files=(
   "tools/prepare_matched_roadformer.py"
   "tools/run_matched_kitti_baselines.sh"
   "tools/run_matched_kitti_fps.sh"
+  "tools/run_matched_kitti_offnet.sh"
   "tools/sanitize_table1_supplement.py"
   "tools/summarize_matched_kitti_baselines.py"
   "tools/summarize_matched_kitti_fps.py"
   "tools/train_matched_kitti_baseline.py"
   "tools/train_matched_kitti_roadformer.py"
+  "tools/train_matched_orfd_baseline.py"
 )
 
 mkdir -p "$(dirname "${OUTPUT}")"
@@ -88,6 +93,14 @@ python tools/sanitize_table1_supplement.py \
     | xargs -0 sha256sum > ARTIFACT_MANIFEST.sha256
 )
 scan_args=(--scan-root "${staging}")
+append_runtime_deny_token() {
+  local token="$1"
+  if [[ ${#token} -ge 5 && "${token,,}" != "root" ]]; then
+    scan_args+=(--deny-token "${token}")
+  fi
+}
+append_runtime_deny_token "$(id -un)"
+append_runtime_deny_token "$(hostname)"
 IFS=',' read -r -a deny_tokens <<< "${LITEVILNET_DOUBLE_BLIND_TOKENS:-}"
 for token in "${deny_tokens[@]}"; do
   if [[ -n "${token}" ]]; then

@@ -1,0 +1,97 @@
+{
+  "protocol": "matched local KITTI perspective-view retraining",
+  "baseline": "plard",
+  "seed": 40,
+  "input_size": [
+    384,
+    1248
+  ],
+  "train_count": 231,
+  "val_count": 58,
+  "epochs_requested": 150,
+  "best_epoch": 60,
+  "batch_size": 4,
+  "amp": false,
+  "metrics": {
+    "MaxF": 0.9519323028834742,
+    "BestThreshold": 0.4899999797344208,
+    "PRE": 0.9539319185508283,
+    "REC": 0.9499411523818511,
+    "FPR": 0.009784885984425278,
+    "FNR": 0.05005884761812859,
+    "IoU": 0.908273769829698,
+    "AP": 0.9786646789676082,
+    "Precision": 0.9539319185508283,
+    "Recall": 0.9499411523818511
+  },
+  "parameters": 76929142,
+  "best_checkpoint": "runs/revision_1/matched_baselines/formal/plard_seed40/best_model.pth",
+  "best_checkpoint_sha256": "e69cdc463fc403a9d858ef745de04c5eb2ba2d17021a5c014b01badd22a9bb75",
+  "official_source": "${PLARD_SOURCE}",
+  "official_remote": "https://github.com/zhechen/PLARD.git",
+  "official_commit": "44485803092e729661c696ab6c03f6f2fabc8701",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "ptsemseg/models/plard.py": "10c9d6da1c1d338724409a282fc1398dc0e0c894a71951c8eafc63742b60e14e",
+    "ptsemseg/models/utils.py": "f64f9972e0fcb0bad827fd43071dab10d33b6a04e2e00858bb82039c8ad10383",
+    "ptsemseg/loss.py": "a3e0141bae47434247c39765d24ac1d11a9cf815725ec5bfb9c8bbecc9cf4f43",
+    "ptsemseg/loader/kitti_road_loader.py": "5f8bddbda91260ea01cd2b46841a349b5c122e423a2575658820b7a26aaae503",
+    "train.py": "bee584d36aaff7bfdc6d7dac44f9cf02bff96a2ca833d23881bffb6d55362699"
+  },
+  "normal_cache_metadata": null,
+  "split_metadata": {
+    "protocol": "matched local KITTI perspective-view retraining",
+    "data_root": "${KITTI_ROOT}",
+    "depth_root": "${DEPTH_ROOT}/depth_u16",
+    "train_manifest": "configs/splits/kitti_road/stratified_seed20260723/train.txt",
+    "val_manifest": "configs/splits/kitti_road/stratified_seed20260723/val.txt",
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "train_count": 231,
+    "val_count": 58,
+    "train_val_overlap": 0,
+    "subdirectories": [
+      "image_2",
+      "gt_image_2",
+      "calib",
+      "ADI",
+      "depth_u16"
+    ]
+  },
+  "runtime": {
+    "seconds": 6798.97459936142,
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_kitti_baseline.py",
+      "--baseline",
+      "plard",
+      "--official-source",
+      "third_party/matched_baselines/PLARD",
+      "--data-root",
+      "runs/revision_1/matched_baselines/kitti_road",
+      "--output-dir",
+      "runs/revision_1/matched_baselines/formal/plard_seed40",
+      "--seed",
+      "40",
+      "--epochs",
+      "150",
+      "--batch-size",
+      "4",
+      "--num-workers",
+      "4",
+      "--val-every",
+      "5",
+      "--early-stop-validations",
+      "20",
+      "--device",
+      "cuda"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "metrics_and_hashes_changed": false
+  }
+}

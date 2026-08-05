@@ -35,6 +35,7 @@ runs/train/*
 runs/revision_1/*.log
 runs/revision_1/*.stdout
 runs/revision_1/matched_baselines/
+runs/revision_1/matched_orfd/
 tools/fps_4060ti/
 tools/fps_jetson/
 tools/fps/results/*

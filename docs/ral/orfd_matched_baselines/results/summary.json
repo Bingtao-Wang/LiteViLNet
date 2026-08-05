@@ -1,0 +1,74 @@
+{
+  "protocol": "local ORFD released-split retraining",
+  "seeds": [
+    40
+  ],
+  "methods": {
+    "usnet": {
+      "seeds": [
+        40
+      ],
+      "epochs_requested": [
+        30
+      ],
+      "batch_size": [
+        2
+      ],
+      "gradient_accumulation_steps": [
+        1
+      ],
+      "effective_batch_size": [
+        2
+      ],
+      "parameters": 30738444,
+      "official_commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
+      "testing_fixed_argmax": {
+        "F_score": {
+          "mean": 0.9561882529254352,
+          "sample_sd": 0.0
+        },
+        "PRE": {
+          "mean": 0.9531546978550647,
+          "sample_sd": 0.0
+        },
+        "REC": {
+          "mean": 0.9592411791189788,
+          "sample_sd": 0.0
+        },
+        "IoU": {
+          "mean": 0.9160543130562104,
+          "sample_sd": 0.0
+        },
+        "GlobalAcc": {
+          "mean": 0.975678906131251,
+          "sample_sd": 0.0
+        }
+      },
+      "testing_threshold_swept": {
+        "MaxF": {
+          "mean": 0.9566568750907283,
+          "sample_sd": 0.0
+        },
+        "AP": {
+          "mean": 0.9717476758009432,
+          "sample_sd": 0.0
+        },
+        "PRE": {
+          "mean": 0.947155553646454,
+          "sample_sd": 0.0
+        },
+        "REC": {
+          "mean": 0.9663508537831207,
+          "sample_sd": 0.0
+        },
+        "IoU": {
+          "mean": 0.916915009153886,
+          "sample_sd": 0.0
+        }
+      },
+      "best_epochs": [
+        6
+      ]
+    }
+  }
+}

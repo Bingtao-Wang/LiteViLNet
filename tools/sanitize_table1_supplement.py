@@ -50,6 +50,8 @@ def anonymize_string(value: str) -> str:
         sanitized = "${PLARD_SOURCE}"
     elif value.endswith("/Road-Former"):
         sanitized = "${ROADFORMER_SOURCE}"
+    elif value.endswith("/OFF-Net"):
+        sanitized = "${OFFNET_SOURCE}"
     elif value.endswith("/Final_Dataset"):
         sanitized = "${ORFD_ROOT}"
     elif value.endswith("/velodyne_extracted"):

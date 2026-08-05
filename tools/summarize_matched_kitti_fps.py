@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and summarize the five matched RTX 4090 D FPS measurements."""
+"""Validate and summarize the matched RTX 4090 D FPS measurements."""
 
 from __future__ import annotations
 
@@ -18,19 +18,21 @@ if str(REPO_ROOT) not in sys.path:
 from tools.sanitize_table1_supplement import sanitize
 
 
-METHODS = ("litevilnet", "usnet", "sne_roadseg", "plard", "roadformer")
+METHODS = ("litevilnet", "usnet", "sne_roadseg", "plard", "roadformer", "offnet")
 EXPECTED_PARAMETERS = {
     "litevilnet": 14_035_153,
     "usnet": 30_738_444,
     "sne_roadseg": 201_324_806,
     "plard": 76_929_142,
     "roadformer": 206_860_175,
+    "offnet": 25_209_608,
 }
 EXPECTED_COMMITS = {
     "usnet": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
     "sne_roadseg": "5e7900bfd59887634ced687ffe85a73018a38659",
     "plard": "44485803092e729661c696ab6c03f6f2fabc8701",
     "roadformer": "f675a3467cb168ebc727648390c304279bbcb079",
+    "offnet": "50e63d24836198e8fb5af707e521f414104b4876",
 }
 
 
@@ -113,7 +115,7 @@ def main() -> None:
     args.output_json.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
     with args.output_csv.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     if args.result_output_dir is not None:

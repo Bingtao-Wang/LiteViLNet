@@ -1,0 +1,95 @@
+{
+  "protocol": "matched local KITTI perspective-view retraining",
+  "baseline": "roadformer",
+  "seed": 40,
+  "input_size": [
+    384,
+    1248
+  ],
+  "train_count": 231,
+  "val_count": 58,
+  "epochs_requested": 150,
+  "best_epoch": 70,
+  "batch_size": 4,
+  "amp": false,
+  "metrics": {
+    "MaxF": 0.9732635503939328,
+    "BestThreshold": 0.5,
+    "PRE": 0.9798264708523461,
+    "REC": 0.9667880611031715,
+    "FPR": 0.004222110604392504,
+    "FNR": 0.03321193889680802,
+    "IoU": 0.9479196420454115,
+    "AP": 0.9922209144411801,
+    "Precision": 0.9798264708523461,
+    "Recall": 0.9667880611031715
+  },
+  "parameters": 206860175,
+  "best_checkpoint": "runs/revision_1/matched_baselines/formal/roadformer_seed40/best_model.pth",
+  "best_checkpoint_sha256": "6f3648c52159ee726f4f79272d2766eeb4fe749867ed183ad6a5509cfa16d4b7",
+  "official_source": "${ROADFORMER_SOURCE}",
+  "official_remote": "https://github.com/LiJiahang617/Road-Former.git",
+  "official_commit": "f675a3467cb168ebc727648390c304279bbcb079",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "configs/roadformer_kitti/roadformer_convnext-b_kitti-384x1280.py": "63bf534657d5be7653a101b4aa0df139673054c46f998f94344e646873cafa65",
+    "mmpretrain_custom/models/backbones/twin_convnext.py": "dc62f96b22991289124ed52101f6d0bcf4694f33b0a41a001039f24fa9ec61c1",
+    "mmdet_custom/models/dense_heads/roadformer_head.py": "55deb4130ae07ceef8c5af9724450b41173bc7be43aa92998a0cb3da37364154",
+    "mmdet_custom/models/layers/roadformer_pixel_decoder.py": "54288a8520420cad6f88d27cc14f973a3c650a755cd17ed2fa84825728cf97fa",
+    "mmseg_custom/models/decode_heads/roadformer_head.py": "5db12508f3eafaa638b7e29fb0d6093f8675fa5a08100a03fd3a5f4b12c4b225"
+  },
+  "operator_bridge": {
+    "strategy": "official Python graph with installed MMCV 1.7 CUDA operators mapped at runtime",
+    "mapped_symbols": [
+      "batched_nms",
+      "point_sample",
+      "MultiScaleDeformableAttention",
+      "sigmoid_focal_loss",
+      "nms_match",
+      "nms",
+      "roi_align"
+    ]
+  },
+  "split_metadata": {
+    "protocol": "matched local KITTI perspective-view retraining",
+    "train_count": 231,
+    "val_count": 58,
+    "train_val_overlap": 0,
+    "train_manifest_sha256": "93a8b849a531e9bd938c65120816f5ad4bd62f563e7f0d68ac6c0e6046425867",
+    "val_manifest_sha256": "69b10e5ff641d5cea81d2f0832ada2c31ee5f3b3f8ced9e4e962f889a722976f",
+    "normal_source": "official SNE-RoadSeg float32 cache",
+    "normal_encoding": "round(clip((normal + 1) / 2, 0, 1) * 65535) as uint16 PNG"
+  },
+  "runtime": {
+    "seconds": 10448.54325413704,
+    "python": "3.8.20",
+    "torch": "1.13.1+cu117",
+    "cuda": "11.7",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_kitti_roadformer.py",
+      "--official-source",
+      "third_party/matched_baselines/Road-Former",
+      "--data-root",
+      "runs/revision_1/matched_baselines/roadformer_kitti",
+      "--output-dir",
+      "runs/revision_1/matched_baselines/formal/roadformer_seed40",
+      "--seed",
+      "40",
+      "--epochs",
+      "150",
+      "--batch-size",
+      "4",
+      "--num-workers",
+      "4",
+      "--val-every",
+      "5",
+      "--early-stop-validations",
+      "20"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "metrics_and_hashes_changed": false
+  }
+}
