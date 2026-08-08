@@ -53,7 +53,7 @@ step 计数。两个容量感知的续接入口如下：
 # SNE-RoadSeg seed 41/42（seed 40 可独立运行）
 setsid -f bash tools/dispatch_orfd_sne_followup.sh
 
-# SNE seed 41 生成 result.json 后继续 RoadFormer seed 40/41/42
+# OFF-Net seed 40 生成 result.json 后继续 RoadFormer seed 40/41/42
 setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
 ```
 

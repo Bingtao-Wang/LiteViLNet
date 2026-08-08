@@ -90,7 +90,7 @@ capacity-aware continuation helpers are:
 # SNE-RoadSeg seeds 41 and 42 (seed 40 is independent and may already run)
 setsid -f bash tools/dispatch_orfd_sne_followup.sh
 
-# RoadFormer seeds 40--42 after SNE seed 41 has produced result.json
+# RoadFormer seeds 40--42 after OFF-Net seed 40 has produced result.json
 setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
 ```
 
