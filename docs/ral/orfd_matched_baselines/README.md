@@ -20,9 +20,10 @@ prediction; that diagnostic is not mixed into the common local ranking.
 ## Official source boundary
 
 The baseline networks are imported from authors' repositories rather than
-reimplemented here. SNE-RoadSeg and RoadFormer remain supported by the
-reproduction commands, but are not included in this time-limited Table III
-snapshot.
+reimplemented here. The ORFD queue supports all four compatible official
+graphs (USNet, SNE-RoadSeg, OFF-Net, and RoadFormer); PLARD is intentionally
+excluded because its released input path requires a LiDAR-derived ADI that is
+not defined by the ORFD release.
 
 | Method | Authors' repository | Pinned commit | Imported graph/recipe |
 |---|---|---|---|
@@ -159,14 +160,13 @@ from the submission archive and are reproducible with the commands above.
 
 ## Training protocol
 
-The manuscript snapshot uses USNet seed `40`; the follow-up archive now also
-contains the completed seed `41`. The released OFF-Net checkpoint row is an
-independent single-checkpoint audit. Extension runs use the same released
-partitions, `704 x 1280` network inputs, validation 101-threshold MaxF for
-checkpoint selection, and the same final test evaluator. RoadFormer's logits
-are taken before its generic metadata-based restoration so its threshold sweep
-uses the same input grid and its discrete argmax mask follows the same
-nearest-neighbor original-GT restoration as the other rows.
+The formal comparison uses seeds `40`, `41`, and `42` for each compatible
+official graph. Every run uses the same released partitions, `704 x 1280`
+network inputs, validation 101-threshold MaxF for checkpoint selection, and
+the same final test evaluator. RoadFormer's logits are taken before its
+generic metadata-based restoration so its threshold sweep uses the same input
+grid and its discrete argmax mask follows the same nearest-neighbor original-
+GT restoration as the other rows.
 Method-specific optimization follows each pinned official recipe.
 
 The current USNet extension summary (percentages, held-out test; mean and
@@ -205,7 +205,10 @@ The CPU unit test
 the accumulated mean-loss gradient and SGD update match a direct batch-8
 update.
 
-After the caches and RoadFormer tree are ready, run both fixed GPU queues:
+After the caches and RoadFormer tree are ready, run the capacity-aware queue
+below. It leaves unrelated compute processes untouched, avoids duplicate seed
+claims, and starts independent SNE seed-41 work on GPU0 once the short USNet
+seed-42 job releases that slot:
 
 ```bash
 export USNET_SOURCE="$PWD/third_party/matched_baselines/USNet"
@@ -216,6 +219,9 @@ export ORFD_ROADFORMER_ROOT
 export OUTPUT_ROOT=runs/revision_1/matched_orfd/formal
 export GPU0=0 GPU1=1
 bash tools/run_matched_orfd_baselines.sh
+
+# Optional long-running follow-up dispatcher (two RTX 4090 D GPUs).
+bash tools/dispatch_orfd_followup.sh
 ```
 
 The queue writes one complete directory per method and seed, then validates all
