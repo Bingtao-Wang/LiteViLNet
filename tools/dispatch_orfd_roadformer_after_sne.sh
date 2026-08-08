@@ -4,8 +4,9 @@ set -euo pipefail
 # Capacity-aware continuation for RoadFormer only.  The other ORFD jobs are
 # already owned by the first-wave/follow-up dispatchers; this helper avoids
 # claiming or restarting them.  It keeps the official RoadFormer recipe
-# unchanged and starts its three seeds sequentially after the SNE jobs that
-# occupy the high-memory GPU0 slot have finished.
+# unchanged and starts its three seeds sequentially after the GPU0 job that
+# occupies the high-memory slot has finished.  RoadFormer only consumes the
+# prepared official normal cache, so it does not depend on SNE retraining.
 
 ROOT="${ROOT:-runs/revision_1/matched_orfd/formal}"
 GPU="${GPU:-0}"
@@ -41,10 +42,10 @@ wait_capacity() {
   done
 }
 
-# SNE seed-41 is scheduled independently after USNet seed-42 and may share
-# GPU0 with seed-40.  Waiting for it here preserves the previous high-memory
-# isolation guarantee before RoadFormer's batch-4 training begins.
-wait_result sne_roadseg_seed41
+# OFF-Net seed-40 is the GPU0 occupant whose completion releases the memory
+# required by RoadFormer's high-resolution batch-4 recipe.  SNE jobs remain
+# independent on GPU1 and can therefore proceed in parallel.
+wait_result offnet_seed40
 wait_capacity 30000
 
 for seed in 40 41 42; do
