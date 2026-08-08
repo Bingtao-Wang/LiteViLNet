@@ -16,6 +16,11 @@ exec >>"${LOG}" 2>&1
 log() { printf '[%s] %s\n' "$(date '+%F %T %Z')" "$*"; }
 
 while :; do
+  if [[ ! -s "${CHECKPOINT}" ]]; then
+    log "OFF-Net checkpoint is not ready (${CHECKPOINT}); waiting"
+    sleep 60
+    continue
+  fi
   active="$(nvidia-smi -i "${GPU}" --query-compute-apps=pid \
     --format=csv,noheader,nounits 2>/dev/null | sed '/^[[:space:]]*$/d' || true)"
   if [[ -z "${active}" ]]; then
