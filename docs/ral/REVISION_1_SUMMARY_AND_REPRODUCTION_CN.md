@@ -991,11 +991,13 @@ tools/train_matched_orfd_roadformer.py     RoadFormer ORFD 官方图训练适配
 tools/summarize_matched_kitti_baselines.py 严格来源/协议/checkpoint 核验与 mean/sample-SD 汇总
 tools/benchmark_matched_kitti_fps.py       六方法统一 RTX 4090 D FP32 FPS-1 benchmark
 tools/summarize_matched_kitti_fps.py       FPS 协议/来源/参数量核验与 JSON/CSV 汇总
+tools/dispatch_offnet_fps_after_idle.sh    等目标 GPU 空闲后测量 OFF-Net KITTI FPS-1
 tools/package_table1_matched_baselines.sh  Table I 轻量匿名复现包
 tools/package_ral_reproduction.sh          全部修订证据的双盲匿名复现包
 tools/run_revision_ablation_queue.sh       reproducible KITTI queue
 tools/run_kitti_distill_queue.sh           reproducible three-seed KD-control queue
 tools/run_orfd_revision_queue.sh           reproducible ORFD queue
+tools/dispatch_orfd_followup.sh            容量感知 ORFD baseline follow-up dispatcher
 tools/run_post_revision_benchmarks.sh      GPU 独占后的 profile/smoke/两条流水线
 tests/test_deployment_metrics.py           metric equivalence test
 tests/test_adi.py                          ADI reference-operation tests
