@@ -13,7 +13,7 @@ the published OFF-Net row is retained only as a historical reference.
 
 | Manuscript evidence | Reproduction entry point | Archived numerical evidence |
 |---|---|---|
-| Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_offnet.sh`, `tools/run_matched_kitti_fps.sh` | `docs/ral/table1_matched_baselines/results/` |
+| Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_offnet.sh`, `tools/run_matched_kitti_fps.sh`, `tools/dispatch_offnet_fps_after_idle.sh` | `docs/ral/table1_matched_baselines/results/` |
 | Table II KITTI ablations | `tools/run_revision_ablation_queue.sh` | `evidence/kitti/` |
 | Transformer and KD controls | `tools/run_revision_ablation_queue.sh`, `tools/run_kitti_distill_queue.sh` | `evidence/kitti/` |
 | Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh`, `tools/dispatch_orfd_followup.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
