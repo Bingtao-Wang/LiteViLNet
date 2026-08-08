@@ -486,8 +486,15 @@ def main() -> None:
         best_metric = float(checkpoint["best_metric"])
 
     train_start = time.time()
-    global_step = 0
-    optimizer_steps = 0
+    # Checkpoints written before resume-counter metadata was introduced still
+    # resume exactly at an epoch boundary.  Reconstruct the completed physical
+    # and optimizer steps from the fixed loader length and accumulation rule so
+    # strict formal summaries retain the requested 30-epoch accounting.
+    global_step = start_epoch * len(train_loader)
+    optimizer_steps = start_epoch * (
+        (len(train_loader) + gradient_accumulation_steps - 1)
+        // gradient_accumulation_steps
+    )
     stale_validations = 0
     last_validation: dict[str, Any] | None = None
     log_path = args.output_dir / "train_metrics.jsonl"
