@@ -4,11 +4,10 @@ This archive accompanies the revised LiteViLNet manuscript.  It provides the
 code, fixed split manifests, source provenance, seed-level numerical evidence,
 and aggregation utilities needed to reproduce the reported KITTI Road and ORFD
 experiments.  Datasets, pretrained checkpoints, generated normal caches, and
-third-party repositories are intentionally excluded.  The rapid ORFD rebuttal
-snapshot reports USNet seed 40 and an independent evaluation of the released
-OFF-Net checkpoint; the archive additionally preserves the completed USNet
-seed-41 extension and the queued multi-seed retraining commands for a later
-manuscript update.
+third-party repositories are intentionally excluded.  The formal ORFD
+comparison includes the four compatible official graphs (USNet, SNE-RoadSeg,
+OFF-Net, and RoadFormer) with seed-level records for seeds 40, 41, and 42;
+the published OFF-Net row is retained only as a historical reference.
 
 ## 1. Contents and evidence map
 
@@ -17,7 +16,7 @@ manuscript update.
 | Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_offnet.sh`, `tools/run_matched_kitti_fps.sh` | `docs/ral/table1_matched_baselines/results/` |
 | Table II KITTI ablations | `tools/run_revision_ablation_queue.sh` | `evidence/kitti/` |
 | Transformer and KD controls | `tools/run_revision_ablation_queue.sh`, `tools/run_kitti_distill_queue.sh` | `evidence/kitti/` |
-| Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
+| Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh`, `tools/dispatch_orfd_followup.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
 | Parameters, MAC-equivalents, memory, and latency | `tools/profile_ablation.py`, `tools/summarize_profile_repeats.py` | `evidence/profiling/` |
 | KITTI and RGB-D pipeline timing | `tools/benchmark_kitti_adi_pipeline.py`, `tools/benchmark_robot_end_to_end.py` | `evidence/pipelines/` |
 
@@ -41,10 +40,10 @@ RoadFormer uses the separately pinned
 `configs/environments/litevilnet_roadformer_ral.yml` (Python 3.8, PyTorch
 1.13.1+cu117, MMCV-full 1.7.0) required by its official source.
 
-The current rapid snapshot leaves OFF-Net's KITTI FPS-1 cell unmeasured while
-the target GPU is occupied; the manuscript and result summary encode that
-cell as `--`. The supplied benchmark command can fill it later without
-changing any accuracy or training hyperparameters.
+The supplied benchmark command records the same model-only protocol for every
+architecture. If a target GPU is occupied at packaging time, an unmeasured
+cell remains explicitly encoded as `--` rather than being inferred from a
+different backend or device.
 
 ## 3. Data
 
@@ -149,11 +148,11 @@ the original ground-truth size, and accumulates one foreground confusion
 matrix over all 2,193 testing frames.
 
 For the locally reproduced ORFD comparison, follow
-`docs/ral/orfd_matched_baselines/README.md`. The current rebuttal snapshot
-contains one completed USNet seed plus the separately audited released OFF-Net
-checkpoint under the common held-out testing and fixed-argmax evaluator. The
-same README retains commands for extending this snapshot to SNE-RoadSeg,
-OFF-Net retraining, and RoadFormer when exclusive GPU time is available.
+`docs/ral/orfd_matched_baselines/README.md`. The formal evidence contains
+three independently initialized seeds for USNet, SNE-RoadSeg, OFF-Net, and
+RoadFormer under the common held-out testing and fixed-argmax evaluator. The
+separate released OFF-Net checkpoint audit and published test row are retained
+only as cross-check references.
 
 ## 7. Verification
 
