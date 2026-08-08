@@ -103,8 +103,10 @@ run_roadformer() {
   if (( seed == 40 )); then
     # RoadFormer can use the GPU0 slot released by OFF-Net seed-40.  Its
     # high-resolution batch-4 footprint is kept separate from OFF-Net-42,
-    # which is scheduled on GPU1.
+    # which is scheduled on GPU1.  It also waits for the independent SNE
+    # seed-41 job so the high-memory graph never overlaps that GPU0 run.
     wait_result offnet_seed40
+    wait_result sne_roadseg_seed41
   else
     wait_result "roadformer_seed$((seed-1))"
   fi
