@@ -29,17 +29,21 @@ done
 # model-only timing is optional while the target GPU is occupied.  The
 # manuscript records ``--`` until that measurement is completed.
 required+=("${ORFD_BASELINE_RESULTS}/summary.json" "${ORFD_BASELINE_RESULTS}/summary.csv")
+# The formal ORFD comparison is a four-method, three-seed reproduction.  Keep
+# every seed-level record in the anonymous archive so the Table-III means and
+# sample SDs can be independently audited rather than relying on the aggregate
+# alone.
+for method in usnet sne_roadseg offnet roadformer; do
+  for seed in 40 41 42; do
+    required+=("${ORFD_BASELINE_RESULTS}/seeds/${method}_orfd_seed${seed}.json")
+  done
+done
 required+=(
   "runs/revision_1/matched_orfd/official_offnet_checkpoint_test_exact.json"
   "runs/revision_1/matched_orfd/local_exact_normals/sne_roadseg/normal_cache_metadata.json"
   "runs/revision_1/matched_orfd/local_exact_normals/offnet/normal_cache_metadata.json"
   "runs/revision_1/matched_orfd/roadformer_orfd_exact/matched_split_metadata.json"
 )
-for method in usnet; do
-  for seed in 40; do
-    required+=("${ORFD_BASELINE_RESULTS}/seeds/${method}_orfd_seed${seed}.json")
-  done
-done
 for config in baseline add_lidar add_fusion add_bridge full optimal transformer_bridge; do
   for seed in 40 41 42; do
     required+=("${LITEVILNET_KITTI_RESULTS_ROOT}/${config}/seed_${seed}/result.json")
