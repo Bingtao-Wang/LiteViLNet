@@ -79,6 +79,28 @@ Run the remaining commands from the LiteViLNet repository root. The fetch
 script verifies the official remotes and pinned commits listed above before a
 source tree can be used.
 
+## Continuing independent seeds
+
+The formal queue keeps each method's recipe unchanged. If a run is
+interrupted, restart it with the same output directory and `--resume`; the
+loader reconstructs completed physical and optimizer-step counters. The two
+capacity-aware continuation helpers are:
+
+```bash
+# SNE-RoadSeg seeds 41 and 42 (seed 40 is independent and may already run)
+setsid -f bash tools/dispatch_orfd_sne_followup.sh
+
+# RoadFormer seeds 40--42 after SNE seed 41 has produced result.json
+setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
+```
+
+They claim a seed only when its result is absent and no matching training
+process exists. GPU placement is selected by the scripts' `GPU` variable;
+the default continuation uses GPU 1 for SNE seeds and GPU 0 for RoadFormer.
+The helpers wait for reported memory capacity and do not alter batch size,
+epoch count, precision, validation interval, or input resolution. Run the
+strict summarizer only after all requested `result.json` files exist.
+
 ## Data and geometry preparation
 
 Obtain the official ORFD `Final_Dataset` through the dataset links maintained

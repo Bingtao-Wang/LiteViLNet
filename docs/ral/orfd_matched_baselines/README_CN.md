@@ -43,6 +43,25 @@ bash tools/fetch_matched_baseline_sources.sh
 USNet/SNE-RoadSeg 使用 `litevilnet_ral`，OFF-Net/RoadFormer 使用兼容其
 官方图的 `litevilnet_roadformer_ral`。fetch 脚本会先核对上表 remote 与 commit。
 
+## 独立 seed 的续跑
+
+正式队列保持各方法原有 recipe 不变。若任务中断，应使用原输出目录并以
+`--resume` 续跑；训练器会根据 checkpoint 重建已完成的 physical/optimizer
+step 计数。两个容量感知的续接入口如下：
+
+```bash
+# SNE-RoadSeg seed 41/42（seed 40 可独立运行）
+setsid -f bash tools/dispatch_orfd_sne_followup.sh
+
+# SNE seed 41 生成 result.json 后继续 RoadFormer seed 40/41/42
+setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
+```
+
+脚本只有在目标 `result.json` 不存在且没有同 seed 训练进程时才会 claim，且
+会等待显存余量后再启动；默认 SNE 使用 GPU1，RoadFormer 使用 GPU0。脚本不
+修改 batch size、epoch 数、AMP、验证间隔或输入分辨率。所有 seed 的正式
+`result.json` 齐全后，才运行严格汇总器生成表格。
+
 ## 2. 为什么有两套 normal cache
 
 OFF-Net 自带的 ORFD SNE 与 SNE-RoadSeg 的 SNE 并不完全相同：前者在 ORFD 路径中
