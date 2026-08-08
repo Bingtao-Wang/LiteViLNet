@@ -56,10 +56,12 @@ run_offnet42() {
   local d=offnet_seed42
   done_file "$d" && return
   claim "$d" || return
-  wait_result offnet_seed40
-  wait_gpu "$GPU0"
-  log "launching OFF-Net seed-42 on GPU${GPU0}"
-  CUDA_VISIBLE_DEVICES="${GPU0}" PYTHONDONTWRITEBYTECODE=1 \
+  # OFF-Net is moved to GPU1 after seed-41.  This leaves GPU0 available for
+  # the larger RoadFormer job as soon as OFF-Net seed-40 completes.
+  wait_result offnet_seed41
+  wait_gpu "$GPU1"
+  log "launching OFF-Net seed-42 on GPU${GPU1}"
+  CUDA_VISIBLE_DEVICES="${GPU1}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${OPENMMLAB_ENV}" env PYTHONPATH=. \
     python tools/train_matched_orfd_baseline.py --baseline offnet \
       --official-source "${OFFNET_SOURCE}" --data-root "${ORFD_ROOT}" \
@@ -91,8 +93,10 @@ run_roadformer() {
   done_file "$d" && return
   claim "$d" || return
   if (( seed == 40 )); then
-    wait_result usnet_seed42
-    wait_result offnet_seed42
+    # RoadFormer can use the GPU0 slot released by OFF-Net seed-40.  Its
+    # high-resolution batch-4 footprint is kept separate from OFF-Net-42,
+    # which is scheduled on GPU1.
+    wait_result offnet_seed40
   else
     wait_result "roadformer_seed$((seed-1))"
   fi
