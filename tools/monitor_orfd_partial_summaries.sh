@@ -38,7 +38,12 @@ summarize_method() {
   done
 }
 
-summarize_method usnet &
-summarize_method offnet &
+# Keep a per-method audit available as soon as each independent three-seed
+# queue finishes.  The all-method monitor still owns the canonical summary;
+# these files are method-scoped snapshots for reproducibility and rebuttal
+# bookkeeping.
+for method in usnet sne_roadseg offnet roadformer; do
+  summarize_method "${method}" &
+done
 wait
 log 'partial method summaries completed'
