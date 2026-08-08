@@ -61,9 +61,10 @@ setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
 会等待显存余量后再启动；默认 SNE 使用 GPU1，RoadFormer 使用 GPU0。脚本不
 修改 batch size、epoch 数、AMP、验证间隔或输入分辨率。所有 seed 的正式
 `result.json` 齐全后，才运行严格汇总器生成表格。长队列运行时也可以执行
-`setsid -f bash tools/monitor_orfd_partial_summaries.sh`，它会在 USNet 或
-OFF-Net 的三个 seed 齐全后分别生成 `summary_usnet.{json,csv}` 和
-`summary_offnet.{json,csv}`，且不会覆盖最终全方法的 `summary.json`。
+`setsid -f bash tools/monitor_orfd_partial_summaries.sh`，它会在 USNet、
+SNE-RoadSeg、OFF-Net、RoadFormer 的三个 seed 齐全后分别生成对应的
+`summary_<method>.{json,csv}` 快照，且不会覆盖最终全方法的
+`summary.json`。
 
 ## 2. 为什么有两套 normal cache
 

@@ -101,9 +101,9 @@ The helpers wait for reported memory capacity and do not alter batch size,
 epoch count, precision, validation interval, or input resolution. Run the
 strict summarizer only after all requested `result.json` files exist. For a
 long queue, `setsid -f bash tools/monitor_orfd_partial_summaries.sh` emits
-separate `summary_usnet.{json,csv}` and `summary_offnet.{json,csv}` as soon as
-each method's three seeds finish; it never replaces the final all-method
-`summary.json`.
+separate `summary_<method>.{json,csv}` snapshots for USNet, SNE-RoadSeg,
+OFF-Net, and RoadFormer as soon as each method's three seeds finish; it never
+replaces the final all-method `summary.json`.
 
 ## Data and geometry preparation
 
