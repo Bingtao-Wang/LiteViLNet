@@ -72,13 +72,21 @@ run_offnet42() {
   log "OFF-Net seed-42 process exited"
 }
 run_sne() {
-  local seed="$1" d="sne_roadseg_seed${1}"
+  local seed="$1" d="sne_roadseg_seed${1}" gpu="${SNE_GPU:-1}"
   done_file "$d" && return
   claim "$d" || return
-  wait_result "sne_roadseg_seed$((seed-1))"
-  wait_gpu "$GPU1"
-  log "launching SNE-RoadSeg seed-${seed} on GPU${GPU1}"
-  CUDA_VISIBLE_DEVICES="${GPU1}" PYTHONDONTWRITEBYTECODE=1 \
+  if (( seed == 41 )); then
+    # Seed-41 is independent of seed-40.  Once the short USNet seed-42 job
+    # releases GPU0, this overlaps the long SNE seed-40 run without changing
+    # the method-specific training protocol.
+    wait_result usnet_seed42
+    gpu="${SNE41_GPU:-0}"
+  else
+    wait_result "sne_roadseg_seed$((seed-1))"
+  fi
+  wait_gpu "$gpu"
+  log "launching SNE-RoadSeg seed-${seed} on GPU${gpu}"
+  CUDA_VISIBLE_DEVICES="${gpu}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${MAIN_ENV}" env PYTHONPATH=. \
     python tools/train_matched_orfd_baseline.py --baseline sne_roadseg \
       --official-source "${SNE_SOURCE}" --data-root "${ORFD_ROOT}" \
