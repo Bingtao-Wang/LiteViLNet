@@ -56,10 +56,11 @@ run_offnet42() {
   local d=offnet_seed42
   done_file "$d" && return
   claim "$d" || return
-  # OFF-Net is moved to GPU1 after seed-41.  This leaves GPU0 available for
-  # the larger RoadFormer job as soon as OFF-Net seed-40 completes.
-  wait_result offnet_seed41
+  # Seeds are independent.  Start seed-42 as soon as the GPU1 memory guard
+  # permits it instead of serializing on seed-41; the 48-GB card can safely
+  # hold the two OFF-Net workers alongside the external 10-GB job.
   wait_gpu "$GPU1"
+  done_file "$d" && return
   log "launching OFF-Net seed-42 on GPU${GPU1}"
   CUDA_VISIBLE_DEVICES="${GPU1}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${OPENMMLAB_ENV}" env PYTHONPATH=. \
@@ -85,6 +86,7 @@ run_sne() {
     wait_result "sne_roadseg_seed$((seed-1))"
   fi
   wait_gpu "$gpu"
+  done_file "$d" && return
   log "launching SNE-RoadSeg seed-${seed} on GPU${gpu}"
   CUDA_VISIBLE_DEVICES="${gpu}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${MAIN_ENV}" env PYTHONPATH=. \
@@ -111,6 +113,7 @@ run_roadformer() {
     wait_result "roadformer_seed$((seed-1))"
   fi
   wait_gpu "$GPU0"
+  done_file "$d" && return
   log "launching RoadFormer seed-${seed} on GPU${GPU0}"
   CUDA_VISIBLE_DEVICES="${GPU0}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${OPENMMLAB_ENV}" env PYTHONPATH=. \
