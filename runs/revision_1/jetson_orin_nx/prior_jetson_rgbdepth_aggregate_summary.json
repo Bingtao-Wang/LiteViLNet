@@ -1,0 +1,128 @@
+{
+  "result_dir": "tools/fps/results/20260513_litevilnet_rgbdepth_3.11_jetson_orin_384x1248",
+  "model": "LiteViLNetRGBDepth",
+  "checkpoint": "output/3.11_litevilnet_rgbdepth_robot_path_wheeled_campus_internal_road_20260511_143834_labeled35_sampled35_smoke/best_model.pth",
+  "input": "RGB + depth3",
+  "input_shape": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "batch_size": 1,
+  "precision": "fp16",
+  "pytorch": {
+    "runs": 3,
+    "fps": {
+      "mean": 22.181590644812143,
+      "std": 0.21283585504318167,
+      "cv_percent": 0.9595157464190242,
+      "min": 21.994640988070085,
+      "max": 22.413219266381123
+    },
+    "mean_latency_ms": {
+      "mean": 45.085188992818196,
+      "std": 0.431368134838428,
+      "cv_percent": 0.9567845770972423,
+      "min": 44.616526885986325,
+      "max": 45.465620491027835
+    },
+    "p95_latency_ms": {
+      "mean": 46.363531748453774,
+      "std": 0.6249593653700498,
+      "cv_percent": 1.3479546138995164,
+      "min": 45.64217758178711,
+      "max": 46.741825103759766
+    },
+    "parameters_m": 14.035153,
+    "cuda_max_memory_mb": {
+      "mean": 330.4697265625,
+      "std": 0.0,
+      "cv_percent": 0.0,
+      "min": 330.4697265625,
+      "max": 330.4697265625
+    },
+    "raw_fps": [
+      21.994640988070085,
+      22.413219266381123,
+      22.13691167998522
+    ],
+    "system": {
+      "hostname": "yahboom",
+      "platform": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+      "machine": "aarch64",
+      "python": "3.10.12",
+      "torch": "2.5.0a0+872d972e41.nv24.08",
+      "cuda_available": true,
+      "timestamp": "2026-05-13 16:15:09",
+      "cuda_device": "Orin",
+      "cuda_version": "12.6",
+      "cudnn_version": 91600,
+      "nv_tegra_release": "# R36 (release), REVISION: 4.3, GCID: 38968081, BOARD: generic, EABI: aarch64, DATE: Wed Jan  8 01:49:37 UTC 2025\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia",
+      "model": "NVIDIA Jetson Orin NX Engineering Reference Developer Kit Super"
+    }
+  },
+  "tensorrt": {
+    "runs": 3,
+    "fps_from_mean_latency": {
+      "mean": 68.73327942030818,
+      "std": 0.058468586839852,
+      "cv_percent": 0.08506590596719973,
+      "min": 68.68226211898515,
+      "max": 68.79708300368064
+    },
+    "throughput_qps": {
+      "mean": 70.8937,
+      "std": 0.05176321087412863,
+      "cv_percent": 0.07301524800388276,
+      "min": 70.8494,
+      "max": 70.9506
+    },
+    "mean_latency_ms": {
+      "mean": 14.549,
+      "std": 0.012372954376380035,
+      "cv_percent": 0.08504333202543155,
+      "min": 14.5355,
+      "max": 14.5598
+    },
+    "p95_latency_ms": {
+      "mean": 14.744466666666666,
+      "std": 0.020096102441352015,
+      "cv_percent": 0.13629589252478003,
+      "min": 14.7256,
+      "max": 14.7656
+    },
+    "gpu_compute_mean_ms": {
+      "mean": 14.099766666666666,
+      "std": 0.010268560431400675,
+      "cv_percent": 0.07282787491566534,
+      "min": 14.0885,
+      "max": 14.1086
+    },
+    "engine_size_mb": 30.609333038330078,
+    "raw_fps": [
+      68.68226211898515,
+      68.72049313825876,
+      68.79708300368064
+    ],
+    "raw_throughput_qps": [
+      70.8494,
+      70.8811,
+      70.9506
+    ],
+    "system": {
+      "hostname": "yahboom",
+      "platform": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+      "machine": "aarch64",
+      "python": "3.10.12",
+      "torch": "2.5.0a0+872d972e41.nv24.08",
+      "cuda_available": true,
+      "timestamp": "2026-05-13 16:38:03",
+      "cuda_device": "Orin",
+      "cuda_version": "12.6",
+      "cudnn_version": 91600,
+      "nv_tegra_release": "# R36 (release), REVISION: 4.3, GCID: 38968081, BOARD: generic, EABI: aarch64, DATE: Wed Jan  8 01:49:37 UTC 2025\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia",
+      "model": "NVIDIA Jetson Orin NX Engineering Reference Developer Kit Super"
+    }
+  }
+}

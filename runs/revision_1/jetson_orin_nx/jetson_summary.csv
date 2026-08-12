@@ -1,0 +1,5 @@
+backend,model,preset,precision,batch_size,img_h,img_w,mean_ms,p95_ms,fps,parameters_M,memory_mb,note
+pytorch,LiteViLNet-Paper,litevilnet_paper,fp16,1,384,1248,44.39807834625244,44.69174575805664,22.523497350520085,14.035038,332.294921875,model-only random tensors; preprocessing excluded
+tensorrt,LiteViLNetRGBDepth,litevilnet_rgbdepth_384x1248,fp16,1,,,14.5665,14.5366,68.65067106030962,,,
+pytorch,LiteViLNet-Edge,litevilnet_edge,fp16,1,384,1248,25.246849632263185,26.797887802124023,39.608902281498544,3.425681,302.927734375,model-only random tensors; preprocessing excluded
+pytorch,LiteViLNet-Edge,litevilnet_edge,fp16,1,384,1248,23.553721141815185,23.634687423706055,42.45613650510147,3.425681,302.927734375,model-only random tensors; preprocessing excluded

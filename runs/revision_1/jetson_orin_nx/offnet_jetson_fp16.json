@@ -1,0 +1,95 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "offnet",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp16",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 10,
+  "iterations_per_repeat": 20,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 20,
+      "mean_ms": 151.476220703125,
+      "sample_std_ms": 0.03286834299445583,
+      "median_ms": 151.46580505371094,
+      "p95_ms": 151.524910736084,
+      "min_ms": 151.4220733642578,
+      "max_ms": 151.54275512695312,
+      "fps_from_mean": 6.601696262015135
+    },
+    {
+      "n": 20,
+      "mean_ms": 151.48211898803712,
+      "sample_std_ms": 0.0666469318387089,
+      "median_ms": 151.4875717163086,
+      "p95_ms": 151.55163497924804,
+      "min_ms": 151.35475158691406,
+      "max_ms": 151.64816284179688,
+      "fps_from_mean": 6.601439210650151
+    },
+    {
+      "n": 20,
+      "mean_ms": 151.48264770507814,
+      "sample_std_ms": 0.0526610376195073,
+      "median_ms": 151.47784423828125,
+      "p95_ms": 151.55803909301758,
+      "min_ms": 151.39065551757812,
+      "max_ms": 151.59446716308594,
+      "fps_from_mean": 6.601416169770824
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 151.48032913208007,
+    "sample_std_ms_across_repeat_means": 0.0035678112038921308,
+    "fps_from_mean": 6.601517211703912
+  },
+  "parameters": 25209608,
+  "peak_allocated_cuda_mib": 276.537109375,
+  "checkpoint": "/home/jetson/LiteViLNet_ws/baseline_weights/offnet/best_model.pth",
+  "checkpoint_sha256": "04ef8174615d98d8ddb3fdc3a1838046965d4bd60eb5e96b35a291183666f495",
+  "official_source": {
+    "remote": "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+    "commit": "50e63d24836198e8fb5af707e521f414104b4876"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.12",
+    "torch": "2.5.0a0+872d972e41.nv24.08",
+    "cuda": "12.6",
+    "device": "Orin",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "offnet",
+      "--checkpoint",
+      "../baseline_weights/offnet/best_model.pth",
+      "--official-source",
+      "../OFF-Net",
+      "--precision",
+      "fp16",
+      "--warmup",
+      "10",
+      "--iterations",
+      "20",
+      "--repeats",
+      "3",
+      "--output",
+      "../offnet_jetson_fp16.json"
+    ]
+  }
+}

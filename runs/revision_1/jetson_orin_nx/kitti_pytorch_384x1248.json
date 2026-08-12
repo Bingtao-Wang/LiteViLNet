@@ -1,0 +1,69 @@
+{
+  "backend": "pytorch",
+  "preset": "litevilnet_paper",
+  "label": "LiteViLNet-Paper",
+  "precision": "fp16",
+  "checkpoint": "../weights/kitti_full.pth",
+  "input_shape": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "warmup": 30,
+  "iters": 100,
+  "parameters": 14035038,
+  "model_only": {
+    "n": 100,
+    "mean_ms": 44.39807834625244,
+    "sample_std_ms": 0.1642986122112662,
+    "p50_ms": 44.39980697631836,
+    "p95_ms": 44.69174575805664,
+    "min_ms": 44.052223205566406,
+    "max_ms": 44.943359375,
+    "fps": 22.523497350520085,
+    "trimmed_mean_ms": 44.39477115207248,
+    "trimmed_fps": 22.5251752413486
+  },
+  "preprocess": {
+    "n": 0,
+    "mean_ms": 0.0,
+    "sample_std_ms": 0.0,
+    "p50_ms": 0.0,
+    "p95_ms": 0.0,
+    "min_ms": 0.0,
+    "max_ms": 0.0,
+    "fps": 0.0,
+    "trimmed_mean_ms": 0.0,
+    "trimmed_fps": 0.0
+  },
+  "end_to_end": {
+    "n": 0,
+    "mean_ms": 0.0,
+    "sample_std_ms": 0.0,
+    "p50_ms": 0.0,
+    "p95_ms": 0.0,
+    "min_ms": 0.0,
+    "max_ms": 0.0,
+    "fps": 0.0,
+    "trimmed_mean_ms": 0.0,
+    "trimmed_fps": 0.0
+  },
+  "cuda_max_memory_mb": 332.294921875,
+  "system": {
+    "hostname": "yahboom",
+    "platform": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+    "machine": "aarch64",
+    "cpu_model": "ARMv8 Processor rev 1 (v8l)",
+    "python": "3.10.12",
+    "torch": "2.5.0a0+872d972e41.nv24.08",
+    "cuda_available": true,
+    "timestamp": "2026-08-09 02:31:42",
+    "cuda_device": "Orin",
+    "cuda_total_memory_mb": 15655.5625,
+    "cuda_version": "12.6",
+    "cudnn_version": 91600,
+    "nv_tegra_release": "# R36 (release), REVISION: 4.3, GCID: 38968081, BOARD: generic, EABI: aarch64, DATE: Wed Jan  8 01:49:37 UTC 2025\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia",
+    "model": "NVIDIA Jetson Orin NX Engineering Reference Developer Kit Super"
+  }
+}

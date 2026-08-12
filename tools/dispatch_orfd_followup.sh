@@ -21,6 +21,7 @@ USNET_SOURCE="${USNET_SOURCE:-$PWD/third_party/matched_baselines/USNet}"
 SNE_SOURCE="${SNE_SOURCE:-$PWD/third_party/matched_baselines/SNE-RoadSeg}"
 OFFNET_SOURCE="${OFFNET_SOURCE:-$PWD/third_party/matched_baselines/OFF-Net}"
 ROADFORMER_SOURCE="${ROADFORMER_SOURCE:-$PWD/third_party/matched_baselines/Road-Former}"
+ROADFORMER_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:32}"
 
 mkdir -p "${ROOT}" "${LOCK_ROOT}"
 exec >>"${LOG}" 2>&1
@@ -114,7 +115,7 @@ run_roadformer() {
   wait_gpu "$GPU0"
   done_file "$d" && return
   log "launching RoadFormer seed-${seed} on GPU${GPU0}"
-  CUDA_VISIBLE_DEVICES="${GPU0}" PYTHONDONTWRITEBYTECODE=1 \
+  CUDA_VISIBLE_DEVICES="${GPU0}" PYTORCH_CUDA_ALLOC_CONF="${ROADFORMER_ALLOC_CONF}" PYTHONDONTWRITEBYTECODE=1 \
     conda run --no-capture-output -n "${OPENMMLAB_ENV}" env PYTHONPATH=. \
     python tools/train_matched_orfd_roadformer.py --official-source "${ROADFORMER_SOURCE}" \
       --data-root "${ROADFORMER_ROOT}" --output-dir "${ROOT}/${d}" \

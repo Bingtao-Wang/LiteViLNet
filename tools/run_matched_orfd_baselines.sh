@@ -12,6 +12,7 @@ set -euo pipefail
 
 OUTPUT_ROOT="${OUTPUT_ROOT:-runs/revision_1/matched_orfd/formal}"
 SEEDS="${SEEDS:-40 41 42}"
+ROADFORMER_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:32}"
 
 run_usnet() {
   for seed in ${SEEDS}; do
@@ -71,7 +72,7 @@ run_roadformer() {
       echo "Skipping completed ORFD RoadFormer seed ${seed}"
       continue
     fi
-    CUDA_VISIBLE_DEVICES="${GPU1:-1}" PYTHONDONTWRITEBYTECODE=1 \
+    CUDA_VISIBLE_DEVICES="${GPU1:-1}" PYTORCH_CUDA_ALLOC_CONF="${ROADFORMER_ALLOC_CONF}" PYTHONDONTWRITEBYTECODE=1 \
       conda run --no-capture-output -n "${OPENMMLAB_ENV:-litevilnet_roadformer_ral}" env PYTHONPATH=. \
       python tools/train_matched_orfd_roadformer.py \
       --official-source "${ROADFORMER_SOURCE}" --data-root "${ORFD_ROADFORMER_ROOT}" \

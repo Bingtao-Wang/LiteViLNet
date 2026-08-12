@@ -1,0 +1,95 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "plard",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    1,
+    384,
+    1248
+  ],
+  "precision": "fp16",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 20,
+  "iterations_per_repeat": 30,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 30,
+      "mean_ms": 295.65301513671875,
+      "sample_std_ms": 0.20083755225576216,
+      "median_ms": 295.60321044921875,
+      "p95_ms": 296.08728179931643,
+      "min_ms": 295.3917236328125,
+      "max_ms": 296.27532958984375,
+      "fps_from_mean": 3.3823433173430355
+    },
+    {
+      "n": 30,
+      "mean_ms": 295.6829447428385,
+      "sample_std_ms": 0.2143024344115202,
+      "median_ms": 295.6273498535156,
+      "p95_ms": 296.1885726928711,
+      "min_ms": 295.4469299316406,
+      "max_ms": 296.2588806152344,
+      "fps_from_mean": 3.38200094993548
+    },
+    {
+      "n": 30,
+      "mean_ms": 295.6346506754557,
+      "sample_std_ms": 0.1416210396314209,
+      "median_ms": 295.57041931152344,
+      "p95_ms": 295.8953659057617,
+      "min_ms": 295.46197509765625,
+      "max_ms": 295.9665222167969,
+      "fps_from_mean": 3.382553424354131
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 295.6568701850043,
+    "sample_std_ms_across_repeat_means": 0.024376736534183173,
+    "fps_from_mean": 3.382299215216139
+  },
+  "parameters": 76929142,
+  "peak_allocated_cuda_mib": 630.05078125,
+  "checkpoint": "/home/jetson/LiteViLNet_ws/baseline_weights/plard/best_model.pth",
+  "checkpoint_sha256": "e69cdc463fc403a9d858ef745de04c5eb2ba2d17021a5c014b01badd22a9bb75",
+  "official_source": {
+    "remote": "https://github.com/zhechen/PLARD.git",
+    "commit": "44485803092e729661c696ab6c03f6f2fabc8701"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.12",
+    "torch": "2.5.0a0+872d972e41.nv24.08",
+    "cuda": "12.6",
+    "device": "Orin",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "plard",
+      "--checkpoint",
+      "../baseline_weights/plard/best_model.pth",
+      "--official-source",
+      "../PLARD",
+      "--precision",
+      "fp16",
+      "--warmup",
+      "20",
+      "--iterations",
+      "30",
+      "--repeats",
+      "3",
+      "--output",
+      "../plard_jetson_fp16.json"
+    ]
+  }
+}

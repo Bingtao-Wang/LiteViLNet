@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import sys
 import time
@@ -14,6 +15,7 @@ from typing import Any
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
+from torch.utils.checkpoint import checkpoint as activation_checkpoint
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -163,6 +165,74 @@ def save_checkpoint(
     )
 
 
+def enable_decoder_activation_checkpointing() -> None:
+    """Recompute RoadFormer decoder activations to fit the fixed FP32 recipe.
+
+    The matched protocol remains batch 4 / FP32 / 704x1280.  Only training
+    activations are checkpointed; parameters, optimizer updates, data order,
+    and evaluation are unchanged.  The official source tree is left clean and
+    is still hashed verbatim in ``result.json``.
+    """
+
+    from mmdet_custom.models.layers.transformer.mask2former_layers import (
+        Mask2FormerTransformerDecoderLayer,
+    )
+
+    original_forward = Mask2FormerTransformerDecoderLayer.forward
+    if getattr(original_forward, "_litevilnet_activation_checkpointed", False):
+        return
+
+    def checkpointed_forward(self, query, key=None, value=None, query_pos=None,
+                             key_pos=None, self_attn_mask=None,
+                             cross_attn_mask=None, key_padding_mask=None,
+                             **kwargs):
+        if not self.training or not torch.is_grad_enabled():
+            return original_forward(
+                self,
+                query=query,
+                key=key,
+                value=value,
+                query_pos=query_pos,
+                key_pos=key_pos,
+                self_attn_mask=self_attn_mask,
+                cross_attn_mask=cross_attn_mask,
+                key_padding_mask=key_padding_mask,
+                **kwargs,
+            )
+
+        def run_layer(q, k, v, q_pos, k_pos, self_mask, cross_mask):
+            return original_forward(
+                self,
+                query=q,
+                key=k,
+                value=v,
+                query_pos=q_pos,
+                key_pos=k_pos,
+                self_attn_mask=self_mask,
+                cross_attn_mask=cross_mask,
+                key_padding_mask=key_padding_mask,
+                **kwargs,
+            )
+
+        # All seven arguments are tensors for the RoadFormer decoder call;
+        # query carries gradients, while masks are simply preserved as
+        # checkpoint inputs.  Reentrant checkpointing is supported by the
+        # pinned torch 1.13.1 environment.
+        return activation_checkpoint(
+            run_layer,
+            query,
+            key,
+            value,
+            query_pos,
+            key_pos,
+            self_attn_mask,
+            cross_attn_mask,
+        )
+
+    checkpointed_forward._litevilnet_activation_checkpointed = True
+    Mask2FormerTransformerDecoderLayer.forward = checkpointed_forward
+
+
 def main() -> None:
     args = parse_args()
     if not torch.cuda.is_available():
@@ -181,6 +251,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     seed_all(args.seed)
     operator_bridge = bootstrap_official(source)
+    enable_decoder_activation_checkpointing()
 
     from mmengine_custom.config import Config  # pylint: disable=import-outside-toplevel
     from mmengine_custom.dataset import pseudo_collate  # pylint: disable=import-outside-toplevel
@@ -191,6 +262,11 @@ def main() -> None:
     config = Config.fromfile(config_path)
     config.model.data_preprocessor.size = (args.height, args.width)
     config.model.decode_head.pixel_decoder.img_scale = (args.height, args.width)
+    # TwinConvNeXt exposes the official ``with_cp`` switch.  Enabling it
+    # recomputes backbone blocks during backward and keeps the fixed FP32
+    # batch-4 protocol within the 48-GB card; it changes neither parameters,
+    # optimizer updates, data order, nor numerical precision.
+    config.model.backbone.with_cp = True
     datasets = {
         split: DATASETS.build(
             dataset_config(
@@ -261,7 +337,19 @@ def main() -> None:
         losses: list[float] = []
         epoch_start = time.time()
         for batch in train_loader:
-            log_vars = model.train_step(batch, optim_wrapper)
+            # The released FP32 batch-4 recipe sits within a few hundred MiB
+            # of the 48-GB card limit.  Return unused cached blocks before
+            # each step so allocator fragmentation cannot change the recipe's
+            # effective capacity; this does not alter batch, precision, or
+            # optimization semantics.
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            # Keep the fixed FP32 batch-4 protocol while moving autograd's
+            # saved tensors to host memory.  RoadFormer at 704x1280 is within
+            # a few MiB of the 48-GB card limit; this memory-only safeguard
+            # prevents a transient attention workspace from causing OOM.
+            with torch.autograd.graph.save_on_cpu(pin_memory=False):
+                log_vars = model.train_step(batch, optim_wrapper)
             loss = float(log_vars["loss"].detach().cpu())
             if not np.isfinite(loss):
                 raise FloatingPointError(f"Non-finite RoadFormer loss: {loss}")
@@ -336,6 +424,10 @@ def main() -> None:
         "best_epoch": int(checkpoint["epoch"]),
         "batch_size": args.batch_size,
         "amp": False,
+        "activation_checkpointing": True,
+        "backbone_activation_checkpointing": True,
+        "activation_saved_tensors_on_cpu": True,
+        "cuda_allocator_config": os.environ.get("PYTORCH_CUDA_ALLOC_CONF", ""),
         "checkpoint_selection": "validation 101-threshold MaxF",
         "validation": validation,
         "testing": testing,

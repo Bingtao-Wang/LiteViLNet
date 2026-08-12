@@ -177,8 +177,8 @@ def main() -> None:
         raise RuntimeError("CUDA is required")
     if args.batch_size != 1:
         raise ValueError("The matched Table-I protocol requires batch size 1")
-    if args.method in {"roadformer", "offnet"} and args.precision != "fp32":
-        raise ValueError("Pinned OpenMMLab baselines are measured in their FP32 environment")
+    if args.method == "roadformer" and args.precision != "fp32":
+        raise ValueError("The pinned RoadFormer environment is measured in FP32")
     if args.warmup <= 0 or args.iterations <= 0 or args.repeats < 2:
         raise ValueError("Use positive warmup/iterations and at least two repeats")
     if not args.checkpoint.is_file():
@@ -187,8 +187,11 @@ def main() -> None:
     torch.backends.cudnn.benchmark = True
     device = torch.device("cuda:0")
     device_name = torch.cuda.get_device_name(device)
-    if "RTX 4090 D" not in device_name:
-        raise RuntimeError(f"Expected RTX 4090 D, found {device_name}")
+    # The original Table-I script was written for the workstation timing
+    # pass.  Keep that guard for accidental mismatches, but also allow the
+    # explicitly requested Jetson Orin NX FP16 deployment pass.
+    if "RTX 4090 D" not in device_name and "Orin" not in device_name:
+        raise RuntimeError(f"Expected RTX 4090 D or Jetson Orin, found {device_name}")
     source = args.official_source.resolve() if args.official_source else None
     source_metadata = verify_source(args.method, source)
 

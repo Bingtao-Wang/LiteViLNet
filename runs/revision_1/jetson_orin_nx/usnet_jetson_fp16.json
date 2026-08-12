@@ -1,0 +1,95 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "usnet",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp16",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 20,
+  "iterations_per_repeat": 50,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 50,
+      "mean_ms": 165.77978332519533,
+      "sample_std_ms": 0.10456549855731616,
+      "median_ms": 165.76045989990234,
+      "p95_ms": 165.8712417602539,
+      "min_ms": 165.69290161132812,
+      "max_ms": 166.4375,
+      "fps_from_mean": 6.032098606609889
+    },
+    {
+      "n": 50,
+      "mean_ms": 165.76664642333984,
+      "sample_std_ms": 0.032362767226173504,
+      "median_ms": 165.76335906982422,
+      "p95_ms": 165.8347053527832,
+      "min_ms": 165.70892333984375,
+      "max_ms": 165.85372924804688,
+      "fps_from_mean": 6.0325766466082085
+    },
+    {
+      "n": 50,
+      "mean_ms": 165.76458953857423,
+      "sample_std_ms": 0.040334847962831544,
+      "median_ms": 165.7604522705078,
+      "p95_ms": 165.8239372253418,
+      "min_ms": 165.68357849121094,
+      "max_ms": 165.84022521972656,
+      "fps_from_mean": 6.032651501648337
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 165.7703397623698,
+    "sample_std_ms_across_repeat_means": 0.008242775798511659,
+    "fps_from_mean": 6.032442241679004
+  },
+  "parameters": 30738444,
+  "peak_allocated_cuda_mib": 161.9990234375,
+  "checkpoint": "/home/jetson/LiteViLNet_ws/baseline_weights/usnet/best_model.pth",
+  "checkpoint_sha256": "09e0b77829b05d52c1ab945d9ac3fe48ea870718cddf683a7a767855950734c7",
+  "official_source": {
+    "remote": "https://github.com/morancyc/USNet.git",
+    "commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.12",
+    "torch": "2.5.0a0+872d972e41.nv24.08",
+    "cuda": "12.6",
+    "device": "Orin",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "usnet",
+      "--checkpoint",
+      "../baseline_weights/usnet/best_model.pth",
+      "--official-source",
+      "../USNet",
+      "--precision",
+      "fp16",
+      "--warmup",
+      "20",
+      "--iterations",
+      "50",
+      "--repeats",
+      "3",
+      "--output",
+      "../usnet_jetson_fp16.json"
+    ]
+  }
+}

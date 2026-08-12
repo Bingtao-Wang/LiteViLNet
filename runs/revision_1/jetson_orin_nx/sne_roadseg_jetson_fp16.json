@@ -1,0 +1,95 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "sne_roadseg",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp16",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 10,
+  "iterations_per_repeat": 20,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 20,
+      "mean_ms": 445.5243835449219,
+      "sample_std_ms": 1.0089743382784693,
+      "median_ms": 445.2992401123047,
+      "p95_ms": 446.02698669433596,
+      "min_ms": 444.861083984375,
+      "max_ms": 449.7044677734375,
+      "fps_from_mean": 2.244546060629184
+    },
+    {
+      "n": 20,
+      "mean_ms": 445.4357223510742,
+      "sample_std_ms": 0.28677529404183494,
+      "median_ms": 445.4763488769531,
+      "p95_ms": 445.79772796630857,
+      "min_ms": 444.59625244140625,
+      "max_ms": 445.945556640625,
+      "fps_from_mean": 2.244992823480468
+    },
+    {
+      "n": 20,
+      "mean_ms": 445.3709915161133,
+      "sample_std_ms": 0.3255020280973433,
+      "median_ms": 445.42027282714844,
+      "p95_ms": 445.7587417602539,
+      "min_ms": 444.76177978515625,
+      "max_ms": 445.93353271484375,
+      "fps_from_mean": 2.245319113837751
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 445.4436991373698,
+    "sample_std_ms_across_repeat_means": 0.07700649625328514,
+    "fps_from_mean": 2.2449526212550857
+  },
+  "parameters": 201324806,
+  "peak_allocated_cuda_mib": 6960.6494140625,
+  "checkpoint": "/home/jetson/LiteViLNet_ws/baseline_weights/sne_roadseg/best_model.pth",
+  "checkpoint_sha256": "7cd1edf45f7e8b7350a602a4308a8dbac115ba39dd68718b708db26d1a609d70",
+  "official_source": {
+    "remote": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+    "commit": "5e7900bfd59887634ced687ffe85a73018a38659"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.10.12",
+    "torch": "2.5.0a0+872d972e41.nv24.08",
+    "cuda": "12.6",
+    "device": "Orin",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "sne_roadseg",
+      "--checkpoint",
+      "../baseline_weights/sne_roadseg/best_model.pth",
+      "--official-source",
+      "../SNE-RoadSeg",
+      "--precision",
+      "fp16",
+      "--warmup",
+      "10",
+      "--iterations",
+      "20",
+      "--repeats",
+      "3",
+      "--output",
+      "../sne_roadseg_jetson_fp16.json"
+    ]
+  }
+}

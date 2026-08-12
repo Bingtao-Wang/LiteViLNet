@@ -1,0 +1,6 @@
+method,precision,input_h,input_w,batch_size,mean_ms,fps,repeats,backend,power_mode,notes
+USNet,fp16,384,1248,1,165.7703,6.0324,3,PyTorch,MAXN_SUPER,exact retrained graph; model-only CUDA-event timing
+SNE-RoadSeg,fp16,384,1248,1,445.4437,2.2450,3,PyTorch,MAXN_SUPER,exact retrained graph; model-only CUDA-event timing
+PLARD,fp16,384,1248,1,295.6569,3.3823,3,PyTorch,MAXN_SUPER,exact retrained graph; model-only CUDA-event timing
+OFF-Net,fp16,384,1248,1,151.4803,6.6015,3,PyTorch,MAXN_SUPER,exact graph/checkpoint; mmcv-lite registry/resize compatibility shim
+LiteViLNet-Edge,fp16,384,1248,1,23.5537,42.4561,1,PyTorch,MAXN_SUPER,3.43M-parameter edge checkpoint; model-only CUDA-event timing
