@@ -320,7 +320,7 @@ checkpoint hash 和官方 commit，任一不一致就拒绝出表。
 的主训练队列。Table I 因此可以直接核对为同 split/尺寸/预算/evaluator 的六方法结果。
 
 RTX 4090 D 上统一复测的 FPS-1 为：USNet `239.81`、SNE-RoadSeg `19.32`、PLARD
-`26.97`、RoadFormer `17.46`、OFF-Net `65.04`、LiteViLNet `216.61`。协议是 `384 x 1248`、batch 1、
+`26.97`、RoadFormer `17.46`、OFF-Net `65.04`、LiteViLNet `220.83`。协议是 `384 x 1248`、batch 1、
 PyTorch FP32、输入常驻 GPU、100 次 warmup、300 次计时和三次独立 repeat，CUDA event
 只包围 model forward。Jetson FPS-2 只在论文中保留已有的匹配 Orin NX 测量，不把未测
 配置填成推断值。
@@ -331,7 +331,7 @@ USNet 的参数更多但 FPS-1 略高并不矛盾。参数量衡量权重数，�
 优化的大块标准卷积组成，而 LiteViLNet 包含深度卷积、逐尺度融合/attention、插值和
 更多小 kernel。后者虽显著降低参数和可识别 MAC，却可能具有较低算术强度和更多 kernel
 调度开销。原始 CUDA-event 结果中 USNet 三次 repeat 均约为 `4.170 ms`，LiteViLNet
-为 `4.617±0.012 ms`，因此该排序不是单次计时异常。两者都采用 model-only scope：
+为 `4.528±0.014 ms`，因此该排序不是单次计时异常。两者都采用 model-only scope：
 USNet 的 normal/SNE 构造和 LiteViLNet 的 ADI 构造均不计入 FPS-1。
 
 ## 如何理解指标

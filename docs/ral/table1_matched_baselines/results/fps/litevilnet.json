@@ -24,44 +24,44 @@
   "repeat_summaries": [
     {
       "n": 300,
-      "mean_ms": 4.625708394050598,
-      "sample_std_ms": 0.14657717835578019,
-      "median_ms": 4.571135997772217,
-      "p95_ms": 4.928819060325623,
-      "min_ms": 4.550655841827393,
-      "max_ms": 5.958655834197998,
-      "fps_from_mean": 216.1831042540771
+      "mean_ms": 4.535815575917562,
+      "sample_std_ms": 0.21580573485199978,
+      "median_ms": 4.4573280811309814,
+      "p95_ms": 4.980103802680969,
+      "min_ms": 4.4410881996154785,
+      "max_ms": 5.874688148498535,
+      "fps_from_mean": 220.46751753078217
     },
     {
       "n": 300,
-      "mean_ms": 4.620827309290568,
-      "sample_std_ms": 0.14050022096719855,
-      "median_ms": 4.571135997772217,
-      "p95_ms": 4.932864117622375,
-      "min_ms": 4.54860782623291,
-      "max_ms": 5.648384094238281,
-      "fps_from_mean": 216.41146337354238
+      "mean_ms": 4.511647033691406,
+      "sample_std_ms": 0.18829701121189818,
+      "median_ms": 4.452320098876953,
+      "p95_ms": 4.902604699134827,
+      "min_ms": 4.4410881996154785,
+      "max_ms": 5.680031776428223,
+      "fps_from_mean": 221.6485448733797
     },
     {
       "n": 300,
-      "mean_ms": 4.603402252197266,
-      "sample_std_ms": 0.11287036826099871,
-      "median_ms": 4.569087982177734,
-      "p95_ms": 4.848742365837097,
-      "min_ms": 4.5496320724487305,
-      "max_ms": 5.449728012084961,
-      "fps_from_mean": 217.2306362153528
+      "mean_ms": 4.537562758127848,
+      "sample_std_ms": 0.22524140148870325,
+      "median_ms": 4.460432052612305,
+      "p95_ms": 4.950825715065003,
+      "min_ms": 4.442111968994141,
+      "max_ms": 5.988351821899414,
+      "fps_from_mean": 220.38262682070095
     }
   ],
   "aggregate": {
-    "mean_ms": 4.616645985179477,
-    "sample_std_ms_across_repeat_means": 0.011726192672250196,
-    "fps_from_mean": 216.60746854106554
+    "mean_ms": 4.528341789245605,
+    "sample_std_ms_across_repeat_means": 0.014484450582601859,
+    "fps_from_mean": 220.8313874131383
   },
   "parameters": 14035153,
-  "peak_allocated_cuda_mib": 15004.87890625,
-  "checkpoint": "runs/revision_1/kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth",
-  "checkpoint_sha256": "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79",
+  "peak_allocated_cuda_mib": 15006.3642578125,
+  "checkpoint": "runs/revision_1/matched_baselines/timing_only_initialized_litevilnet.pth",
+  "checkpoint_sha256": "08bea5cb2f633aaee51f47e90a0bbfccdf6e3101e4867d4d722e450981be66a1",
   "official_source": null,
   "operator_bridge": null,
   "runtime": {
@@ -74,7 +74,7 @@
       "--method",
       "litevilnet",
       "--checkpoint",
-      "runs/revision_1/kitti_ablation_stratified_seed20260723/full/seed_42/best_model.pth",
+      "runs/revision_1/matched_baselines/timing_only_initialized_litevilnet.pth",
       "--precision",
       "fp32",
       "--warmup",
@@ -84,9 +84,10 @@
       "--repeats",
       "3",
       "--output",
-      "runs/revision_1/matched_baselines/fps_4090d/litevilnet.json"
+      "runs/revision_1/matched_baselines/fps_4090d/litevilnet_remeasure_20260812.json"
     ]
   },
+  "timing_checkpoint_scope": "Timing-only initialized state dict for the identical LiteViLNet full graph; accuracy remains tied to the three validation-selected trained checkpoints.",
   "supplement_anonymization": {
     "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
     "measurements_and_hashes_changed": false

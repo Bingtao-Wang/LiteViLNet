@@ -20,7 +20,7 @@
 6. MSFM 增加约 10.35M 参数，必须与“简单逐尺度相加 + 同一 Bridge + 同一深监督”控制一起看。修正后的分层 split 结果见第 7 节。
 7. ORFD 用作第二数据集。除 8,392/1,245 train/validation 外，本轮进一步发现下载包的 2,193-frame testing partition 也包含完整 GT；训练和 validation 都与 test 无同名帧。论文现以 held-out test 作为主结果。
 8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`。它相对已独立评测的 OFF-Net 发布 checkpoint 高 `3.94/7.11 pp`，相对发布表格值高 `6.44/11.38 pp`；相对 USNet seed-40 高 `1.12/2.07 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的原有三 seed 优势是 `+0.71 ± 0.67 pp`。
-9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。ORFD 论文快照记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU；USNet seed-41 已作为后续扩展归档。
+9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.43×`、`8.19×`、`12.65×`。ORFD 论文快照记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU；USNet seed-41 已作为后续扩展归档。
 
 ## 2. 审稿意见—修改证据矩阵
 
@@ -317,9 +317,9 @@ Table I 汇总：
 | RoadFormer | 3 | 97.28 ± 0.05 | 97.96 ± 0.09 | 96.61 ± 0.16 | 206.86M |
 | LiteViLNet | 3 | 97.23 ± 0.15 | 97.31 ± 0.59 | 97.16 ± 0.30 | 14.04M |
 
-专业解读：LiteViLNet 的 MaxF 比 SNE-RoadSeg 高 `0.0085 pp`（表中四舍五入后均为 97.23），且 MaxF sample SD 更低，同时参数量少 `93.03%`。相对 USNet，LiteViLNet 参数量少 `54.34%`，MaxF 差 `0.6469 pp`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D model-only FPS-1 分别为 `11.21×`、`8.03×`、`12.40×`。因此正文把 LiteViLNet 定位为精度—参数—目标设备速度的 Pareto operating point，不声称所有精度指标绝对第一。
+专业解读：LiteViLNet 的 MaxF 比 SNE-RoadSeg 高 `0.0085 pp`（表中四舍五入后均为 97.23），且 MaxF sample SD 更低，同时参数量少 `93.03%`。相对 USNet，LiteViLNet 参数量少 `54.34%`，MaxF 差 `0.6469 pp`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D model-only FPS-1 分别为 `11.43×`、`8.19×`、`12.65×`。因此正文把 LiteViLNet 定位为精度—参数—目标设备速度的 Pareto operating point，不声称所有精度指标绝对第一。
 
-USNet 的参数量较大但 FPS-1 略高，是算子效率而非计时错误。参数量只统计权重；统一输入下 fvcore 可识别的 USNet 计算量约为 `39.13 GMAC-eq`，虽高于 LiteViLNet 的 `10.17 GMAC-eq`，但 USNet 以 4090 D 上高度优化的大块标准卷积为主。LiteViLNet 的深度卷积、逐尺度融合/attention、插值及较多小 kernel 降低了参数和 MAC，却可能带来更低算术强度和更多调度开销。原始三次 repeat 的 USNet 均约 `4.170 ms`，LiteViLNet 为 `4.617±0.012 ms`；两者都排除了 normal/SNE 或 ADI 预处理。因此论文强调 LiteViLNet 相对 SNE-RoadSeg、PLARD 和 RoadFormer 的准确率—参数—速度优势，不把“参数更少”误写成“必然比所有网络更快”。
+USNet 的参数量较大但 FPS-1 略高，是算子效率而非计时错误。参数量只统计权重；统一输入下 fvcore 可识别的 USNet 计算量约为 `39.13 GMAC-eq`，虽高于 LiteViLNet 的 `10.17 GMAC-eq`，但 USNet 以 4090 D 上高度优化的大块标准卷积为主。LiteViLNet 的深度卷积、逐尺度融合/attention、插值及较多小 kernel 降低了参数和 MAC，却可能带来更低算术强度和更多调度开销。原始三次 repeat 的 USNet 均约 `4.170 ms`，LiteViLNet 为 `4.528±0.014 ms`；两者都排除了 normal/SNE 或 ADI 预处理。因此论文强调 LiteViLNet 相对 SNE-RoadSeg、PLARD 和 RoadFormer 的准确率—参数—速度优势，不把“参数更少”误写成“必然比所有网络更快”。
 
 统一 RTX 4090 D FPS-1 快照（`384×1248`、batch 1、PyTorch FP32、100 次 warmup、300 次计时、三次 repeat、仅 model forward）如下：
 
@@ -329,7 +329,7 @@ USNet 的参数量较大但 FPS-1 略高，是算子效率而非计时错误。�
 | SNE-RoadSeg | 19.32 | 201.32M |
 | PLARD | 26.97 | 76.93M |
 | RoadFormer | 17.46 | 206.86M |
-| LiteViLNet | 216.61 | 14.04M |
+| LiteViLNet | 220.83 | 14.04M |
 
 正式汇总与匿名逐 seed 证据：
 

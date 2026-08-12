@@ -363,7 +363,7 @@ The matched RTX 4090 D FPS-1 snapshot is:
 | PLARD | 76.93M | 26.97 |
 | RoadFormer | 206.86M | 17.46 |
 | OFF-Net | 25.21M | 65.04 |
-| LiteViLNet | 14.04M | 216.61 |
+| LiteViLNet | 14.04M | 220.83 |
 
 FPS-1 uses RTX 4090 D, PyTorch FP32, batch 1, `384 x 1248`, resident inputs,
 100 warmups, 300 timed iterations, and three independent repeats; it measures

@@ -21,11 +21,11 @@
     {
       "method": "litevilnet",
       "parameters_M": 14.035153,
-      "mean_ms": 4.616645985179477,
-      "sample_std_ms": 0.011726192672250196,
-      "fps": 216.60746854106554,
-      "peak_allocated_cuda_MiB": 15004.87890625,
-      "checkpoint_sha256": "49f07b83fdad95dc7330c0d568e38532dcb2f748ef117e89a95ac824d957fa79"
+      "mean_ms": 4.528341789245605,
+      "sample_std_ms": 0.014484450582601859,
+      "fps": 220.8313874131383,
+      "peak_allocated_cuda_MiB": 15006.3642578125,
+      "checkpoint_sha256": "08bea5cb2f633aaee51f47e90a0bbfccdf6e3101e4867d4d722e450981be66a1"
     },
     {
       "method": "usnet",
