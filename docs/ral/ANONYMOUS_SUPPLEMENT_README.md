@@ -4,10 +4,11 @@ This archive accompanies the revised LiteViLNet manuscript.  It provides the
 code, fixed split manifests, source provenance, seed-level numerical evidence,
 and aggregation utilities needed to reproduce the reported KITTI Road and ORFD
 experiments.  Datasets, pretrained checkpoints, generated normal caches, and
-third-party repositories are intentionally excluded.  The formal ORFD
-comparison includes the four compatible official graphs (USNet, SNE-RoadSeg,
-OFF-Net, and RoadFormer) with seed-level records for seeds 40, 41, and 42;
-the published OFF-Net row is retained only as a historical reference.
+third-party repositories are intentionally excluded.  The current formal ORFD
+comparison includes the completed three-seed USNet result and a separate
+direct audit of the authors' released OFF-Net checkpoint. Incomplete local
+multi-seed runs are not presented as finished evidence, and the paper-only
+OFF-Net published-test row is omitted.
 
 ## 1. Contents and evidence map
 
@@ -148,11 +149,11 @@ the original ground-truth size, and accumulates one foreground confusion
 matrix over all 2,193 testing frames.
 
 For the locally reproduced ORFD comparison, follow
-`docs/ral/orfd_matched_baselines/README.md`. The formal evidence contains
-three independently initialized seeds for USNet, SNE-RoadSeg, OFF-Net, and
-RoadFormer under the common held-out testing and fixed-argmax evaluator. The
-separate released OFF-Net checkpoint audit and published test row are retained
-only as cross-check references.
+`docs/ral/orfd_matched_baselines/README.md`. The current formal evidence
+contains three independently initialized USNet seeds under the common
+held-out testing and fixed-argmax evaluator. The separate released OFF-Net
+checkpoint audit is retained as a single direct measurement; the paper-only
+published-test row is not included in the local comparison.
 
 ## 7. Verification
 

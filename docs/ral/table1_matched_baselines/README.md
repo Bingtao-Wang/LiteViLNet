@@ -362,6 +362,7 @@ The matched RTX 4090 D FPS-1 snapshot is:
 | SNE-RoadSeg | 201.32M | 19.32 |
 | PLARD | 76.93M | 26.97 |
 | RoadFormer | 206.86M | 17.46 |
+| OFF-Net | 25.21M | 65.04 |
 | LiteViLNet | 14.04M | 216.61 |
 
 FPS-1 uses RTX 4090 D, PyTorch FP32, batch 1, `384 x 1248`, resident inputs,

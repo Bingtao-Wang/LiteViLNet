@@ -1,0 +1,174 @@
+{
+  "protocol": "local ORFD released-split retraining",
+  "baseline": "usnet",
+  "seed": 42,
+  "input_size": [
+    704,
+    1280
+  ],
+  "train_count": 8392,
+  "val_count": 1245,
+  "test_count": 2193,
+  "epochs_requested": 30,
+  "best_epoch": 8,
+  "batch_size": 2,
+  "gradient_accumulation_steps": 1,
+  "effective_batch_size": 2,
+  "physical_training_steps": 125880,
+  "optimizer_steps": 125880,
+  "amp": true,
+  "checkpoint_selection": "validation 101-threshold MaxF",
+  "validation": {
+    "samples": 1245,
+    "threshold_swept_grid": [
+      704,
+      1280
+    ],
+    "fixed_argmax_ground_truth_grid": [
+      720,
+      1280
+    ],
+    "threshold_swept": {
+      "MaxF": 0.9239189428280895,
+      "BestThreshold": 0.009999999776482582,
+      "PRE": 0.9149017701500778,
+      "REC": 0.93311573131871,
+      "FPR": 0.0385279905053965,
+      "FNR": 0.06688426868128966,
+      "IoU": 0.8585961341769656,
+      "AP": 0.9380248045523437,
+      "Precision": 0.9149017701500778,
+      "Recall": 0.93311573131871
+    },
+    "official_fixed_argmax": {
+      "F_score": 0.9023486846282284,
+      "PRE": 0.9665160591235985,
+      "REC": 0.8461710610413848,
+      "IoU": 0.82207224825628,
+      "GlobalAcc": 0.9436951068161535,
+      "threshold": 0.5,
+      "tp": 298486197,
+      "fp": 10340743,
+      "tn": 784302019,
+      "fn": 54263041
+    }
+  },
+  "testing": {
+    "samples": 2193,
+    "threshold_swept_grid": [
+      704,
+      1280
+    ],
+    "fixed_argmax_ground_truth_grid": [
+      720,
+      1280
+    ],
+    "threshold_swept": {
+      "MaxF": 0.9667238326965027,
+      "BestThreshold": 0.5099999904632568,
+      "PRE": 0.9681608501870874,
+      "REC": 0.965291174447064,
+      "FPR": 0.012142781872725663,
+      "FNR": 0.034708825552935786,
+      "IoU": 0.9355910453239823,
+      "AP": 0.9835947150363529,
+      "Precision": 0.9681608501870874,
+      "Recall": 0.965291174447064
+    },
+    "official_fixed_argmax": {
+      "F_score": 0.9665220584398986,
+      "PRE": 0.9685550366328656,
+      "REC": 0.9644975967353967,
+      "IoU": 0.935213050587068,
+      "GlobalAcc": 0.9815134338821123,
+      "threshold": 0.5,
+      "tp": 539337197,
+      "fp": 17510041,
+      "tn": 1444368981,
+      "fn": 19852581
+    }
+  },
+  "parameters": 30738444,
+  "best_checkpoint": "runs/revision_1/matched_orfd/formal/usnet_seed42/best_model.pth",
+  "best_checkpoint_sha256": "8447798c453245261a0034a8d48707a994f8358975200dcf99469ce8a128cdd6",
+  "official_source": "${USNET_SOURCE}",
+  "official_remote": "https://github.com/morancyc/USNet.git",
+  "official_commit": "d761158ad42df7dcb62fa257dd02ce11c85f94a5",
+  "official_semantic_diff_clean": true,
+  "official_file_sha256": {
+    "model/usnet.py": "3abbb6fa899d3279dc8d0a7a7d92d337048db2e54d0ba8ae43291b2f9c1a743f",
+    "loss.py": "7aaa95805162f32f958c0d0ec9e02c203de4719e782b267a8c5b24ad532ce758",
+    "train.py": "a202af5fd732e711a1752a5e3963dd33ecd7da12cfc8321e2a264e468c2f5822",
+    "utils.py": "9f0b9e4273961b19a818da2d3303740420d524d869eb5d1993b402545a9fcecc",
+    "dataset/kitti.py": "888098f95c7e08c6bd74713ec8a1d6895e4c059e4cdcd76ba78e51b3a6494cbe",
+    "dataset/custom_transforms.py": "d62055bea2aeea71e59cead71b41b93c0c32b856daa209b48ced891d9bc24050"
+  },
+  "normal_cache_metadata": {
+    "dataset": "ORFD",
+    "profile": "sne_roadseg",
+    "generator": "models/sne_model.py",
+    "official_source": "${SNE_SOURCE}",
+    "official_remote": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+    "official_commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+    "official_sne_sha256": "c034925f1dd9ea46a7d502c18f277a0d2944396fcb27632e29ee42d8a4b0f067",
+    "storage_dtype": "float32",
+    "generation_device": "cuda:0",
+    "depth_divisor": 1000,
+    "camera_vertical_offset_pixels": -8,
+    "task_count": 20222,
+    "reused_count": 20222,
+    "training_flip_semantics": "depth is flipped before official SNE",
+    "calibration": {
+      "released_calibration_files": 11830,
+      "exact_sample_matches": 11830,
+      "nearest_timestamp_matches": 0,
+      "maximum_nearest_timestamp_gap": 0,
+      "inferred_intrinsic_counts": {},
+      "matching_rule": "exact timestamp when available, otherwise nearest released ORFD timestamp"
+    }
+  },
+  "runtime": {
+    "seconds": 27005.305799245834,
+    "python": "3.10.20",
+    "torch": "2.7.1+cu128",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/train_matched_orfd_baseline.py",
+      "--baseline",
+      "usnet",
+      "--official-source",
+      "${USNET_SOURCE}",
+      "--data-root",
+      "${ORFD_ROOT}",
+      "--normal-root",
+      "runs/revision_1/matched_orfd/local_exact_normals/sne_roadseg",
+      "--output-dir",
+      "runs/revision_1/matched_orfd/formal/usnet_seed42",
+      "--seed",
+      "42",
+      "--epochs",
+      "30",
+      "--resume",
+      "runs/revision_1/matched_orfd/formal/usnet_seed42/best_model.pth",
+      "--batch-size",
+      "2",
+      "--num-workers",
+      "8",
+      "--height",
+      "704",
+      "--width",
+      "1280",
+      "--val-every",
+      "1",
+      "--amp",
+      "--device",
+      "cuda"
+    ],
+    "peak_allocated_cuda_mib": 3240.0341796875
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders",
+    "metrics_and_hashes_changed": false
+  }
+}

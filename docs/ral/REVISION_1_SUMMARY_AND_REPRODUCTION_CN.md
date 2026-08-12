@@ -933,8 +933,9 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
 - [x] ORFD Table III 已先纳入 USNet seed-40 和 OFF-Net 发布 checkpoint 的共同 fixed-argmax evaluator 结果；LiteViLNet 现有数字来自 `orfd_test_summary.json`。SNE/RoadFormer 与 OFF-Net 多 seed 扩展命令保留待后续 GPU 空闲时运行。
 - [x] Table I 的 USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer/LiteViLNet 六个精度行全部来自同一 231/58 split、尺寸、150-epoch budget、三种子和 evaluator，不再混合 official BEV 与 local PV 排名。
 - [x] USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer 的官方仓库、固定 commit、源码哈希、逐 seed JSON 与 checkpoint SHA 均已整理到待打包结果树；最终匿名 Supplement 将在 ORFD/FPS 完成后重建。
-- [ ] OFF-Net 的 RTX 4090 D FPS-1 尚待 GPU 独占后测量；当前 GPU 被外部任务占用，
-  因此 Table I/Response 暂以 ``--'' 保持，不把未完成测速写成结果。
+- [x] OFF-Net 的 RTX 4090 D FPS-1 已按统一协议测得 `65.04`：PyTorch FP32、
+  `384×1248`、batch 1、100 次 warmup、每次 300 iterations、3 repeats、model-only；
+  原始记录位于 `runs/revision_1/matched_baselines/fps_4090d/offnet.json`。
 - [x] 论文没有 `best CNN`、`standard split`、`collision-free`、`RGB-D-compatible ADI`。
 - [x] PyTorch 22.18/22.19 FPS 与 TensorRT 68.73 FPS 的 checkpoint/backend 已分开。
 - [x] TensorRT 没有被用来声称 KITTI accuracy 等价。

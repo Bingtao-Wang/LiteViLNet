@@ -1,0 +1,99 @@
+{
+  "protocol": "matched Table-I model-only CUDA-event latency",
+  "method": "offnet",
+  "input_shape_rgb": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "input_shape_geometry": [
+    1,
+    3,
+    384,
+    1248
+  ],
+  "precision": "fp32",
+  "backend": "PyTorch",
+  "preprocessing_included": false,
+  "host_to_device_transfer_included": false,
+  "postprocessing_included": false,
+  "warmup": 100,
+  "iterations_per_repeat": 300,
+  "repeats": 3,
+  "repeat_summaries": [
+    {
+      "n": 300,
+      "mean_ms": 15.358601706822713,
+      "sample_std_ms": 0.11034702550260249,
+      "median_ms": 15.311871528625488,
+      "p95_ms": 15.644558572769165,
+      "min_ms": 15.277055740356445,
+      "max_ms": 15.756287574768066,
+      "fps_from_mean": 65.11009394532137
+    },
+    {
+      "n": 300,
+      "mean_ms": 15.378042132059733,
+      "sample_std_ms": 0.12751184828841688,
+      "median_ms": 15.32587194442749,
+      "p95_ms": 15.682405185699462,
+      "min_ms": 15.29651165008545,
+      "max_ms": 16.18022346496582,
+      "fps_from_mean": 65.02778386302029
+    },
+    {
+      "n": 300,
+      "mean_ms": 15.387944440841675,
+      "sample_std_ms": 0.11750299153015618,
+      "median_ms": 15.335424423217773,
+      "p95_ms": 15.682580375671387,
+      "min_ms": 15.309823989868164,
+      "max_ms": 15.824543952941895,
+      "fps_from_mean": 64.98593778034872
+    }
+  ],
+  "aggregate": {
+    "mean_ms": 15.37486275990804,
+    "sample_std_ms_across_repeat_means": 0.014927501980777504,
+    "fps_from_mean": 65.04123097655417
+  },
+  "parameters": 25209608,
+  "peak_allocated_cuda_mib": 823.71240234375,
+  "checkpoint": "runs/revision_1/matched_baselines/formal/offnet_seed42/best_model.pth",
+  "checkpoint_sha256": "04ef8174615d98d8ddb3fdc3a1838046965d4bd60eb5e96b35a291183666f495",
+  "official_source": {
+    "remote": "https://github.com/chaytonmin/Off-Road-Freespace-Detection",
+    "commit": "50e63d24836198e8fb5af707e521f414104b4876"
+  },
+  "operator_bridge": null,
+  "runtime": {
+    "python": "3.8.20",
+    "torch": "1.13.1+cu117",
+    "cuda": "11.7",
+    "device": "NVIDIA GeForce RTX 4090 D",
+    "command": [
+      "tools/benchmark_matched_kitti_fps.py",
+      "--method",
+      "offnet",
+      "--official-source",
+      "${OFFNET_SOURCE}",
+      "--checkpoint",
+      "runs/revision_1/matched_baselines/formal/offnet_seed42/best_model.pth",
+      "--precision",
+      "fp32",
+      "--warmup",
+      "100",
+      "--iterations",
+      "300",
+      "--repeats",
+      "3",
+      "--output",
+      "runs/revision_1/matched_baselines/fps_4090d/offnet.json"
+    ]
+  },
+  "supplement_anonymization": {
+    "local_absolute_paths": "replaced by portable placeholders or repository-relative paths",
+    "measurements_and_hashes_changed": false
+  }
+}

@@ -1,11 +1,10 @@
 # Reproducing the ORFD Baseline Evaluation
 
 This supplement documents the applicable RGB--geometry methods on the
-released ORFD training, validation, and testing partitions. The rapid rebuttal
-snapshot used one completed USNet retraining seed and an independent
-evaluation of the released OFF-Net checkpoint; a second completed USNet seed
-is now archived as a follow-up extension. Validation selects
-the checkpoint; the 2,193 testing images are evaluated only after selection.
+released ORFD training, validation, and testing partitions. The manuscript
+table now uses three completed USNet retraining seeds and an independent
+evaluation of the released OFF-Net checkpoint. Validation selects the
+checkpoint; the 2,193 testing images are evaluated only after selection.
 All directly compared F/PRE/REC/IoU values use one OFF-Net-style convention:
 fixed class argmax, nearest-neighbor restoration to the original `1280 x 720`
 label, and one foreground confusion matrix against the unmodified original GT
@@ -83,15 +82,35 @@ source tree can be used.
 
 The formal queue keeps each method's recipe unchanged. If a run is
 interrupted, restart it with the same output directory and `--resume`; the
-loader reconstructs completed physical and optimizer-step counters. The two
+loader reconstructs completed physical and optimizer-step counters. The
 capacity-aware continuation helpers are:
 
 ```bash
-# SNE-RoadSeg seeds 41 and 42 (seed 40 is independent and may already run)
-setsid -f bash tools/dispatch_orfd_sne_followup.sh
+# Resume OFF-Net seeds 40, 41, and 42
+setsid -f bash tools/dispatch_orfd_offnet_resume.sh
 
-# RoadFormer seeds 40--42 after OFF-Net seed 40 has produced result.json
+# Capacity-aware continuation when GPU1 is shared with SNE/RoadFormer
+# (seed 40 remains owned by the independent GPU0 watcher)
+GPU=1 SEEDS='41 42' setsid -f bash tools/dispatch_orfd_offnet_capacity_queue.sh
+
+# Priority GPU0 continuation when SNE seed40 is deferred
+GPU=0 SEEDS='40' setsid -f bash tools/dispatch_orfd_offnet_resume.sh
+
+# Resume SNE-RoadSeg seeds 40, 41, and 42 (single-owner high-memory queue)
+setsid -f bash tools/dispatch_orfd_sne_capacity_queue.sh
+
+# Resume USNet seed 42 (the small AMP job)
+setsid -f bash tools/dispatch_orfd_usnet42_resume.sh
+
+# RoadFormer seed 40--42 on GPU 0
 setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
+
+# Deferred SNE seed 42 after the priority OFF-Net GPU1 lane
+setsid -f bash tools/dispatch_orfd_sne42_after_offnet.sh
+
+# Resume SNE seed40 after the priority OFF-Net GPU0 lane
+setsid -f bash tools/dispatch_orfd_sne40_after_offnet.sh
+
 ```
 
 They claim a seed only when its result is absent and no matching training
@@ -104,6 +123,15 @@ long queue, `setsid -f bash tools/monitor_orfd_partial_summaries.sh` emits
 separate `summary_<method>.{json,csv}` snapshots for USNet, SNE-RoadSeg,
 OFF-Net, and RoadFormer as soon as each method's three seeds finish; it never
 replaces the final all-method `summary.json`.
+
+RoadFormer's formal ORFD command remains FP32, batch 4, 50 epochs, and
+`704x1280`. The runner uses activation checkpointing plus PyTorch's
+`save_on_cpu` context only to keep saved backward tensors out of the 48-GB
+allocator, and enables the official TwinConvNeXt `with_cp` checkpoint switch;
+it does not change parameters, optimizer steps, data order, or evaluation.
+`result.json` records these memory safeguards and the allocator configuration
+for exact reproduction. The default allocator setting is
+`PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:32`.
 
 ## Data and geometry preparation
 
@@ -195,18 +223,20 @@ grid and its discrete argmax mask follows the same nearest-neighbor original-
 GT restoration as the other rows.
 Method-specific optimization follows each pinned official recipe.
 
-The current USNet extension summary (percentages, held-out test; mean and
-sample SD are computed only over the completed seeds 40 and 41) is:
+The completed USNet three-seed summary (percentages, held-out test; mean and
+sample SD over seeds 40, 41, and 42) is:
 
 | Seed | F-score | AP | PRE | REC | IoU |
 |---:|---:|---:|---:|---:|---:|
 | 40 | 95.6188 | 97.1748 | 95.3155 | 95.9241 | 91.6054 |
 | 41 | 95.5689 | 97.9032 | 94.4440 | 96.7208 | 91.5137 |
-| Mean $\pm$ sample SD | $95.5938\pm0.0353$ | $97.5390\pm0.5151$ | $94.8797\pm0.6162$ | $96.3225\pm0.5633$ | $91.5596\pm0.0648$ |
+| 42 | 96.6522 | 98.3595 | 96.8555 | 96.4498 | 93.5213 |
+| Mean $\pm$ sample SD | $95.9466\pm0.6116$ | $97.8125\pm0.5975$ | $95.5383\pm1.2211$ | $96.3649\pm0.4051$ | $92.2135\pm1.1335$ |
 
-Seed 42 and the SNE-RoadSeg/OFF-Net/RoadFormer local ORFD retraining rows are
-still queued; they are not silently inferred from this two-seed extension and
-are not substituted into the manuscript Table III.
+USNet's completed three-seed result is used in the manuscript ORFD table.
+SNE-RoadSeg/OFF-Net/RoadFormer local ORFD retraining remains incomplete and is
+not inferred from partial runs. The OFF-Net row remains explicitly identified
+as one local evaluation of the authors' released checkpoint.
 
 | Method | Epochs | Physical batch | Grad. accum. | Effective batch | Precision | Checkpoint selection |
 |---|---:|---:|---:|---:|---|---|

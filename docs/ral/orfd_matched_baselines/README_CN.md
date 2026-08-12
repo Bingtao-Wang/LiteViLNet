@@ -47,14 +47,33 @@ USNet/SNE-RoadSeg 使用 `litevilnet_ral`，OFF-Net/RoadFormer 使用兼容其
 
 正式队列保持各方法原有 recipe 不变。若任务中断，应使用原输出目录并以
 `--resume` 续跑；训练器会根据 checkpoint 重建已完成的 physical/optimizer
-step 计数。两个容量感知的续接入口如下：
+step 计数。容量感知的续接入口如下（可安全重复执行）：
 
 ```bash
-# SNE-RoadSeg seed 41/42（seed 40 可独立运行）
-setsid -f bash tools/dispatch_orfd_sne_followup.sh
+# 恢复 OFF-Net seeds 40/41/42
+setsid -f bash tools/dispatch_orfd_offnet_resume.sh
 
-# OFF-Net seed 40 生成 result.json 后继续 RoadFormer seed 40/41/42
+# GPU1 与 SNE/RoadFormer 共用时的容量感知续接（seed40 由 GPU0 独立等待器负责）
+GPU=1 SEEDS='41 42' setsid -f bash tools/dispatch_orfd_offnet_capacity_queue.sh
+
+# SNE seed40 延后时，优先在 GPU0 恢复 OFF-Net seed40
+GPU=0 SEEDS='40' setsid -f bash tools/dispatch_orfd_offnet_resume.sh
+
+# 恢复 SNE-RoadSeg seeds 40/41/42（高显存单所有者队列）
+setsid -f bash tools/dispatch_orfd_sne_capacity_queue.sh
+
+# USNet seed 42（约 4 GB，可与 GPU1 上的任务共存）
+setsid -f bash tools/dispatch_orfd_usnet42_resume.sh
+
+# RoadFormer seed 40--42（GPU0）
 setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
+
+# OFF-Net GPU1 优先队列完成后再恢复 SNE seed42
+setsid -f bash tools/dispatch_orfd_sne42_after_offnet.sh
+
+# GPU0 的 OFF-Net seed40 完成后恢复 SNE seed40
+setsid -f bash tools/dispatch_orfd_sne40_after_offnet.sh
+
 ```
 
 脚本只有在目标 `result.json` 不存在且没有同 seed 训练进程时才会 claim，且
@@ -65,6 +84,14 @@ setsid -f bash tools/dispatch_orfd_roadformer_after_sne.sh
 SNE-RoadSeg、OFF-Net、RoadFormer 的三个 seed 齐全后分别生成对应的
 `summary_<method>.{json,csv}` 快照，且不会覆盖最终全方法的
 `summary.json`。
+
+RoadFormer 的正式 ORFD 命令仍保持 FP32、batch 4、50 epochs 和
+`704x1280`。训练器只使用 activation checkpointing 及 PyTorch
+`save_on_cpu` 将反向传播保存的临时 tensor 放到主存，以适配 48-GB
+显存，并开启官方 TwinConvNeXt 已提供的 `with_cp` backbone 检查点；参数、
+优化器更新、数据顺序和评估均未改变。`result.json` 会记录
+这些显存保护措施及 allocator 配置，便于精确复现。默认配置为
+`PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:32`。
 
 ## 2. 为什么有两套 normal cache
 
@@ -90,7 +117,7 @@ ORFD 完整发布包共有 8,392/1,245/2,193 张 train/validation/testing，且�
 
 ## 3. ORFD 正式协议
 
-当前论文 Table III 快照使用 USNet 的 seed-40 重训，以及 OFF-Net 发布 checkpoint 的独立核验；另外已完成的 USNet seed-41 作为后续扩展证据归档。它们共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
+当前论文 ORFD 表使用 USNet seeds 40/41/42 的三次重训统计，以及 OFF-Net 发布 checkpoint 的一次独立核验。它们共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
 固定 argmax confusion-matrix evaluator。直接比较的 F/PRE/REC/IoU 都把 prediction
 最近邻恢复到原始 `1280×720`，再与未改动的原始 GT 累计一个 confusion matrix，
 避免不同网络 output stride 导致不同 GT 量化；另统一报告 101 阈值 MaxF/AP。
@@ -100,7 +127,7 @@ metadata 原尺寸恢复之前取 logits，因此阈值扫描和固定 argmax �
 所有方法都按 validation 的 101-threshold MaxF 选择 best checkpoint，与 LiteViLNet
 一致；test 只在选模后运行。作者 checkpoint 交叉核验
 还单独记录官方 `test.py` 的字面路径：OFF-Net 自身的 1/4-scale loader GT 与 prediction
-一起恢复；该诊断不混入本地统一排名。论文快照仍使用 seed 40；如需扩展 seed 42 或 SNE-RoadSeg/RoadFormer，仍使用下表和英文手册中的原始 recipe：
+一起恢复；该诊断不混入本地统一排名。SNE-RoadSeg/OFF-Net/RoadFormer 的多 seed 本地重训仍使用下表和英文手册中的原始 recipe：
 
 | 方法 | epochs | physical batch | 梯度累积 | effective batch | 精度 |
 |---|---:|---:|---:|---:|---|
@@ -109,17 +136,18 @@ metadata 原尺寸恢复之前取 logits，因此阈值扫描和固定 argmax �
 | OFF-Net | 30 | 2 | 4 | 8 | FP32 |
 | RoadFormer | 50 | 4 | 1 | 4 | FP32 |
 
-本轮赶时间的 Table III 不把 SNE-RoadSeg/RoadFormer 的未完成重训当作结果；OFF-Net 行使用作者发布 checkpoint 的独立本地评测，而不是声称完成了三 seed 重训。
+当前论文不把 SNE-RoadSeg/RoadFormer 或 OFF-Net 的未完成重训当作结果；OFF-Net 行明确使用作者发布 checkpoint 的一次独立本地评测，而不是声称完成了三 seed 重训。
 
-USNet 当前已完成 seed 40/41 的 ORFD test 扩展结果如下（百分比；仅用于后续更新参考，尚未替换论文 Table III）：
+USNet 已完成 seeds 40/41/42，论文 ORFD 表使用以下三次结果的均值和样本标准差（百分比）：
 
 | seed | F-score | AP | PRE | REC | IoU |
 |---:|---:|---:|---:|---:|---:|
 | 40 | 95.6188 | 97.1748 | 95.3155 | 95.9241 | 91.6054 |
 | 41 | 95.5689 | 97.9032 | 94.4440 | 96.7208 | 91.5137 |
-| 均值 ± sample SD | 95.5938±0.0353 | 97.5390±0.5151 | 94.8797±0.6162 | 96.3225±0.5633 | 91.5596±0.0648 |
+| 42 | 96.6522 | 98.3595 | 96.8555 | 96.4498 | 93.5213 |
+| 均值 ± sample SD | 95.9466±0.6116 | 97.8125±0.5975 | 95.5383±1.2211 | 96.3649±0.4051 | 92.2135±1.1335 |
 
-seed 42 以及 SNE-RoadSeg/OFF-Net/RoadFormer 的 ORFD 本地重训仍在队列中；不从当前两 seed 结果推断缺失数字。
+SNE-RoadSeg/OFF-Net/RoadFormer 的 ORFD 本地多 seed 重训仍未完成；不会从中途 checkpoint 或日志推断缺失的 test 数字。
 
 OFF-Net 官方命令是四卡全局 batch 8，每个 DataParallel replica 看到 batch 2。
 单卡复现保留 physical batch 2，每 4 个 physical batch 更新一次，因此 effective
