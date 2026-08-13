@@ -117,7 +117,7 @@ ORFD 完整发布包共有 8,392/1,245/2,193 张 train/validation/testing，且�
 
 ## 3. ORFD 正式协议
 
-当前论文 ORFD 表使用 USNet seeds 40/41/42 的三次重训统计，以及 OFF-Net 发布 checkpoint 的一次独立核验。它们共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
+当前论文 ORFD 表使用 USNet 和 SNE-RoadSeg seeds 40/41/42 的三次重训统计，以及 OFF-Net 发布 checkpoint 的一次独立核验。它们共用官方 split、`704×1280` 输入、完整 2,193 张 test 和同一个 OFF-Net-style
 固定 argmax confusion-matrix evaluator。直接比较的 F/PRE/REC/IoU 都把 prediction
 最近邻恢复到原始 `1280×720`，再与未改动的原始 GT 累计一个 confusion matrix，
 避免不同网络 output stride 导致不同 GT 量化；另统一报告 101 阈值 MaxF/AP。
@@ -136,7 +136,7 @@ metadata 原尺寸恢复之前取 logits，因此阈值扫描和固定 argmax �
 | OFF-Net | 30 | 2 | 4 | 8 | FP32 |
 | RoadFormer | 50 | 4 | 1 | 4 | FP32 |
 
-当前论文不把 SNE-RoadSeg/RoadFormer 或 OFF-Net 的未完成重训当作结果；OFF-Net 行明确使用作者发布 checkpoint 的一次独立本地评测，而不是声称完成了三 seed 重训。
+当前论文正式使用 USNet 与 SNE-RoadSeg 的 seeds 40/41/42 重训统计，以及 OFF-Net 作者发布 checkpoint 的一次独立本地评测；RoadFormer 与 OFF-Net 的其他 ORFD 多 seed 重训不纳入本轮正式结果。SNE 的逐 seed JSON、汇总和复现命令见匿名 SNE-only 附件。
 
 USNet 已完成 seeds 40/41/42，论文 ORFD 表使用以下三次结果的均值和样本标准差（百分比）：
 
@@ -147,7 +147,7 @@ USNet 已完成 seeds 40/41/42，论文 ORFD 表使用以下三次结果的均�
 | 42 | 96.6522 | 98.3595 | 96.8555 | 96.4498 | 93.5213 |
 | 均值 ± sample SD | 95.9466±0.6116 | 97.8125±0.5975 | 95.5383±1.2211 | 96.3649±0.4051 | 92.2135±1.1335 |
 
-SNE-RoadSeg/OFF-Net/RoadFormer 的 ORFD 本地多 seed 重训仍未完成；不会从中途 checkpoint 或日志推断缺失的 test 数字。
+SNE-RoadSeg 的三组 ORFD 重训已经完成并写入附加材料；不会从中途 checkpoint 或日志推断缺失的 test 数字。RoadFormer 的 ORFD 本地多 seed 重训不属于本轮正式范围。
 
 OFF-Net 官方命令是四卡全局 batch 8，每个 DataParallel replica 看到 batch 2。
 单卡复现保留 physical batch 2，每 4 个 physical batch 更新一次，因此 effective

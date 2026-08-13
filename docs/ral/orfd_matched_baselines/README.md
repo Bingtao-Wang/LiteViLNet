@@ -2,9 +2,10 @@
 
 This supplement documents the applicable RGB--geometry methods on the
 released ORFD training, validation, and testing partitions. The manuscript
-table now uses three completed USNet retraining seeds and an independent
-evaluation of the released OFF-Net checkpoint. Validation selects the
-checkpoint; the 2,193 testing images are evaluated only after selection.
+table now uses completed three-seed USNet and SNE-RoadSeg retraining plus an
+independent evaluation of the released OFF-Net checkpoint. Validation selects
+each locally trained checkpoint; the 2,193 testing images are evaluated only
+after selection.
 All directly compared F/PRE/REC/IoU values use one OFF-Net-style convention:
 fixed class argmax, nearest-neighbor restoration to the original `1280 x 720`
 label, and one foreground confusion matrix against the unmodified original GT
@@ -233,10 +234,11 @@ sample SD over seeds 40, 41, and 42) is:
 | 42 | 96.6522 | 98.3595 | 96.8555 | 96.4498 | 93.5213 |
 | Mean $\pm$ sample SD | $95.9466\pm0.6116$ | $97.8125\pm0.5975$ | $95.5383\pm1.2211$ | $96.3649\pm0.4051$ | $92.2135\pm1.1335$ |
 
-USNet's completed three-seed result is used in the manuscript ORFD table.
-SNE-RoadSeg/OFF-Net/RoadFormer local ORFD retraining remains incomplete and is
-not inferred from partial runs. The OFF-Net row remains explicitly identified
-as one local evaluation of the authors' released checkpoint.
+USNet's and SNE-RoadSeg's completed three-seed results are used in the
+manuscript ORFD table. The OFF-Net row remains explicitly identified as one
+local evaluation of the authors' released checkpoint. RoadFormer local ORFD
+retraining is outside the present formal scope and is not inferred from
+partial runs.
 
 | Method | Epochs | Physical batch | Grad. accum. | Effective batch | Precision | Checkpoint selection |
 |---|---:|---:|---:|---:|---|---|

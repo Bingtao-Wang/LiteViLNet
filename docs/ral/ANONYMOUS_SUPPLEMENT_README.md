@@ -5,10 +5,12 @@ code, fixed split manifests, source provenance, seed-level numerical evidence,
 and aggregation utilities needed to reproduce the reported KITTI Road and ORFD
 experiments.  Datasets, pretrained checkpoints, generated normal caches, and
 third-party repositories are intentionally excluded.  The current formal ORFD
-comparison includes the completed three-seed USNet result and a separate
-direct audit of the authors' released OFF-Net checkpoint. Incomplete local
-multi-seed runs are not presented as finished evidence, and the paper-only
-OFF-Net published-test row is omitted.
+comparison includes completed three-seed USNet and SNE-RoadSeg retraining under
+the common held-out evaluator, together with a separate direct audit of the
+authors' released OFF-Net checkpoint. The SNE-only entry point is
+`tools/package_ral_sne_roadseg.sh`; incomplete local multi-seed runs are not
+presented as finished evidence, and the paper-only OFF-Net published-test row
+is omitted.
 
 ## 1. Contents and evidence map
 
@@ -17,7 +19,8 @@ OFF-Net published-test row is omitted.
 | Table I matched KITTI accuracy and RTX 4090 D FPS-1 | `tools/run_matched_kitti_baselines.sh`, `tools/run_matched_kitti_offnet.sh`, `tools/run_matched_kitti_fps.sh`, `tools/dispatch_offnet_fps_after_idle.sh` | `docs/ral/table1_matched_baselines/results/` |
 | Table II KITTI ablations | `tools/run_revision_ablation_queue.sh` | `evidence/kitti/` |
 | Transformer and KD controls | `tools/run_revision_ablation_queue.sh`, `tools/run_kitti_distill_queue.sh` | `evidence/kitti/` |
-| Table III ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh`, `tools/dispatch_orfd_followup.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
+| Table II ORFD evaluation | `tools/run_orfd_revision_queue.sh`, `tools/evaluate_orfd.py`, `tools/run_matched_orfd_baselines.sh`, `tools/dispatch_orfd_followup.sh` | `evidence/orfd/`, `docs/ral/orfd_matched_baselines/results/` |
+| SNE-RoadSeg ORFD three-seed audit | `tools/train_matched_orfd_baseline.py`, `tools/summarize_matched_orfd_baselines.py`, `tools/package_ral_sne_roadseg.sh` | `docs/ral/orfd_matched_baselines/results/summary_sne_roadseg.{json,csv}` and `results/seeds_sne_roadseg/` |
 | Parameters, MAC-equivalents, memory, and latency | `tools/profile_ablation.py`, `tools/summarize_profile_repeats.py` | `evidence/profiling/` |
 | KITTI and RGB-D pipeline timing | `tools/benchmark_kitti_adi_pipeline.py`, `tools/benchmark_robot_end_to_end.py` | `evidence/pipelines/` |
 

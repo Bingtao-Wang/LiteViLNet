@@ -2,7 +2,7 @@
 
 > **内部文档，请勿作为双盲附件上传。** 本文为作者核验保留本机数据/结果路径和完整审计说明。投稿请只使用 `tools/package_ral_reproduction.sh` 生成并通过自动身份扫描的匿名压缩包。
 
-> 状态：原修订实验与 Table I 的五个官方 baseline 同协议三种子重训练已完成；论文 ORFD 快照采用 USNet seed-40 单次重训和 OFF-Net 发布 checkpoint 的独立评测，另已完成 USNet seed-41 作为后续更新证据归档；SNE/RoadFormer 及 OFF-Net 本地多 seed 重训命令保留但不纳入当前 Table III。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
+> 状态：原修订实验与 Table I 的五个官方 baseline 同协议三种子重训练已完成；ORFD 正式比较统一采用 USNet 与 SNE-RoadSeg 的三种子重训练，以及 OFF-Net 发布 checkpoint 的独立评测。RoadFormer 与 OFF-Net 的 ORFD 多 seed 重训练命令保留但不纳入本轮正式表格。SNE 三 seed 的逐项结果、均值/样本标准差和官方源码审计见 `docs/ral/sne_roadseg_orfd/RESULTS.md`（由汇总脚本生成）。作者原图保持不变；Fig. 1、3、4、5 的手工绘制素材和逐图说明已准备，但投稿前仍需作者手工覆盖最终图片文件。
 
 > 正文表述原则：论文正文面向正式读者，重点呈现 LiteViLNet 的创新设计、精度—效率优势、跨城市/越野场景验证和边缘部署价值。为回应评审而补充的精确 split seed、逐类别数量、manifest 路径、SHA-256、训练 seed、梯度累积和单步训练显存等审计信息，不再堆放于 Abstract 或 Section IV-A；它们集中保留在 Response 与本复现文档中。正文中仅保留理解实验所必需的数据集划分类型、评价协议、主要训练设置和三次独立运行统计。
 
@@ -19,8 +19,8 @@
 5. 机器人分支使用 aligned depth 生成 `depth3`，不是 ADI，也不是 KITTI 模型 zero-shot transfer。历史导航没有保留成功率、碰撞、干预、横向误差或功耗日志，因此只能作为定性系统演示。
 6. MSFM 增加约 10.35M 参数，必须与“简单逐尺度相加 + 同一 Bridge + 同一深监督”控制一起看。修正后的分层 split 结果见第 7 节。
 7. ORFD 用作第二数据集。除 8,392/1,245 train/validation 外，本轮进一步发现下载包的 2,193-frame testing partition 也包含完整 GT；训练和 validation 都与 test 无同名帧。论文现以 held-out test 作为主结果。
-8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`。它相对已独立评测的 OFF-Net 发布 checkpoint 高 `3.94/7.11 pp`，相对发布表格值高 `6.44/11.38 pp`；相对 USNet seed-40 高 `1.12/2.07 pp`。Full 的 AP 为 `98.31 ± 0.37%`，对 compact 的原有三 seed 优势是 `+0.71 ± 0.67 pp`。
-9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.43×`、`8.19×`、`12.65×`。ORFD 论文快照记录 USNet seed-40 与 OFF-Net 发布 checkpoint，分别为 `95.62/91.61` 和 `92.80/86.57` 的 fixed F-score/IoU；USNet seed-41 已作为后续扩展归档。
+8. 按官方 OFF-Net commit `50e63d2` 的固定 argmax、原始 `1280×720` GT confusion-matrix 口径，LiteViLNet full 为 `96.74 ± 0.09% F-score / 93.68 ± 0.18% IoU`。它相对已独立评测的 OFF-Net 发布 checkpoint 高 `3.94/7.11 pp`，相对 USNet 三 seed 均值高 `0.79/1.46 pp`。Full 的 AP 为 `98.31 ± 0.37%`。SNE-RoadSeg 的三 seed 数值以 `docs/ral/sne_roadseg_orfd/RESULTS.md` 的自动汇总为准。
+9. Table I 现已改为完全同协议的本地核心比较。USNet 为 `97.88±0.07%` MaxF，SNE-RoadSeg 为 `97.23±0.21%`，PLARD 为 `95.25±0.19%`，OFF-Net 为 `95.36±0.66%`，RoadFormer 为 `97.28±0.05%`，LiteViLNet 为 `97.23±0.15%`。LiteViLNet 与 SNE-RoadSeg 仅差 `0.01 pp`，参数少 `93.0%`；相对 SNE-RoadSeg、PLARD、RoadFormer 的 RTX 4090 D FPS-1 分别为 `11.43×`、`8.19×`、`12.65×`。ORFD 正式比较统一包含 USNet 与 SNE-RoadSeg 的三 seed fixed F-score/IoU，以及 OFF-Net 发布 checkpoint 的独立评测；SNE 逐 seed 数字以 `docs/ral/sne_roadseg_orfd/RESULTS.md` 为准。
 
 ## 2. 审稿意见—修改证据矩阵
 
@@ -735,7 +735,7 @@ python -m tools.summarize_orfd_test \
 
 Table III 使用的 official-protocol test 结果：
 
-> 当前提交快照：USNet 使用已完成的 seed 40；OFF-Net 使用作者发布 checkpoint 的独立本地评测。SNE-RoadSeg、RoadFormer 和 OFF-Net 多 seed 重训命令仍保留，但不把未完成过程写成正式结果。
+> 当前提交范围：USNet 与 SNE-RoadSeg 均使用 seeds 40/41/42 的正式重训练统计；OFF-Net 使用作者发布 checkpoint 的独立本地评测。RoadFormer 与 OFF-Net 多 seed 重训命令仍保留，但不把未完成过程写成正式结果。
 
 | Variant | n | F-score | AP | PRE | REC | IoU |
 |---|---:|---:|---:|---:|---:|---:|
@@ -907,9 +907,9 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
   FPS-1，同时保留 USNet 高 FPS 的真实测量，不作选择性删除；USNet 的网络第二路来自
   官方 SNE 输出，Input 单元格应精准标为 `RGB+Normal`，而不是按其内部变量名写成
   `RGB+Depth`。
-- Table III/Section IV-D：加入已完成的 USNet seed-40 本地结果与 OFF-Net 作者发布
-  checkpoint 的独立核验，并增加 Params 列；SNE-RoadSeg/RoadFormer 的 ORFD 训练入口
-  保留在补充材料中，PLARD 因没有官方 ORFD-compatible ADI 构造链而不做不成立的输入替换。
+- ORFD Table/Section IV-B：纳入 USNet 与 SNE-RoadSeg 的正式三 seed 结果，以及 OFF-Net
+  作者发布 checkpoint 的独立核验，并增加 Params 列；RoadFormer 的 ORFD 训练入口保留
+  在补充材料中，PLARD 因没有官方 ORFD-compatible ADI 构造链而不做不成立的输入替换。
 - Conclusion：只使用最终本地可比结果总结优势，不再用 published OFF-Net
   `90.30/82.30` 作为核心胜幅。
 - `ral_response_1.tex`：同步更新 `\RevisedTableOne`、`\RevisedTableThree` 及所有引用
@@ -930,7 +930,7 @@ Fig. 4 的手工替换素材只使用固定分层 validation manifest 中的样�
 | LiteViLNet | LiDAR-derived ADI | `RGB+ADI` |
 
 - [x] Abstract、Table I、Table II、Conclusion 的 KITTI MaxF/参数/GMAC 数字来自同一个分层 split 汇总 JSON。
-- [x] ORFD Table III 已先纳入 USNet seed-40 和 OFF-Net 发布 checkpoint 的共同 fixed-argmax evaluator 结果；LiteViLNet 现有数字来自 `orfd_test_summary.json`。SNE/RoadFormer 与 OFF-Net 多 seed 扩展命令保留待后续 GPU 空闲时运行。
+- [x] ORFD comparison uses USNet and SNE-RoadSeg three-seed results plus the OFF-Net released-checkpoint audit under the common fixed-argmax evaluator; SNE seed-level outputs are generated under `docs/ral/sne_roadseg_orfd/RESULTS.md`. RoadFormer/OFF-Net multi-seed commands remain archived but are outside this formal scope.
 - [x] Table I 的 USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer/LiteViLNet 六个精度行全部来自同一 231/58 split、尺寸、150-epoch budget、三种子和 evaluator，不再混合 official BEV 与 local PV 排名。
 - [x] USNet/SNE-RoadSeg/PLARD/OFF-Net/RoadFormer 的官方仓库、固定 commit、源码哈希、逐 seed JSON 与 checkpoint SHA 均已整理到待打包结果树；最终匿名 Supplement 将在 ORFD/FPS 完成后重建。
 - [x] OFF-Net 的 RTX 4090 D FPS-1 已按统一协议测得 `65.04`：PyTorch FP32、

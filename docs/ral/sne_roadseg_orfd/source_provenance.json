@@ -1,0 +1,26 @@
+{
+  "method": "SNE-RoadSeg",
+  "official_repository": "https://github.com/hlwang1124/SNE-RoadSeg.git",
+  "commit": "5e7900bfd59887634ced687ffe85a73018a38659",
+  "source_boundary": "The official network, loss, optimizer, and SNE normal estimator are imported unchanged; the local adapter provides only data, seed, checkpoint, and evaluator plumbing.",
+  "required_source_files": {
+    "models/networks.py": "7f2008be951fb8c3d2056931b795cf0480790fe7019564edd8a0c85d34e11a26",
+    "models/roadseg_model.py": "1b5c3927c8730c3c87bbd9902bcf7c84c465f3ddb091c860a787624ccba43864",
+    "models/sne_model.py": "c034925f1dd9ea46a7d502c18f277a0d2944396fcb27632e29ee42d8a4b0f067",
+    "train.py": "0a1145312b5fa29ce4fa37a722388200e2bc46206bb5b80a979f0d6bb9ee83cb",
+    "data/kitti_dataset.py": "ba9b378ea045022caa3ca137cd801f82ecfcc868734c9dd171b8ac0411f75ea7",
+    "options/base_options.py": "ae11f6a75fa7b149357e362834db6bd60e34e6219d30ae72406f9417b202089a",
+    "options/train_options.py": "5420d2b874f60fa015c6bf590a5c9da719eed728d9b40c6d204e3324701462a1"
+  },
+  "protocol": {
+    "dataset": "ORFD official released partitions",
+    "counts": {"training": 8392, "validation": 1245, "testing": 2193},
+    "input_size": [704, 1280],
+    "epochs": 30,
+    "batch_size": 2,
+    "amp": true,
+    "seeds": [40, 41, 42],
+    "checkpoint_selection": "validation 101-threshold MaxF",
+    "test_evaluator": "fixed argmax/0.5, nearest-neighbor restoration to original 1280 x 720 GT, one foreground confusion matrix"
+  }
+}
